@@ -1,0 +1,78 @@
+.standard-btn {
+    width: 200px;
+}
+
+.options-div {
+    margin-bottom: 2rem;
+}
+
+.options-div-body {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+div.custom-switch {
+    margin-bottom: 1rem;
+}
+
+.custom-control-label {
+    cursor: pointer;
+}
+
+#language-display-row {
+    margin-top: 1rem;
+}
+
+#english-display-div,
+#arabic-display-div {
+    height: 300px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding-top: .5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
+}
+
+.language-header {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #444;
+}
+
+h2.language-text {
+    font-weight: 300;
+    font-size: 3.5rem;
+    margin-top: 1rem;
+}
+
+button.play-audio-btn {
+    position: absolute;
+    bottom: 1rem;
+}
+
+#btn-load-nouns {
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+#btn-begin-learning {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+#progress-control {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.pause-audio-btn {
+    display: block;
+    margin: 0 auto;
+}
+
+.next-card-btn {
+    display: block;
+    margin-right: 0;
+    margin-left: auto;
+}

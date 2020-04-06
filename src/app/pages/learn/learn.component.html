@@ -1,0 +1,219 @@
+<div class="container">
+<div class="jumbotron">
+    <h1>Learn</h1>
+</div>
+
+<div class="options-div">
+    <div class="options-div-body"
+        *ngIf="showOptions"
+    >
+        <div class="row">
+            <div class="col col-sm">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" 
+                        class="custom-control-input" 
+                        id="autoLoadNext"
+                        [checked]="opAutoLoadNext"
+                        (click)="toggleSwitch('autoLoadNext')"
+                    >
+                    <label class="custom-control-label" for="autoLoadNext">Auto-Load Next</label>
+                </div>
+
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" 
+                        class="custom-control-input" 
+                        id="autoPlayArabic"
+                        [checked]="opAutoPlayArabic"
+                        (click)="toggleSwitch('autoPlayArabic')"
+                    >
+                    <label class="custom-control-label" for="autoPlayArabic">Auto-Play Arabic</label>
+                </div>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" 
+                        class="custom-control-input" 
+                        id="includeArabicPlural"
+                        [checked]="opIncludeArabicPlural"
+                        (click)="toggleSwitch('includeArabicPlural')"
+                    >
+                    <label class="custom-control-label" for="includeArabicPlural">Include Arabic Plural</label>
+                </div>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" 
+                        class="custom-control-input"
+                        id="showArabicText"
+                        [checked]="opShowArabicText"
+                        (click)="toggleSwitch('showArabicText')"
+                    >
+                    <label class="custom-control-label" for="showArabicText">Show Arabic Text</label>
+                </div>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" 
+                        class="custom-control-input" 
+                        id="loopOnFinish"
+                        [checked]="opLoopOnFinish"
+                        (click)="toggleSwitch('loopOnFinish')"
+                    >
+                    <label class="custom-control-label" for="loopOnFinish">Loop On Finish</label>
+                </div>
+            </div>
+            <div class="col col-sm">
+                <div class="form-group">
+                    <label>Auto-Play Count:</label>
+                    <select class="form-control" id="select-play-count"
+                        [(ngModel)]="opAutoPlayCount"
+                    >
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Arabic Delayed:</label>
+                    <select class="form-control" id="select-arabic-delay"
+                        [(ngModel)]="opArabicDelay"
+                    >
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button *ngIf="setStarted"
+            id="close-options-btn"
+            class="btn btn-outline-primary standard-btn btn-sm"
+            (click)="closeOptions()"
+        >
+            Hide Options
+        </button>
+    </div>
+    <button *ngIf="!showOptions"
+        id="btn-open-options"
+        class="btn btn-outline-dark standard-btn btn-sm"
+        (click)="openOptions()">
+            Show Options
+    </button>
+</div>
+
+<div class="initial-options-screen"
+    *ngIf="!setStarted"
+>
+    <div class="form-group">
+        <label>Category</label>
+        <select id="select-category"
+            class="form-control"
+            [(ngModel)]="categorySelected"
+            >
+            <option value="all">All</option>
+            <option value="animals">Animals</option>
+            <option value="attire">Attire</option>
+            <option value="household">Household</option>
+            <option value="nature">Nature</option>
+            <option value="people">People</option>
+            <option value="sky_weather">Sky/Weather</option>
+            <option value="abstract">Abstract</option>
+            <option value="environment">Environment</option>
+            <option value="creations">Creations</option>
+            <option value="body">Body</option>
+            <option value="time">Time</option>
+            <option value="literature">Literature</option>
+            <option value="feelings">Feelings</option>
+            <option value="geography">Geography</option>
+            <option value="buildings">Buildings</option>
+            <option value="activities">Activities</option>
+            <option value="government">Government</option>
+            <option value="religion">Religion</option>
+        </select>
+    </div>
+
+
+    <button class="btn btn-primary standard-btn"
+        id="btn-load-nouns"
+        (click)="loadSelectedSet()"
+    >
+        Load Nouns
+    </button>
+
+    <button class="btn btn-success standard-btn"
+        id="btn-begin-learning"
+        [disabled]="!setLoaded"
+        (click)="beginLearning()"
+    >
+        Begin Learning
+    </button>
+</div>
+
+<div class="learning-loop-div"
+    *ngIf="setStarted"
+>
+    <div class="row" id="language-display-row">
+        <div class="col">
+            <div id="english-display-div">
+                <p class="language-header">English</p>
+                <h2 class="language-text">{{getPromptText()}}</h2>
+                <button class="btn btn-outline-dark standard-btn play-audio-btn"
+                    (click)="playPrompt()"
+                >
+                    Play Audio
+                </button>
+            </div>
+        </div>
+        <div class="col">
+            <div id="arabic-display-div">
+                <p class="language-header">Arabic</p>
+                <h2 class="language-text">{{getArabicText()}}</h2>
+                <button class="btn btn-outline-dark standard-btn play-audio-btn"
+                    (click)="playArabic()"
+                >
+                    Play Audio
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row" id="progress-control">
+        <div class="col">
+            <button *ngIf="currentIndex > 0"
+                class="btn btn-info standard-btn previous-card-btn"
+                (click)="previousCard()">
+                Previous Card
+            </button>
+        </div>
+        <div class="col">
+            <button class="btn standard-btn pause-audio-btn"
+                [class.btn-primary]="isPaused"
+                [class.btn-danger]="!isPaused"
+                (click)="togglePause()">
+                {{getPauseBtnText()}}
+            </button>
+        </div>
+        <div class="col">
+            <button class="btn btn-success standard-btn next-card-btn"
+                (click)="nextCard()">
+                Next Card
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col">
+        <ul class="list-group">
+            <li *ngFor="let n of nounSet"
+                class="list-group-item">
+                {{n.eng_text}}
+            </li>
+        </ul>
+    </div>
+</div>
+
+</div>

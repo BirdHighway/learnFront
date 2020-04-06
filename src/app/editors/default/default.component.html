@@ -1,0 +1,28 @@
+<div class="row type-selection-row">
+    <div class="col">
+        <h2>Select Word Type</h2>
+        <div class="choices-container">
+            <button (click)="forward('noun')" 
+                class="btn btn-primary btn-standard">
+                Noun
+            </button>
+            <button (click)="forward('verb')"  
+                class="btn btn-primary btn-standard">
+                Verb
+            </button>
+            <button (click)="forward('adjective')"  
+                class="btn btn-primary btn-standard">
+                Adjective
+            </button>
+            <button (click)="forward('other')" 
+                class="btn btn-primary btn-standard">
+                Other
+            </button>
+        </div>
+        <h2>Word Data:</h2>
+        <pre>
+            {{data | json}}
+        </pre>
+    </div>
+</div>
+

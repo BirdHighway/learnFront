@@ -1,0 +1,53 @@
+.playable:hover {
+    cursor: pointer;
+}
+
+th.play-col,
+td.play-col {
+    width: 100px;
+}
+
+table th {
+    border-bottom: 2px solid #aaa;
+}
+
+table {
+    margin-bottom: 3rem;
+}
+
+th.play-col {
+    border-right: 2px solid #aaa;
+}
+
+td.play-col {
+    border-right: 2px solid #aaa;
+}
+
+th.text-col,
+td.text-col {
+    width: 200px;
+    border-right: 1px solid #454D55;
+}
+
+th.select-col,
+td.select-col {
+    width: 100px;
+}
+
+th.select-col {
+    border-left: 2px solid #aaa;
+}
+td.select-col {
+    border-left: 2px solid #aaa;
+}
+
+input.select-checkbox {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    top: 4px;
+}
+
+td.link-cell {
+    cursor: pointer;
+}

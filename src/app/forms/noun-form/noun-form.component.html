@@ -1,0 +1,53 @@
+<div class="form-row">
+    <div class="form-group col">
+        <label>English Text</label>
+        <input class="form-control"
+            [(ngModel)]="newNoun.eng_text">
+    </div>
+    <div class="form-group col">
+        <label>English Audio File</label>
+        <input class="form-control"
+            [(ngModel)]="newNoun.eng_audio">
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group col">
+        <label>Arabic Singular Text</label>
+        <input class="form-control"
+            [(ngModel)]="newNoun.a_sing_text">
+    </div>
+    <div class="form-group col">
+        <label>Arabic Singular Audio File</label>
+        <input class="form-control"
+            [(ngModel)]="newNoun.a_sing_audio">
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col">
+        <label>Arabic Plural Text</label>
+        <input class="form-control"
+            [(ngModel)]="newNoun.a_pl_text">
+    </div>
+    <div class="form-group col">
+        <label>Arabic Plural Audio File</label>
+        <input class="form-control"
+            [(ngModel)]="newNoun.a_pl_audio">
+    </div>
+</div>
+
+<button class="btn btn-primary"
+    (click)="submitForm()"
+>
+    Add Noun
+</button>
+
+<hr>
+<div class="list-group">
+    <a class="list-group-item list-group-item-action"
+        [routerLink]="['/new']"
+        >Change Word Type</a>
+    <a class="list-group-item list-group-item-action"
+        [routerLink]="['/']"
+    >Cancel</a>
+</div>

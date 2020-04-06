@@ -1,0 +1,80 @@
+<div class="row">
+    <div class="col">
+        <div class="jumbotron">
+            <h1>Vocab Page</h1>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showEntriesFilter"
+    class="row">
+    <div class="col">
+        <div class="form-group">
+            <label>Filter</label>
+            <input class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Apply Filter To</label>
+            <select class="form-control">
+                <option value="english">English Text</option>
+                <option value="tags">Tags</option>
+                <option value="source">Source</option>
+                <option value="dialect">Dialect</option>
+            </select>
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label>Entry Type</label>
+            <select class="form-control">
+                <option value="all">All</option>
+                <option value="nouns">Nouns</option>
+                <option value="verbs">Verbs</option>
+                <option value="adjectives">Adjectives</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Load Entries</label>
+            <br>
+            <button class="btn btn-primary"
+                (click)="loadEntries()">
+                Click
+            </button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showEntriesTable"
+    class="row">
+    <div class="col">
+        <table class="table table-dark" id="entries-table">
+            <thead>
+                <tr>
+                    <th class="col-eng-text">Eng Text</th>
+                    <th>Entry Type</th>
+                    <th>Dialect</th>
+                    <th>Source</th>
+                    <th>Tags</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let word of words"
+                    (click)="edit(word)"
+                >
+                    <td class="col-eng-text">{{word.eng_text.substr(0,50)}}</td>
+                    <td>{{word.type}}</td>
+                    <td>{{word.dialect}}</td>
+                    <td>{{word.source}}</td>
+                    <td>{{word.tags.join(',')}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <ng-template editor-host></ng-template>
+    </div>
+</div>

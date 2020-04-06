@@ -1,0 +1,61 @@
+<div class="row" id="debug-panel">
+    <div class="col">
+        <h2>Debug</h2>
+        <div class="alert alert-success">
+            <strong>Status:</strong> {{playerStatus}}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm form-group">
+        <label>Search</label>
+        <input [(ngModel)]="searchTerm"
+            class="form-control"
+            placeholder="Search term here">
+    </div>
+    <div class="col-sm">
+        <label>Search Target</label>
+        <select [(ngModel)]="searchTarget"
+            class="form-control">
+            <option value="prompt">Prompt</option>
+            <option value="response">Response</option>
+            <option value="source">Source</option>
+            <option value="tags">Tags</option>
+        </select>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <table class="table table-striped table-dark">
+            <thead>
+                <tr>
+                    <th>Prompt</th>
+                    <th>Audio</th>
+                    <th>Response</th>
+                    <th>Audio</th>
+                    <th>Source</th>
+                    <th>Tags</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let set of getRelevantSets()">
+                    <td>{{set.prompt_text}}</td>
+                    <td>
+                        <button class="btn btn-light"
+                            (click)="playAudioFile(set.prompt_audio)"
+                        >{{set.prompt_audio}}</button>    
+                    </td>
+                    <td>{{set.response_text}}</td>
+                    <td>
+                        <button class="btn btn-light"
+                            (click)="playAudioFile(set.response_audio)"
+                        >{{set.response_audio}}</button>  
+                    </td>
+                    <td>{{set.source}}</td>
+                    <td>{{set.tags?.join(', ')}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="container">
+
+    <div class="row" id="selections-row">
+        <div class="col">
+
+            <div class="form-group">
+                <label>Select Operation</label>
+                <select class="form-control"
+                    [(ngModel)]="operationSelected">
+                    <option value="AudioABComponent">Audio: A to B</option>
+                    <option value="AudioBAComponent">Audio: B to A</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary"
+                (click)="loadSelectedOperation()">
+                Load Operation
+            </button>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <ng-template op-host></ng-template>
+        </div>
+    </div>
+
+
+
+</div>
