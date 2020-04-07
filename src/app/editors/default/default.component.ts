@@ -12,6 +12,9 @@ export class DefaultComponent implements OnInit, EditorInterface, OnDestroy {
 
     @Input() data: Word;
     @Output() editorEvent: EventEmitter<EditorEvent> = new EventEmitter();
+    isWordMastered: boolean;
+    savePending: boolean;
+    saveDivText: string;
 
     constructor() { }
 
@@ -25,6 +28,14 @@ export class DefaultComponent implements OnInit, EditorInterface, OnDestroy {
     forward(destination: string) {
         this.data.type = destination;
         this.editorEvent.emit({action: 'forward', data: this.data});
+    }
+
+    toggleMastered() { }
+
+    saveEdit() { }
+
+    cancelEdit() {
+        this.editorEvent.emit({action: 'cancel', data: {}});
     }
 
 }

@@ -1,6 +1,6 @@
 <div class="row type-selection-row">
     <div class="col">
-        <h2>Select Word Type</h2>
+        <h2 class="select-header">Select Word Type</h2>
         <div class="choices-container">
             <button (click)="forward('noun')" 
                 class="btn btn-primary btn-standard">
@@ -19,10 +19,19 @@
                 Other
             </button>
         </div>
-        <h2>Word Data:</h2>
-        <pre>
-            {{data | json}}
-        </pre>
+    </div>
+</div>
+<div class="row default-cancel-row">
+    <div class="col">
+        <button (click)="cancelEdit()"
+            class="btn btn-secondary btn-standard">
+            Cancel
+        </button>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <pre>{{data | json}}</pre>
     </div>
 </div>
 

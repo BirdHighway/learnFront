@@ -1,1 +1,139 @@
-<p>adjective works!</p>
+<div class="editor-form-div">
+    <div class="row edit-universals-row">
+        <div class="col">
+            <div class="form-group">
+                <label>English Text</label>
+                <input [(ngModel)]="data.eng_text" 
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <div class="form-group">
+                <label>English Audio</label>
+                <input [(ngModel)]="data.eng_audio"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Source</label>
+                <input [(ngModel)]="data.source"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Dialect</label>
+                <input [(ngModel)]="data.dialect" 
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Vocab Type</label>
+                <select [(ngModel)]="data.type" 
+                    [disabled]="savePending"
+                    class="form-control">
+                    <option value="noun">Noun</option>
+                    <option value="verb">Verb</option>
+                    <option value="adjective">Adjective</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group form-check">
+                <input [checked]="isWordMastered"
+                    [disabled]="savePending"
+                    (click)="toggleMastered()"
+                    type="checkbox" class="form-check-input" id="masteryStatus">
+                <label class="form-check-label" for="masteryStatus">Mastered</label>
+            </div>
+            <div class="form-group">
+                <label>Tags</label>
+                <input [(ngModel)]="tagString"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <div class="row edit-type-specifics">
+        <div class="col">
+            <div class="form-group">
+                <label>Arabic Masc Text</label>
+                <input [(ngModel)]="data.data_adj.a_masc_text"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Arabic Masc Audio</label>
+                <input [(ngModel)]="data.data_adj.a_masc_audio"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <button (click)="previewAudio('a_masc_audio')"
+                class="btn btn-outline-dark preview-btn">
+                Preview
+            </button>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Arabic Fem Text</label>
+                <input [(ngModel)]="data.data_adj.a_fem_text"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Arabic Fem Audio</label>
+                <input [(ngModel)]="data.data_adj.a_fem_audio"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <button (click)="previewAudio('a_fem_audio')"
+                class="btn btn-outline-dark preview-btn">
+                Preview
+            </button>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Arabic Plural Text</label>
+                <input [(ngModel)]="data.data_adj.a_pl_text"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Arabic Plural Audio</label>
+                <input [(ngModel)]="data.data_adj.a_pl_audio"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <button (click)="previewAudio('a_pl_audio')"
+                class="btn btn-outline-dark preview-btn">
+                Preview
+            </button>
+        </div>
+    </div>
+
+    <div class="row controls-row">
+        <div class="col">
+            <button (click)="saveEdit()"
+                [disabled]="savePending"
+                class="btn btn-primary control-btn">
+                Save
+            </button>
+            <button (click)="cancelEdit()"
+                [disabled]="savePending"
+                class="btn btn-secondary control-btn">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="savePending"
+        class="row">
+        <div class="col">
+            <div
+                id="save-pending-alert"
+                class="alert alert-info">
+                <strong>{{saveDivText}}</strong>
+            </div>
+        </div>
+    </div>
+</div>

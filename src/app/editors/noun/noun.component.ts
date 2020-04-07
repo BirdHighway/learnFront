@@ -15,6 +15,7 @@ export class NounComponent implements OnInit, EditorInterface, OnDestroy {
     @Input() data: Word;
     @Output() editorEvent: EventEmitter<EditorEvent> = new EventEmitter();
     isWordMastered: boolean = false;
+    tagString: string = '';
     savePending: boolean;
     saveDivText: string = '';
 
@@ -22,6 +23,7 @@ export class NounComponent implements OnInit, EditorInterface, OnDestroy {
 
     ngOnInit() {
         this.isWordMastered = this.data.mastered;
+        this.tagString = this.data.tags.join(', ');
         this.savePending = false;
         if (!this.data.data_noun) {
             this.data.data_noun = new NounWord();
@@ -38,8 +40,20 @@ export class NounComponent implements OnInit, EditorInterface, OnDestroy {
         this.data.mastered = this.isWordMastered;
     }
 
+    previewAudio(audioName: string) {
+        let src = '';
+        if (audioName === 'a_sing_audio') {
+            src = this.data.data_noun.a_sing_audio;
+            this.editorEvent.emit({action: 'audio-preview', data: src});
+        } else if ( audioName === 'a_pl_audio') {
+            src = this.data.data_noun.a_pl_audio;
+            this.editorEvent.emit({action: 'audio-preview', data: src});
+        }
+    }
+
     saveEdit() {
         this.savePending = true;
+        this.data.tags = this.tagString.replace(' ', '').split(',');
         this.saveDivText = 'Saving edit...';
         this.dataSource.updateVocab(this.data)
             .subscribe( data => {

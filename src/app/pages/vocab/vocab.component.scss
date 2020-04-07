@@ -1,6 +1,35 @@
-th.col-eng-text,
-td.col-eng-text {
-    width: 450px;
+div.search-container {
+    margin-bottom: 1rem;
+}
+
+div.search-results-div {
+    text-align: center;
+    font-size: 1.3rem;
+    color: #fff;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    margin-bottom: .25rem;
+    font-weight: 400;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+}
+
+tr.table-success td {
+    color: #212529;
+}
+
+tr.table-success {
+    border-left: 1px solid #212529;
+    border-right: 1px solid #212529;
+}
+
+
+.load-entries-btn,
+.create-new-btn {
+    width: 100%;
 }
 
 .btn-standard {
@@ -10,6 +39,35 @@ td.col-eng-text {
     margin-bottom: 1rem;
 }
 
-#entries-table td:hover {
+td.col-eng-text:hover {
     cursor: pointer;
+}
+
+.border-rl {
+    border-right: 1px solid #454D55;
+}
+
+.border-rm {
+    border-right: 2px solid #aaa;
+}
+
+.narrow-col {
+    width: 150px;
+}
+
+.middle-col {
+    width: 300px;
+}
+
+td.hasAudio:hover {
+    cursor: pointer;
+}
+
+li.page-item:hover {
+    cursor: pointer;
+}
+
+.load-create-row {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }

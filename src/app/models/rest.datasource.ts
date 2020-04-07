@@ -5,7 +5,7 @@ import { Noun } from './noun.model';
 import { Environment } from '../environment';
 import { GenericPrompt } from '../models/generic.model';
 import { Word } from './words/word.model';
-import { BackendResponse } from './backend-response.model';
+import { ApiResponse } from './api-response.model';
 
 @Injectable()
 export class RestDataSource {
@@ -15,8 +15,16 @@ export class RestDataSource {
         this.baseUrl = `${Environment.PROTOCOL}://${Environment.HOST}:${Environment.PORT}/`;
     }
 
-    getVocab(pageOffset: number): Observable<Word[]> {
-        return this.http.get<Word[]>(this.baseUrl + 'vocab/?page=' + pageOffset);
+    getVocab(queryString: string,): Observable<ApiResponse> {
+        return this.http.get<ApiResponse>(this.baseUrl + 'vocab/?' + queryString);
+    }
+
+    updateVocab(word: Word): Observable<ApiResponse> {
+        if (word._id) {
+            return this.http.patch<ApiResponse>(this.baseUrl + 'vocab', word);
+        } else {
+            return this.http.post<ApiResponse>(this.baseUrl + 'vocab', word);
+        }
     }
 
     getNouns(): Observable<Noun[]> {
@@ -54,9 +62,5 @@ export class RestDataSource {
 
     updateNoun(noun: Noun): Observable<Noun> {
         return this.http.patch<Noun>(this.baseUrl + 'nouns',noun);
-    }
-
-    updateVocab(word: Word): Observable<BackendResponse> {
-        return this.http.patch<BackendResponse>(this.baseUrl + 'vocab', word);
     }
 }
