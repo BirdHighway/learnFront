@@ -23,7 +23,9 @@ export class AdjectiveComponent implements OnInit, EditorInterface, OnDestroy {
 
     ngOnInit() {
         this.isWordMastered = this.data.mastered;
-        this.tagString = this.data.tags.join(', ');
+        if (this.data.tags) {
+            this.tagString = this.data.tags.join(', ');
+        }
         this.savePending = false;
         if (!this.data.data_adj) {
             this.data.data_adj = new AdjectiveWord();

@@ -23,7 +23,9 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
 
     ngOnInit() {
         this.isWordMastered = this.data.mastered;
-        this.tagString = this.data.tags.join(', ');
+        if (this.data.tags) {
+            this.tagString = this.data.tags.join(', ');
+        }
         this.savePending = false;
         if (!this.data.data_other) {
             this.data.data_other = new OtherWord();

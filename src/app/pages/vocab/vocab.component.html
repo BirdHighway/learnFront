@@ -6,7 +6,7 @@
     </div>
 </div>
 
-<div class="container search-container">
+<div class="search-container">
     <div *ngIf="showEntriesFilter"
         class="row">
         <div class="col">
@@ -41,6 +41,13 @@
                 </select>
             </div>
         </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Exclude Tag</label>
+                <input [(ngModel)]="excludeTag"
+                    class="form-control">
+            </div>
+        </div>
     </div>
 
     <div *ngIf="showEntriesFilter"
@@ -73,7 +80,8 @@
             <thead>
                 <tr>
                     <th class="col-eng-text border-rl middle-col">Eng Text</th>
-                    <th class="border-rm middle-col">Eng Audio</th>
+                    <th class="border-rl middle-col">English Audio</th>
+                    <th class="border-rm middle-col">Arabic Audio</th>
                     <th class="col-type border-rl narrow-col">Entry Type</th>
                     <th class="border-rl narrow-col">Dialect</th>
                     <th class="border-rm middle-col">Source</th>
@@ -89,10 +97,15 @@
                         {{englishText(word.eng_text)}}
                     </td>
                     <td (click)="playAudio(word.eng_audio)"
-                        class="border-rm middle-col"
+                        class="border-rl middle-col"
                         [class.hasAudio]="word.eng_audio"
                         >
                         {{word.eng_audio}}
+                    </td>
+                    <td (click)="playAudio(defaultAudio(word))"
+                        class="border-rm middle-col"
+                        [class.hasAudio]="defaultAudio(word)">
+                        {{defaultAudio(word)}}
                     </td>
                     <td class="col-type border-rl narrow-col">{{word.type}}</td>
                     <td class="border-rl narrow-col">{{word.dialect}}</td>

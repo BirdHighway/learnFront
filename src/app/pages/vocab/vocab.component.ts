@@ -29,6 +29,7 @@ export class VocabComponent implements OnInit {
     categoryFilter: string;
     searchText: string;
     searchTarget: string;
+    excludeTag: string;
 
     @ViewChild(EditorDirective, {static: true}) editorHost: EditorDirective;
 
@@ -47,6 +48,7 @@ export class VocabComponent implements OnInit {
         this.categoryFilter = 'all';
         this.searchText = '';
         this.searchTarget = 'tags';
+        this.excludeTag = 'none';
     }
 
     ngOnInit() {
@@ -120,6 +122,9 @@ export class VocabComponent implements OnInit {
             let encodedSearch = encodeURIComponent(this.searchText);
             queryString += `&searchText=${encodedSearch}&searchTarget=${this.searchTarget}`;
         }
+        if (this.excludeTag !== 'none') {
+            queryString += `&excludeTag=${this.excludeTag}`;
+        }
         return queryString;
     }
 
@@ -144,7 +149,7 @@ export class VocabComponent implements OnInit {
             navStart,
             navTotal,
             navMax;
-        totalPages = Math.ceil(total / 20);
+        totalPages = Math.ceil(total / 40);
         if (current > 10) {
             navStart = current - 3;
         } else {
@@ -175,6 +180,21 @@ export class VocabComponent implements OnInit {
             return 'Y';
         } else {
             return '-';
+        }
+    }
+
+    defaultAudio(word: Word): string {
+        switch(word.type) {
+            case 'noun':
+                return word.data_noun.a_sing_audio;
+            case 'verb':
+                return word.data_verb.a_past_3sm_audio;
+            case 'adjective':
+                return word.data_adj.a_masc_audio;
+            case 'other':
+                return word.data_other.a_word_audio;
+            default:
+                return '';
         }
     }
 
