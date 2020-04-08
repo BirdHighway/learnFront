@@ -71,3 +71,19 @@ li.page-item:hover {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
+
+.bulk-mode-row button {
+    width: 100%;
+}
+
+.bulk-mode-row select {
+    margin-top: 16px;
+}
+
+.bulk-selected {
+    background-color: yellow;
+}
+
+.is-bulk-selection-mode .playlist-col:hover {
+    cursor: pointer;
+}

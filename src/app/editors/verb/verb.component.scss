@@ -30,3 +30,20 @@
 .preview-btn {
     width: 200px;
 }
+
+.playlist-memberships {
+    margin-bottom: .5rem;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+button.remove-membership,
+button.add-membership {
+    float: right;
+}
+
+.playlist-membership-list span {
+    display: inline-block;
+    padding-top: .25rem;
+}

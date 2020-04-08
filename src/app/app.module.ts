@@ -32,6 +32,8 @@ import { VerbComponent } from './editors/verb/verb.component';
 import { OtherComponent } from './editors/other/other.component';
 import { AdjectiveComponent } from './editors/adjective/adjective.component';
 import { DefaultComponent } from './editors/default/default.component';
+import { PlaylistsComponent } from './pages/playlists/playlists.component';
+import { StudyVocabComponent } from './pages/study-vocab/study-vocab.component';
 
 
 @NgModule({
@@ -59,7 +61,9 @@ import { DefaultComponent } from './editors/default/default.component';
     VerbComponent,
     OtherComponent,
     AdjectiveComponent,
-    DefaultComponent
+    DefaultComponent,
+    PlaylistsComponent,
+    StudyVocabComponent
   ],
   imports: [
     BrowserModule,

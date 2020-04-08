@@ -53,6 +53,14 @@
     <div *ngIf="showEntriesFilter"
         class="row load-create-row">
         <div class="col">
+            <select [(ngModel)]="playlistSelected"
+                class="form-control">
+                <option value="none">View Playlist</option>
+                <option *ngFor="let list of playlists"
+                    value="{{list._id}}">{{list.name}}</option>
+            </select>
+        </div>
+        <div class="col">
             <button class="btn btn-primary load-entries-btn"
                 (click)="loadEntries()">
                 Load Entries
@@ -76,7 +84,9 @@
 <div *ngIf="showEntriesTable"
     class="row">
     <div class="col">
-        <table class="table table-dark table-hover" id="entries-table">
+        <table class="table table-dark table-hover"
+            [class.is-bulk-selection-mode]="bulkPlaylistMode"
+            id="entries-table">
             <thead>
                 <tr>
                     <th class="col-eng-text border-rl middle-col">Eng Text</th>
@@ -85,7 +95,8 @@
                     <th class="col-type border-rl narrow-col">Entry Type</th>
                     <th class="border-rl narrow-col">Dialect</th>
                     <th class="border-rm middle-col">Source</th>
-                    <th class="">Tags</th>
+                    <th class="border-rm">Tags</th>
+                    <th class="">Playlists</th>
                 </tr>
             </thead>
             <tbody>
@@ -110,7 +121,13 @@
                     <td class="col-type border-rl narrow-col">{{word.type}}</td>
                     <td class="border-rl narrow-col">{{word.dialect}}</td>
                     <td class="border-rm middle-col">{{word.source}}</td>
-                    <td class="">{{word.tags.join(', ')}}</td>
+                    <td class="border-rm">{{word.tags.join(', ')}}</td>
+                    <td (click)="addToBulk(word)"
+                        [class.bulk-selected]="word.bulkSelected"
+                        class="playlist-col">
+                        <span *ngIf="!bulkPlaylistMode">{{word.memberships.length}}</span>
+
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -132,5 +149,49 @@
 <div class="row">
     <div class="col">
         <ng-template editor-host></ng-template>
+    </div>
+</div>
+
+<div class="row bulk-mode-row">
+    <div class="col">
+        <div *ngIf="!bulkPlaylistMode">
+            <select [(ngModel)]="bulkPlaylistId"
+                class="form-control">
+                <option *ngFor="let list of playlists"
+                    value="{{list._id}}">
+                    {{list.name}}
+                </option>
+            </select>
+        </div>
+        <div *ngIf="bulkPlaylistMode">
+            <h3 class="playlist-selected-text">{{bulkPlaylistName}}</h3>
+        </div>
+    </div>
+    <div class="col">
+        <div *ngIf="!bulkPlaylistMode"
+            class="bulk-playlist-start">
+            <button (click)="bulkModeEnter()"
+                class="btn btn-primary btn-standard">
+                Enter Bulk Playlist Mode
+            </button>
+        </div>
+        <div *ngIf="bulkPlaylistMode"
+            class="bulk-playlist-end">
+            <button (click)="bulkModeExit()"
+                class="btn btn-danger btn-standard">
+                Exit Bulk Playlist Mode
+            </button>
+        </div>
+    </div>
+    <div class="col">
+        <div *ngIf="bulkPlaylistMode">
+            <button (click)="bulkModeSave()"
+                class="btn btn-success btn-standard">
+                Save Selected to Playlist
+            </button>
+        </div>
+    </div>
+    <div class="col">
+
     </div>
 </div>

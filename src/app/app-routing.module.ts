@@ -14,6 +14,8 @@ import { GenericFormComponent } from './forms/generic-form/generic-form.componen
 import { GenericsViewComponent } from './pages/generics-view/generics-view.component';
 import { GenericsStudyComponent } from './pages/generics-study/generics-study.component';
 import { VocabComponent } from './pages/vocab/vocab.component';
+import { PlaylistsComponent } from './pages/playlists/playlists.component';
+import { StudyVocabComponent } from './pages/study-vocab/study-vocab.component';
 
 
 const routes: Routes = [
@@ -34,6 +36,8 @@ const routes: Routes = [
     { path: 'generics-study', component: GenericsStudyComponent },
     { path: 'quiz', component: QuizComponent },
     { path: 'vocab', component: VocabComponent },
+    { path: 'playlists', component: PlaylistsComponent },
+    { path: 'study-vocab', component: StudyVocabComponent },
     { path: 'not-found', component: NotFoundComponent }, 
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', component: NotFoundComponent } 

@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angu
 import { EditorInterface } from 'src/app/models/editor.interface';
 import { Word } from 'src/app/models/words/word.model';
 import { EditorEvent } from 'src/app/models/editor-event.interface';
+import { Playlist } from 'src/app/models/playlist.model';
 
 @Component({
     selector: 'app-default',
@@ -11,6 +12,7 @@ import { EditorEvent } from 'src/app/models/editor-event.interface';
 export class DefaultComponent implements OnInit, EditorInterface, OnDestroy {
 
     @Input() data: Word;
+    @Input() playlists: Playlist[];
     @Output() editorEvent: EventEmitter<EditorEvent> = new EventEmitter();
     isWordMastered: boolean;
     savePending: boolean;

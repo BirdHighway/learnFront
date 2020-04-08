@@ -1,0 +1,92 @@
+<div class="row">
+    <div class="col">
+        <div class="jumbotron">
+            <h1>Playlists</h1>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!showCreate"
+    class="row creation-btns-row">
+    <div class="col">
+        <button (click)="createNewPlaylist()"
+            class="btn btn-success create-playlist-btn">
+            Create New Playlist
+        </button>
+    </div>
+</div>
+
+<div *ngIf="showCreate"
+    class="row">
+    <div class="col">
+        <div class="form-group">
+            <label>Playlist Name</label>
+            <input [(ngModel)]="newPlaylist.name"
+                class="form-control">
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label>Tags</label>
+            <input [(ngModel)]="tagString"
+                class="form-control">
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showCreate"
+    class="row creation-btns-row">
+    <div class="col">
+        <button (click)="savePlaylist()"
+            [disabled]="savingPlaylist"
+            class="btn btn-success btn-standard">
+            Save Playlist
+        </button>
+    </div>
+    <div class="col">
+        <button (click)="cancelSave()"
+            [disabled]="savingPlaylist"
+            class="btn btn-secondary btn-standard">
+            Cancel
+        </button>
+    </div>
+    <div class="col">
+
+    </div>
+    <div class="col">
+        <button (click)="deletePlaylist()"
+            [disabled]="savingPlaylist"
+            class="btn btn-danger btn-standard">
+            Delete Playlist
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th class="border-rl">Playlist Name</th>
+                    <th class="border-rl">Tags</th>
+                    <th class="middle-col">Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let playlist of playlists"
+                    (click)="editPlaylist(playlist)"
+                    class="playlist-row">
+                    <td class="border-rl">
+                        {{playlist.name}}
+                    </td>
+                    <td class="border-rl">
+                        {{playlist.tags.join(', ')}}
+                    </td>
+                    <td class="middle-col">
+                        {{playlist.created | date:'medium'}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

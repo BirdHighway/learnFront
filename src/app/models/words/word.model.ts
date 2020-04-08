@@ -2,6 +2,7 @@ import { NounWord } from './noun-word.model';
 import { VerbWord } from './verb-word.model';
 import { AdjectiveWord } from './adjective-word.model';
 import { OtherWord } from './other-word.model';
+import { WordMembership } from '../word-membership.model';
 
 export class Word {
     constructor(
@@ -15,9 +16,12 @@ export class Word {
         public dialect?: string,
         public source?: string,
         public tags?: string[],
+        public memberships?: WordMembership[],
         public data_noun?: NounWord,
         public data_verb?: VerbWord,
         public data_adj?: AdjectiveWord,
-        public data_other?: OtherWord
+        public data_other?: OtherWord,
+        public bulkSelected?: boolean,
+        public bulkWasSelected?: boolean
     ) { }
 }

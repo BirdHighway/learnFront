@@ -6,6 +6,9 @@ import { Environment } from '../environment';
 import { GenericPrompt } from '../models/generic.model';
 import { Word } from './words/word.model';
 import { ApiResponse } from './api-response.model';
+import { Playlist } from './playlist.model';
+import { MembershipUpdate } from './membership-update.model';
+import { MembershipUpdateBulk } from './membership-update-bulk.model';
 
 @Injectable()
 export class RestDataSource {
@@ -26,6 +29,38 @@ export class RestDataSource {
             return this.http.post<ApiResponse>(this.baseUrl + 'vocab', word);
         }
     }
+
+    deleteVocab(word: Word): Observable<ApiResponse> {
+        return this.http.delete<ApiResponse>(this.baseUrl + `vocab/id/${word._id}`);
+    }
+
+    getPlaylists(): Observable<ApiResponse> {
+        return this.http.get<ApiResponse>(this.baseUrl + 'playlist');
+    }
+
+    updateMembership(update: MembershipUpdate){
+        return this.http.patch<ApiResponse>(this.baseUrl + 'vocab/playlists', update);
+    }
+
+    updatePlaylist(playlist: Playlist): Observable<ApiResponse> {
+        if (playlist._id) {
+            return this.http.patch<ApiResponse>(this.baseUrl + 'playlist', playlist);
+        } else {
+            return this.http.post<ApiResponse>(this.baseUrl + 'playlist', playlist);
+        }
+    }
+
+    deletePlaylist(playlist: Playlist): Observable<ApiResponse> {
+        return this.http.delete<ApiResponse>(this.baseUrl + `playlist/id/${playlist._id}`);
+    }
+
+
+    bulkUpdatePlaylist(bulkUpdate: MembershipUpdateBulk): Observable<ApiResponse> {
+        return this.http.post<ApiResponse>(this.baseUrl + 'vocab/playlists', bulkUpdate);
+    }
+
+
+
 
     getNouns(): Observable<Noun[]> {
         return this.http.get<Noun[]>(this.baseUrl + 'nouns');

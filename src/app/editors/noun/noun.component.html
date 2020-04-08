@@ -25,6 +25,13 @@
                     [disabled]="savePending"
                     class="form-control">
             </div>
+            <div class="form-group form-check">
+                <input [checked]="isWordMastered"
+                    [disabled]="savePending"
+                    (click)="toggleMastered()"
+                    type="checkbox" class="form-check-input" id="masteryStatus">
+                <label class="form-check-label" for="masteryStatus">Mastered</label>
+            </div>
         </div>
         <div class="col">
             <div class="form-group">
@@ -38,18 +45,30 @@
                     <option value="other">Other</option>
                 </select>
             </div>
-            <div class="form-group form-check">
-                <input [checked]="isWordMastered"
-                    [disabled]="savePending"
-                    (click)="toggleMastered()"
-                    type="checkbox" class="form-check-input" id="masteryStatus">
-                <label class="form-check-label" for="masteryStatus">Mastered</label>
-            </div>
             <div class="form-group">
                 <label>Tags</label>
                 <input [(ngModel)]="tagString"
                     [disabled]="savePending"
                     class="form-control">
+            </div>
+            <div class="memberships-div">
+                <h3 class="playlist-memberships">Playlists</h3>
+                <ul class="list-group playlist-membership-list">
+                    <li *ngFor="let list of playlists"
+                        [ngClass]="playlistMembershipClasses(list)">
+                        <span>{{list.name}}</span>
+                        <button *ngIf="playlistIsMember(list._id)"
+                            (click)="playlistRemove(list)"
+                            class="btn btn-outline-dark btn-sm remove-membership">
+                            Remove
+                        </button>
+                        <button *ngIf="!playlistIsMember(list._id)"
+                            (click)="playlistAdd(list)"
+                            class="btn btn-outline-success btn-sm add-membership">
+                            Add
+                        </button>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
