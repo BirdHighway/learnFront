@@ -1,0 +1,35 @@
+
+.header-row {
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: .25rem;
+    h1 {
+        font-weight: 300;
+        font-size: 1.5rem;
+    }
+}
+
+div.custom-switch {
+    margin-bottom: 1rem;
+}
+
+.custom-control-label {
+    cursor: pointer;
+}
+
+.btn-full-width {
+    width: 100%;
+}
+
+.border-bottom-light {
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 1rem;
+}
+
+#is-loading {
+    margin-top: 1.5rem;
+}
+
+#progress-bar {
+    margin-bottom: .5rem;
+}

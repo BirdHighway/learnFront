@@ -2,29 +2,210 @@
     <h1>Study Vocab Page</h1>
 </div>
 
-<div *ngIf="showSettings"
-    id="settings">
+<div *ngIf="displayError"
+    class="container"
+    id="display-error">
     <div class="row">
+        <div class="col">
+            <div class="alert alert-danger">
+                <strong>{{errorBold}}</strong>
+                {{errorText}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showSettings"
+    class="container"
+    id="settings">
+    <div class="row header-row">
+        <div class="col">
+            <h1>Choose Your Settings</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="custom-control custom-switch">
+                <input [checked]="options.autoLoadNext"
+                    (click)="toggleSwitch('autoLoadNext')"
+                    id="autoLoadNext"
+                    type="checkbox"
+                    class="custom-control-input">
+                <label class="custom-control-label" for="autoLoadNext">
+                    Auto-Load Next
+                </label>
+            </div>
+            <div class="custom-control custom-switch">
+                <input [checked]="options.autoPlayAnswer"
+                    (click)="toggleSwitch('autoPlayAnswer')"
+                    id="autoPlayAnswer"
+                    type="checkbox"
+                    class="custom-control-input">
+                <label class="custom-control-label" for="autoPlayAnswer">
+                    Auto-Play Answer
+                </label>
+            </div>
+            <div class="custom-control custom-switch">
+                <input [checked]="options.loopOnFinish"
+                    (click)="toggleSwitch('loopOnFinish')"
+                    id="loopOnFinish"
+                    type="checkbox"
+                    class="custom-control-input">
+                <label class="custom-control-label" for="loopOnFinish">
+                    Loop on Finish
+                </label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Auto-Play Count</label>
+                <select [(ngModel)]="options.autoPlayCount"
+                    class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Answer Delayed</label>
+                <select [(ngModel)]="options.answerDelay"
+                    class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Direction</label>
+                <select [(ngModel)]="options.direction"
+                    class="form-control">
+                    <option value="AB">A to B</option>
+                    <option value="BA">B to A</option>
+                    <option value="RANDOM">Random</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row border-bottom-light">
+        <div class="col">
+            <button (click)="saveSettings()"
+                class="btn btn-primary btn-full-width">
+                Next
+            </button>
+        </div>
+        <div class="col"></div>
+        <div class="col"></div>
+        <div class="col"></div>
+    </div>
+</div>
+
+<div *ngIf="showSelection"
+    class="container"
+    id="selection">
+    <div class="row header-row">
+        <div class="col">
+            <h1>Select Material</h1>
+        </div>
+    </div>
+    <div class="row border-bottom-light">
+        <div class="col">
+            <div class="form-group">
+                <label>By Playlist</label>
+                <select [(ngModel)]="playlistSelectedId"
+                    class="form-control">
+                    <option value="none">None Selected</option>
+                    <option *ngFor="let list of playlists"
+                        value="{{list._id}}">{{list.name}}</option>
+                </select>
+            </div>
+            <button (click)="selectMaterial('playlist')"
+                class="btn btn-primary btn-full-width">
+                Select
+            </button>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>By Tag</label>
+                <input [(ngModel)]="tagSelected"
+                    class="form-control">
+            </div>
+            <button (click)="selectMaterial('tag')"
+                class="btn btn-primary btn-full-width">
+                Select
+            </button>
+        </div>
+        <div class="col">
+
+        </div>
         <div class="col">
 
         </div>
     </div>
 </div>
 
-<div *ngIf="showSelection"
-    id="selection">
+<div *ngIf="isLoading"
+    class="container"
+    id="is-loading">
     <div class="row">
         <div class="col">
-
+            <div class="alert alert-info">
+                <strong>Loading...</strong>
+            </div>
         </div>
     </div>
 </div>
 
 <div *ngIf="showStudy"
+    class="container"
     id="study">
+    <div class="row header-row">
+        <div class="col">
+            <h1>Study</h1>
+        </div>
+    </div>
     <div class="row">
         <div class="col">
-            
+            <pre>{{focusWord | json}}</pre>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showCompleted"
+    class="container"
+    id="completed">
+    <div class="row header-row">
+        <div class="col">
+            <h1>Completed</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h1>Material Here</h1>
+
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showDebug"
+    class="container"
+    id="debug-row">
+    <div class="row">
+        <div class="col">
+            <h1>Debug Row</h1>
+            <div class="progress" id="progress-bar">
+                <div class="progress-bar" [style.width.%]="audioPlayerStatus.progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            <pre>{{audioPlayerStatus | json}}</pre>
         </div>
     </div>
 </div>

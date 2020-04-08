@@ -24,4 +24,12 @@ export class Word {
         public bulkSelected?: boolean,
         public bulkWasSelected?: boolean
     ) { }
+
+    promptAudioSources(): string[] {
+        return [this.eng_audio];
+    }
+
+    responseAudioSources(): string[] {
+        return [''];
+    }
 }
