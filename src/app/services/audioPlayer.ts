@@ -20,6 +20,7 @@ export class AudioPlayerService {
     private latestTimeout;
     private playIndex: number;
     private currentAudioObj: AudioObject;
+    private autoAdvanceOnComplete: boolean;
 
     constructor() {
         this.statusSubject.subscribe((val) => {
@@ -61,6 +62,7 @@ export class AudioPlayerService {
     }
 
     public startAudioSequence(sequence: SequenceOptions) {
+        this.autoAdvanceOnComplete = sequence.autoAdvanceOnComplete;
         let beforeAnswer = sequence.beforeAnswer;
         let audioObjects = [];
         this.resetIndex();
@@ -148,7 +150,7 @@ export class AudioPlayerService {
         } else {
             // sequence complete
             this.audioObject.removeEventListener('ended', this.doNextInQueue);
-            this.sendStatusUpdate({isPlaying: false, message: 'COMPLETE'});
+            this.sendStatusUpdate({isPlaying: false, message: 'COMPLETE', autoAdvance: this.autoAdvanceOnComplete});
         }
     }
 
@@ -187,28 +189,20 @@ export class AudioPlayerService {
 
     doKillSequence() {
         this.sendStatusUpdate({message: 'KILL_SEQUENCE'});
+        this.audioQueue.splice(0);
         if (this.audioObject) {
             this.audioObject.pause();
             this.audioObject.removeEventListener('ended', this.doNextInQueue);
         }
         clearTimeout(this.latestTimeout);
-        this.audioQueue.splice(0);
+        this.audioObject = new Audio();
     }
 
     public playFromSource(audioSrc: string) {
-        // if (this.playerStatus == 'playing audio') {
-        //     return;
-        // } 
-        // this.statusSubject.next('preparing to play');
-        // this.audioObject = new Audio();
-        // this.audioObject.src = this.baseUrl + audioSrc;
-        // this.audioObject.load();
-        // this.audioObject.addEventListener('ended', () => {
-        //     this.statusSubject.next('audio ended');
-        // })
-        // this.statusSubject.next('playing audio');
-        // this.audioObject.play();
+        this.audioObject = new Audio();
+        this.audioObject.src = this.baseUrl + audioSrc;
+        this.audioObject.load();
+        this.audioObject.play();
     }
-
 
 }

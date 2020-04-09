@@ -7,4 +7,5 @@ export interface SequenceOptions {
     sourcesA: string[];
     sourcesB: string[];
     directionAB: boolean;
+    autoAdvanceOnComplete: boolean;
 }

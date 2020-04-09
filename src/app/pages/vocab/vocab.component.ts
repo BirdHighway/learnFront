@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ComponentFactoryResolver } from '@angular/core';
+import { Component, OnInit, ViewChild, ComponentFactoryResolver, OnDestroy } from '@angular/core';
 import { RestDataSource } from 'src/app/models/rest.datasource';
 import { Word } from 'src/app/models/words/word.model';
 import { EditorDirective } from 'src/app/directives/editor.directive';
@@ -18,7 +18,7 @@ import { Playlist } from 'src/app/models/playlist.model';
     templateUrl: './vocab.component.html',
     styleUrls: ['./vocab.component.scss']
 })
-export class VocabComponent implements OnInit {
+export class VocabComponent implements OnInit, OnDestroy {
 
     words: Word[];
     page: number;
@@ -71,6 +71,11 @@ export class VocabComponent implements OnInit {
             .subscribe(response => {
                 this.playlists = response.data;
             })
+    }
+
+    ngOnDestroy() {
+        console.log('ngOnDestroy()');
+        this.audioPlayer.doKillSequence();
     }
 
     getPaginationObjects(): PaginationObject[] {

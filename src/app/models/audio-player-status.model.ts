@@ -6,4 +6,5 @@ export interface AudioPlayerStatus {
     isPlaying?: boolean;
     progress?: number;
     data?: any;
+    autoAdvance?: boolean;
 }

@@ -218,13 +218,33 @@
             </button>
         </div>
     </div>
-    <div class="row">
+    <div class="row progress-row">
         <div class="col">
-            <pre>{{options | json}}</pre>
-            <pre>{{focusWord | json}}</pre>
+            <table class="progress-table">
+                <tbody>
+                    <tr>
+                        <td *ngFor="let word of words; let i = index;"
+                            [class.completed-word]="i < focusIndex"
+                            [class.current-word]="i == focusIndex"
+                        ></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
+    <div class="row toggle-debug-row">
+        <div class="col">
+            <button (click)="toggleDebug()"
+                class="btn btn-dark">
+                Toggle Debug View
+            </button>
+        </div>
+        <div class="col"></div>
+        <div class="col"></div>
+    </div>
+
 </div>
+
 
 <div *ngIf="showDebug"
     class="container"
@@ -232,11 +252,17 @@
     <div class="row debug-row">
         <div class="col">
             <h1>Debug Row</h1>
-            <div class="progress" id="progress-bar">
+            <!-- <div class="progress" id="progress-bar">
                 <div class="progress-bar" [style.width.%]="audioPlayerStatus.progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
+            </div> -->
             <h1>{{audioPlayerStatus.message}}</h1>
             <pre>{{audioPlayerStatus | json}}</pre>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <pre>{{options | json}}</pre>
+            <pre>{{focusWord | json}}</pre>
         </div>
     </div>
 </div>

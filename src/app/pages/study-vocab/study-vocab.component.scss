@@ -45,3 +45,34 @@ div.custom-switch {
 .study-nav-row {
     margin-bottom: 1rem;
 }
+
+table.progress-table {
+    width: 100%;
+    tbody {
+        width: 100%;
+        tr {
+            width: 100%;
+            td {
+                width: auto;
+                border: 1px solid #343a40;
+                height: 20px;
+            }
+        }
+    }
+}
+
+td.completed-word {
+    background-color: yellow;
+}
+
+td.current-word {
+    background-color: #28a745;
+}
+
+.toggle-debug-row {
+    margin-top: 1rem;
+}
+
+.toggle-debug-row button {
+    width: 100%;
+}

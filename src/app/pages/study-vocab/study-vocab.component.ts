@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RestDataSource } from 'src/app/models/rest.datasource';
 import { AudioPlayerService } from 'src/app/services/audioPlayer';
 import { Word } from 'src/app/models/words/word.model';
@@ -11,7 +11,7 @@ import { SequenceOptions } from 'src/app/models/sequence-options.model';
     templateUrl: './study-vocab.component.html',
     styleUrls: ['./study-vocab.component.scss']
 })
-export class StudyVocabComponent implements OnInit {
+export class StudyVocabComponent implements OnInit, OnDestroy {
 
     showSettings: boolean;
     showSelection: boolean;
@@ -26,6 +26,7 @@ export class StudyVocabComponent implements OnInit {
     isPaused: boolean;
     isSequencePlaying: boolean;
     currentCardAB: boolean;
+    nextCardTimeout;
 
     // options
     options = {
@@ -59,7 +60,7 @@ export class StudyVocabComponent implements OnInit {
         this.showSelection = false;
         this.showStudy = false;
         this.showCompleted = false;
-        this.showDebug = true;
+        this.showDebug = false;
         this.isLoading = false;
         this.displayError = false;
         this.errorBold = '';
@@ -76,6 +77,11 @@ export class StudyVocabComponent implements OnInit {
                 this.audioPlayerStatus = val;
                 if (val.message === 'COMPLETE') {
                     this.isSequencePlaying = false; 
+                    if (val.autoAdvance) {
+                        this.nextCardTimeout = setTimeout(() => {
+                            this.toNext();
+                        }, 2500);
+                    }
                 }
                 if (val.message === 'KILL_SEQUENCE') {
                     this.isSequencePlaying = false;
@@ -91,28 +97,40 @@ export class StudyVocabComponent implements OnInit {
             })
     }
 
+    ngOnDestroy() {
+        this.audioPlayer.doKillSequence();
+    }
+
     goBack() {
         this.isPaused = false;
+        clearTimeout(this.nextCardTimeout);
         this.audioPlayer.doKillSequence();
+        this.focusIndex--;
+        this.loadWord();
     }
 
     skipToNext() {
         this.isPaused = false;
+        clearTimeout(this.nextCardTimeout);
         this.audioPlayer.doKillSequence();
+        this.toNext();
     }
 
     pauseAudio() {
         this.isPaused = true;
+        clearTimeout(this.nextCardTimeout);
         this.audioPlayer.doPause();
     }
 
     resumeAudio() {
         this.isPaused = false;
+        clearTimeout(this.nextCardTimeout);
         this.audioPlayer.doResume();
     }
 
     playPrompt() {
         this.isPaused = false;
+        clearTimeout(this.nextCardTimeout);
         this.audioPlayer.doKillSequence();
         let prompt = this.generatePromptSequence();
         this.playSequence(prompt);
@@ -120,6 +138,7 @@ export class StudyVocabComponent implements OnInit {
 
     playResponse() {
         this.isPaused = false;
+        clearTimeout(this.nextCardTimeout);
         this.audioPlayer.doKillSequence();
         let response = this.generateResponseSequence();
         this.playSequence(response);
@@ -153,6 +172,10 @@ export class StudyVocabComponent implements OnInit {
             this.words[i - 1] = b;
             this.words[r] = a;
         }
+    }
+
+    toggleDebug() {
+        this.showDebug = !this.showDebug;
     }
 
     selectMaterial(sType: string) {
@@ -226,7 +249,8 @@ export class StudyVocabComponent implements OnInit {
             betweenB: this.options.betweenB,
             sourcesA: [],
             sourcesB: [],
-            directionAB: this.currentCardAB
+            directionAB: this.currentCardAB,
+            autoAdvanceOnComplete: this.options.autoLoadNext
         };
         if (this.currentCardAB) {
             // get A sources
@@ -256,7 +280,8 @@ export class StudyVocabComponent implements OnInit {
             betweenB: this.options.betweenB,
             sourcesA: [],
             sourcesB: [],
-            directionAB: this.currentCardAB
+            directionAB: this.currentCardAB,
+            autoAdvanceOnComplete: false
         };
         if (this.currentCardAB) {
             sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
@@ -275,7 +300,8 @@ export class StudyVocabComponent implements OnInit {
             betweenB: this.options.betweenB,
             sourcesA: [],
             sourcesB: [],
-            directionAB: this.currentCardAB
+            directionAB: this.currentCardAB,
+            autoAdvanceOnComplete: false
         };
         if (this.currentCardAB) {
             sequence.sourcesA = this.getAudioSourcesB(this.focusWord);
