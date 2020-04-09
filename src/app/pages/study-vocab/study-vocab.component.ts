@@ -23,6 +23,9 @@ export class StudyVocabComponent implements OnInit {
     errorBold: string;
     errorText: string;
     audioPlayerStatus: AudioPlayerStatus;
+    isPaused: boolean;
+    isSequencePlaying: boolean;
+    currentCardAB: boolean;
 
     // options
     options = {
@@ -31,7 +34,9 @@ export class StudyVocabComponent implements OnInit {
         direction: 'AB',
         autoLoadNext: true,
         autoPlayAnswer: true,
-        loopOnFinish: false
+        loopOnFinish: false,
+        betweenA: 1.5,
+        betweenB: 2
     }
 
     words: Word[] = [];
@@ -63,10 +68,18 @@ export class StudyVocabComponent implements OnInit {
         this.focusWord = null;
         this.playlistSelectedId = 'none';
         this.tagSelected = '';
+        this.isPaused = false;
+        this.isSequencePlaying = false;
         this.audioPlayer.returnStatusSubject()
             .subscribe((val) => {
-                console.log(val);
+                // console.log(val);
                 this.audioPlayerStatus = val;
+                if (val.message === 'COMPLETE') {
+                    this.isSequencePlaying = false; 
+                }
+                if (val.message === 'KILL_SEQUENCE') {
+                    this.isSequencePlaying = false;
+                }
             })
         this.dataSource.getPlaylists()
             .subscribe(data => {
@@ -78,16 +91,38 @@ export class StudyVocabComponent implements OnInit {
             })
     }
 
-    pause() {
-
+    goBack() {
+        this.isPaused = false;
+        this.audioPlayer.doKillSequence();
     }
 
-    stop() {
-
+    skipToNext() {
+        this.isPaused = false;
+        this.audioPlayer.doKillSequence();
     }
 
-    resume() {
+    pauseAudio() {
+        this.isPaused = true;
+        this.audioPlayer.doPause();
+    }
 
+    resumeAudio() {
+        this.isPaused = false;
+        this.audioPlayer.doResume();
+    }
+
+    playPrompt() {
+        this.isPaused = false;
+        this.audioPlayer.doKillSequence();
+        let prompt = this.generatePromptSequence();
+        this.playSequence(prompt);
+    }
+
+    playResponse() {
+        this.isPaused = false;
+        this.audioPlayer.doKillSequence();
+        let response = this.generateResponseSequence();
+        this.playSequence(response);
     }
 
     toggleSwitch(switchName: string) {
@@ -134,8 +169,12 @@ export class StudyVocabComponent implements OnInit {
                     this.words = response.data;
                     this.isLoading = false;
                     this.showSelection = false;
-                    this.showStudy = true;
-                    this.beginLearning();
+                    if (this.words.length === 0) {
+                        this.showError('Error!', 'Zero results');
+                    } else {
+                        this.showStudy = true;
+                        this.beginLearning();
+                    }
                 } else {
                     this.isLoading = false;
                     this.showError('Error!', response.data);
@@ -167,35 +206,148 @@ export class StudyVocabComponent implements OnInit {
 
     loadWord() {
         this.focusWord = this.words[this.focusIndex];
+        if (this.options.direction === 'AB') {
+            this.currentCardAB = true;
+        } else if (this.options.direction === 'BA') {
+            this.currentCardAB = false;
+        } else {
+            this.currentCardAB = Math.random() < .5;
+        }
+        let initialSequence = this.generateInitialSequence();
+        this.playSequence(initialSequence);
     }
 
-    generateSequence(): SequenceOptions[] {
-        let direction = this.options.direction;
-        let sequence = [];
-        if (direction === 'RANDOM') {
-            if (Math.random() < .5) {
-                direction = 'AB';
-            }
-        }
-        if (direction === 'AB') {
-            let prompts = this.focusWord.promptAudioSources();
+    generateInitialSequence(): SequenceOptions {
+        let sequence = {
+            playCountA: 1,
+            playCountB: this.options.autoPlayCount,
+            betweenA: this.options.betweenA,
+            beforeAnswer: this.options.answerDelay,
+            betweenB: this.options.betweenB,
+            sourcesA: [],
+            sourcesB: [],
+            directionAB: this.currentCardAB
+        };
+        if (this.currentCardAB) {
+            // get A sources
+            sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
             if (this.options.autoPlayAnswer) {
-
+                // get B sources too
+                sequence.sourcesB = this.getAudioSourcesB(this.focusWord);
             }
         } else {
-            let responses = this.focusWord.responseAudioSources();
+            sequence.directionAB = false;
+            // get B sources
+            sequence.sourcesB = this.getAudioSourcesB(this.focusWord);
             if (this.options.autoPlayAnswer) {
-                
+                // get A sources too
+                sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
             }
         }
         return sequence;
     }
 
-    playSequence() {
-        let sequence = this.generateSequence();
-        this.audioPlayer.doPlaySequence(sequence);
+    generatePromptSequence(): SequenceOptions {
+        let sequence = {
+            playCountA: 1,
+            playCountB: 0,
+            betweenA: this.options.betweenA,
+            beforeAnswer: this.options.answerDelay,
+            betweenB: this.options.betweenB,
+            sourcesA: [],
+            sourcesB: [],
+            directionAB: this.currentCardAB
+        };
+        if (this.currentCardAB) {
+            sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
+        } else {
+            sequence.sourcesA = this.getAudioSourcesB(this.focusWord);
+        }
+        return sequence;
+    }
+
+    generateResponseSequence(): SequenceOptions {
+        let sequence = {
+            playCountA: 1,
+            playCountB: 0,
+            betweenA: this.options.betweenA,
+            beforeAnswer: this.options.answerDelay,
+            betweenB: this.options.betweenB,
+            sourcesA: [],
+            sourcesB: [],
+            directionAB: this.currentCardAB
+        };
+        if (this.currentCardAB) {
+            sequence.sourcesA = this.getAudioSourcesB(this.focusWord);
+        } else {
+            sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
+        }
+        return sequence;
+    }
+
+    playSequence(sequence) {
+        this.isSequencePlaying = true;
+        this.audioPlayer.startAudioSequence(sequence);
     }
 
 
+    getAudioSourcesA(word: Word) {
+        switch(word.type) {
+            case 'noun':
+                return [word.eng_audio];
+            case 'verb':
+                return [word.eng_audio];
+            case 'adjective':
+                return [word.eng_audio];
+            case 'other':
+                return [word.eng_audio];
+            default:
+                return [word.eng_audio];
+        }
+    }
+
+    getAudioSourcesB(word: Word) {
+        let sources = [];
+        switch(word.type) {
+            case 'noun':
+                if (word.data_noun.a_sing_audio && word.data_noun.a_sing_audio.length) {
+                    sources.push(word.data_noun.a_sing_audio);
+                }
+                if (word.data_noun.a_pl_audio && word.data_noun.a_pl_audio.length) {
+                    sources.push(word.data_noun.a_pl_audio);
+                }
+                break;
+            case 'verb':
+                if (word.data_verb.a_past_3sm_audio && word.data_verb.a_past_3sm_audio.length) {
+                    sources.push(word.data_verb.a_past_3sm_audio);
+                }
+                if (word.data_verb.a_pres_3sm_audio && word.data_verb.a_pres_3sm_audio.length) {
+                    sources.push(word.data_verb.a_pres_3sm_audio);
+                }
+                break;
+            case 'adjective':
+                if (word.data_adj.a_masc_audio && word.data_adj.a_masc_audio.length) {
+                    sources.push(word.data_adj.a_masc_audio);
+                }
+                if (word.data_adj.a_fem_audio && word.data_adj.a_fem_audio.length) {
+                    sources.push(word.data_adj.a_fem_audio);
+                }
+                if (word.data_adj.a_pl_audio && word.data_adj.a_pl_audio.length) {
+                    sources.push(word.data_adj.a_pl_audio);
+                }
+                break;
+            case 'other':
+                if (word.data_other.a_word_audio && word.data_other.a_word_audio.length) {
+                    sources.push(word.data_other.a_word_audio);
+                }
+                break;
+            default:
+                if (word.data_other.a_word_audio && word.data_other.a_word_audio.length) {
+                    sources.push(word.data_other.a_word_audio);
+                }
+                break;
+        }
+        return sources;
+    }
 
 }

@@ -1,5 +1,6 @@
 
-.header-row {
+.header-row,
+.debug-row {
     margin-bottom: 1rem;
     border-bottom: 2px solid #ccc;
     padding-bottom: .25rem;
@@ -32,4 +33,15 @@ div.custom-switch {
 
 #progress-bar {
     margin-bottom: .5rem;
+}
+
+.study-controls-row button,
+.study-nav-row button {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.study-controls-row,
+.study-nav-row {
+    margin-bottom: 1rem;
 }

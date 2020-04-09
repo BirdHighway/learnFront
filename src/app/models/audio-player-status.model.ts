@@ -1,10 +1,9 @@
 import { QueueObject } from './queue-object.model';
 
 export interface AudioPlayerStatus {
-    title: string;
-    isPlaying: boolean;
-    progress: number;
-    total?: number;
+    message: string;
+    log?: string[];
+    isPlaying?: boolean;
+    progress?: number;
     data?: any;
-    queue?: QueueObject[]
 }

@@ -173,9 +173,70 @@
             <h1>Study</h1>
         </div>
     </div>
+    <div class="row study-controls-row">
+        <div class="col">
+            <button (click)="playPrompt()"
+                class="btn btn-success">
+                Play Prompt
+            </button>
+        </div>
+        <div class="col">
+            <div *ngIf="isSequencePlaying">
+                <button *ngIf="!isPaused"
+                    (click)="pauseAudio()"
+                    class="btn btn-danger">
+                    Pause
+                </button>
+                <button *ngIf="isPaused"
+                    (click)="resumeAudio()"
+                    class="btn btn-success">
+                    Resume
+                </button>
+            </div>
+        </div>
+        <div class="col">
+            <button (click)="playResponse()"
+                class="btn btn-success">
+                Play Response
+            </button>
+        </div>
+    </div>
+    <div class="row study-nav-row">
+        <div class="col">
+            <button *ngIf="focusIndex > 0"
+                (click)="goBack()"
+                class="btn btn-primary">
+                Previous Word
+            </button>
+        </div>
+        <div class="col">
+        </div>
+        <div class="col">
+            <button (click)="skipToNext()"
+                class="btn btn-primary">
+                Next Word
+            </button>
+        </div>
+    </div>
     <div class="row">
         <div class="col">
+            <pre>{{options | json}}</pre>
             <pre>{{focusWord | json}}</pre>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showDebug"
+    class="container"
+    id="debug-row">
+    <div class="row debug-row">
+        <div class="col">
+            <h1>Debug Row</h1>
+            <div class="progress" id="progress-bar">
+                <div class="progress-bar" [style.width.%]="audioPlayerStatus.progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            <h1>{{audioPlayerStatus.message}}</h1>
+            <pre>{{audioPlayerStatus | json}}</pre>
         </div>
     </div>
 </div>
@@ -192,20 +253,6 @@
         <div class="col">
             <h1>Material Here</h1>
 
-        </div>
-    </div>
-</div>
-
-<div *ngIf="showDebug"
-    class="container"
-    id="debug-row">
-    <div class="row">
-        <div class="col">
-            <h1>Debug Row</h1>
-            <div class="progress" id="progress-bar">
-                <div class="progress-bar" [style.width.%]="audioPlayerStatus.progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-            <pre>{{audioPlayerStatus | json}}</pre>
         </div>
     </div>
 </div>

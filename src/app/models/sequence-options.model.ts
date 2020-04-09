@@ -1,9 +1,10 @@
 export interface SequenceOptions {
     playCountA: number;
     playCountB: number;
-    betweenPrompt: number;
+    betweenA: number;
     beforeAnswer: number;
-    betweenAnswer: number;
+    betweenB: number;
     sourcesA: string[];
     sourcesB: string[];
+    directionAB: boolean;
 }
