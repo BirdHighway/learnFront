@@ -32,6 +32,8 @@ export class NounComponent implements OnInit, EditorInterface, OnDestroy {
         this.savePending = false;
         if (!this.data.data_noun) {
             this.data.data_noun = new NounWord();
+            this.data.dialect = 'Lebanese';
+            this.data.source = 'Lebanese Vocab Book';
         }
         this.isWordMastered = this.data.mastered;
     }

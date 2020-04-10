@@ -32,6 +32,8 @@ export class VerbComponent implements OnInit, EditorInterface, OnDestroy {
         this.savePending = false;
         if (!this.data.data_verb) {
             this.data.data_verb = new VerbWord();
+            this.data.dialect = 'Lebanese';
+            this.data.source = 'Lebanese Vocab Book';
         }
         this.isWordMastered = this.data.mastered;
     }

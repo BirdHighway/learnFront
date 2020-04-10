@@ -76,20 +76,54 @@
     <div class="row edit-type-specifics">
         <div class="col">
             <div class="form-group">
-                <label>Arabic Text</label>
+                <label>Arabic Text 1</label>
                 <input [(ngModel)]="data.data_other.a_word_text"
                     [disabled]="savePending"
                     class="form-control">
             </div>
-        </div>
-        <div class="col">
             <div class="form-group">
-                <label>Arabic Audio</label>
+                <label>Arabic Audio 1</label>
                 <input [(ngModel)]="data.data_other.a_word_audio"
                     [disabled]="savePending"
                     class="form-control">
             </div>
             <button (click)="previewAudio('a_word_audio')"
+                class="btn btn-outline-dark preview-btn">
+                Preview
+            </button>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Arabic Text 2</label>
+                <input [(ngModel)]="data.data_other.a_word_text_2"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Arabic Audio 2</label>
+                <input [(ngModel)]="data.data_other.a_word_audio_2"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <button (click)="previewAudio('a_word_audio_2')"
+                class="btn btn-outline-dark preview-btn">
+                Preview
+            </button>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Arabic Text 3</label>
+                <input [(ngModel)]="data.data_other.a_word_text_3"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Arabic Audio 3</label>
+                <input [(ngModel)]="data.data_other.a_word_audio_3"
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
+            <button (click)="previewAudio('a_word_audio_3')"
                 class="btn btn-outline-dark preview-btn">
                 Preview
             </button>

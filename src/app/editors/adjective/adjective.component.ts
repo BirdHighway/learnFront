@@ -32,6 +32,8 @@ export class AdjectiveComponent implements OnInit, EditorInterface, OnDestroy {
         this.savePending = false;
         if (!this.data.data_adj) {
             this.data.data_adj = new AdjectiveWord();
+            this.data.dialect = 'Lebanese';
+            this.data.source = 'Lebanese Vocab Book';
         }
         this.isWordMastered = this.data.mastered;
     }

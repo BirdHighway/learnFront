@@ -32,6 +32,8 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
         this.savePending = false;
         if (!this.data.data_other) {
             this.data.data_other = new OtherWord();
+            this.data.dialect = 'Lebanese';
+            this.data.source = 'Lebanese Vocab Book';
         }
         this.isWordMastered = this.data.mastered;
     }
@@ -49,8 +51,14 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
         let src = '';
         if (audioName === 'a_word_audio') {
             src = this.data.data_other.a_word_audio;
-            this.editorEvent.emit({action: 'audio-preview', data: src});
+        } else if (audioName === 'a_word_audio_2') {
+            src = this.data.data_other.a_word_audio_2;
+        } else if (audioName === 'a_word_audio_3') {
+            src = this.data.data_other.a_word_audio_3;
+        } else {
+            return;
         }
+        this.editorEvent.emit({action: 'audio-preview', data: src});
     }
 
     saveEdit() {
