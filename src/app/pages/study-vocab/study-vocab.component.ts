@@ -44,6 +44,10 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     playlists: Playlist[] = [];
     focusIndex: number;
     focusWord: Word;
+    textA: string[];
+    textB: string[];
+    showTextA: boolean;
+    showTextB: boolean;
 
 
     playlistSelectedId: string;
@@ -71,6 +75,8 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         this.tagSelected = '';
         this.isPaused = false;
         this.isSequencePlaying = false;
+        this.showTextA = false;
+        this.showTextB = false;
         this.audioPlayer.returnStatusSubject()
             .subscribe((val) => {
                 // console.log(val);
@@ -85,6 +91,16 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
                 }
                 if (val.message === 'KILL_SEQUENCE') {
                     this.isSequencePlaying = false;
+                }
+                if (val.isNewSequence) {
+                    this.showTextA = false;
+                    this.showTextB = false;
+                }
+                if (val.showA) {
+                    this.showTextA = true;
+                }
+                if (val.showB) {
+                    this.showTextB = true;
                 }
             })
         this.dataSource.getPlaylists()
@@ -228,7 +244,9 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     }
 
     loadWord() {
-        this.focusWord = this.words[this.focusIndex];
+        let word = new Word();
+        Object.assign(word, this.words[this.focusIndex]);
+        this.focusWord = word;
         if (this.options.direction === 'AB') {
             this.currentCardAB = true;
         } else if (this.options.direction === 'BA') {
@@ -250,7 +268,8 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
             sourcesA: [],
             sourcesB: [],
             directionAB: this.currentCardAB,
-            autoAdvanceOnComplete: this.options.autoLoadNext
+            autoAdvanceOnComplete: this.options.autoLoadNext,
+            isInitialSequence: true
         };
         if (this.currentCardAB) {
             // get A sources
@@ -276,38 +295,42 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
             playCountA: 1,
             playCountB: 0,
             betweenA: this.options.betweenA,
-            beforeAnswer: this.options.answerDelay,
+            beforeAnswer: 0,
             betweenB: this.options.betweenB,
             sourcesA: [],
             sourcesB: [],
             directionAB: this.currentCardAB,
-            autoAdvanceOnComplete: false
+            autoAdvanceOnComplete: false,
+            isInitialSequence: false
         };
-        if (this.currentCardAB) {
-            sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
-        } else {
-            sequence.sourcesA = this.getAudioSourcesB(this.focusWord);
-        }
+        sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
+        // if (this.currentCardAB) {
+        //     sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
+        // } else {
+        //     sequence.sourcesA = this.getAudioSourcesB(this.focusWord);
+        // }
         return sequence;
     }
 
     generateResponseSequence(): SequenceOptions {
         let sequence = {
-            playCountA: 1,
-            playCountB: 0,
+            playCountA: 0,
+            playCountB: 1,
             betweenA: this.options.betweenA,
-            beforeAnswer: this.options.answerDelay,
+            beforeAnswer: 0,
             betweenB: this.options.betweenB,
             sourcesA: [],
             sourcesB: [],
             directionAB: this.currentCardAB,
-            autoAdvanceOnComplete: false
+            autoAdvanceOnComplete: false,
+            isInitialSequence: false
         };
-        if (this.currentCardAB) {
-            sequence.sourcesA = this.getAudioSourcesB(this.focusWord);
-        } else {
-            sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
-        }
+        // if (this.currentCardAB) {
+        //     sequence.sourcesA = this.getAudioSourcesB(this.focusWord);
+        // } else {
+        //     sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
+        // }
+        sequence.sourcesB = this.getAudioSourcesB(this.focusWord);
         return sequence;
     }
 
@@ -366,6 +389,12 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
                 if (word.data_other.a_word_audio && word.data_other.a_word_audio.length) {
                     sources.push(word.data_other.a_word_audio);
                 }
+                if (word.data_other.a_word_audio_2 && word.data_other.a_word_audio_2.length) {
+                    sources.push(word.data_other.a_word_audio_2);
+                }
+                if (word.data_other.a_word_audio_3 && word.data_other.a_word_audio_3.length) {
+                    sources.push(word.data_other.a_word_audio_3);
+                }                
                 break;
             default:
                 if (word.data_other.a_word_audio && word.data_other.a_word_audio.length) {

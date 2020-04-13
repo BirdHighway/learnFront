@@ -168,9 +168,20 @@
 <div *ngIf="showStudy"
     class="container"
     id="study">
-    <div class="row header-row">
-        <div class="col">
-            <h1>Study</h1>
+    <div class="row header-row study-text-display">
+        <div class="col english-text-col">
+            <span *ngIf="showTextA"
+                class="english-text-display">
+                {{focusWord.displayTextA().join(', ')}}
+            </span>
+        </div>
+        <div class="col arabic-text-col">
+            <div *ngIf="showTextB">
+                <span *ngFor="let text_b of focusWord.displayTextB()"
+                    class="arabic-text arabic-text-display">
+                    {{text_b}}
+                </span>
+            </div>
         </div>
     </div>
     <div class="row study-controls-row">

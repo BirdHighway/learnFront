@@ -47,10 +47,11 @@ export class AudioPlayerService {
         let update = <AudioPlayerStatus>{
             log: [],
             message: '',
-            isPlaying: false
+            isPlaying: false,
+
         };
         update.log = this.playerStatus.log.slice(0);
-        update.log.push(this.playerStatus.message);
+        update.log.unshift(this.playerStatus.message);
         update.message = inputObj.message;
         update.isPlaying = this.playerStatus.isPlaying;
         Object.assign(update, inputObj);
@@ -66,68 +67,75 @@ export class AudioPlayerService {
         let beforeAnswer = sequence.beforeAnswer;
         let audioObjects = [];
         this.resetIndex();
+        if (sequence.isInitialSequence) {
+            this.sendStatusUpdate({isNewSequence: true, showA: false, showB: false});
+        }
         if (sequence.directionAB) {
             // start with A sources
-            audioObjects.push(new AudioObject(sequence.sourcesA[0], 0, this.getNextIndex()));
+            if (sequence.sourcesA.length) {
+                audioObjects.push(new AudioObject(sequence.sourcesA[0], 0, this.getNextIndex(), true));
+            }
             // if sourcesA contains more than 1 file, add those remaing files to first playCount
             if (sequence.sourcesA.length > 1) {
                 for (let i=1; i<sequence.sourcesA.length; i++) {
-                    audioObjects.push(new AudioObject(sequence.sourcesA[i], sequence.betweenA, this.getNextIndex()));
+                    audioObjects.push(new AudioObject(sequence.sourcesA[i], sequence.betweenA, this.getNextIndex(), true));
                 }
             }
             // loop through all of sourcesA for each remaining playCount
             if (sequence.playCountA > 1) {
                 for (let i=1; i<sequence.playCountA; i++) {
                     for (let j=0; j<sequence.sourcesA.length; j++) {
-                        audioObjects.push(new AudioObject(sequence.sourcesA[j], sequence.betweenA, this.getNextIndex()));
+                        audioObjects.push(new AudioObject(sequence.sourcesA[j], sequence.betweenA, this.getNextIndex(), true));
                     }
                 }
             }
             if (sequence.sourcesB.length) {
                 // include B sources (auto-play answer)
-                audioObjects.push(new AudioObject(sequence.sourcesB[0], beforeAnswer, this.getNextIndex()));
+                audioObjects.push(new AudioObject(sequence.sourcesB[0], beforeAnswer, this.getNextIndex(), false));
                 if (sequence.sourcesB.length > 1) {
                     for (let i=1; i<sequence.sourcesB.length; i++) {
-                        audioObjects.push(new AudioObject(sequence.sourcesB[i], sequence.betweenB, this.getNextIndex()));
+                        audioObjects.push(new AudioObject(sequence.sourcesB[i], sequence.betweenB, this.getNextIndex(), false));
                     }
                 }
                 if (sequence.playCountB > 1) {
                     for (let i=1; i<sequence.playCountB; i++) {
                         for (let j=0; j<sequence.sourcesB.length; j++) {
-                            audioObjects.push(new AudioObject(sequence.sourcesB[j], sequence.betweenB, this.getNextIndex()));
+                            audioObjects.push(new AudioObject(sequence.sourcesB[j], sequence.betweenB, this.getNextIndex(), false));
                         }
                     }
                 }
             }
         } else {
             // start with B sources
-            audioObjects.push(new AudioObject(sequence.sourcesB[0], 0, this.getNextIndex()));
+            if (sequence.sourcesB.length) {
+                audioObjects.push(new AudioObject(sequence.sourcesB[0], 0, this.getNextIndex(), false));
+            }
             // if sourcesB contains more than 1 file, add those remaining files to first playCount
             if (sequence.sourcesB.length > 1) {
                 for (let i=1; i<sequence.sourcesB.length; i++) {
-                    audioObjects.push(new AudioObject(sequence.sourcesB[i], sequence.betweenB, this.getNextIndex()));
+                    audioObjects.push(new AudioObject(sequence.sourcesB[i], sequence.betweenB, this.getNextIndex(), false));
                 }
             }
             // loop through all of sourcesB for each remaining playCount
             if (sequence.playCountB > 1) {
                 for (let i=1; i<sequence.playCountB; i++) {
                     for (let j=0; j<sequence.sourcesB.length; j++) {
-                        audioObjects.push(new AudioObject(sequence.sourcesB[j], sequence.betweenB, this.getNextIndex()));
+                        audioObjects.push(new AudioObject(sequence.sourcesB[j], sequence.betweenB, this.getNextIndex(), false));
                     }
                 }
             }
             if (sequence.sourcesA.length) {
                 // include A sources (auto-play answer)
-                audioObjects.push(new AudioObject(sequence.sourcesA[0], beforeAnswer, this.getNextIndex()));
+                audioObjects.push(new AudioObject(sequence.sourcesA[0], beforeAnswer, this.getNextIndex(), true));
                 if (sequence.sourcesA.length > 1) {
                     for (let i=1; i<sequence.sourcesA.length; i++) {
-                        audioObjects.push(new AudioObject(sequence.sourcesA[i], sequence.betweenA, this.getNextIndex()));
+                        audioObjects.push(new AudioObject(sequence.sourcesA[i], sequence.betweenA, this.getNextIndex(), true));
                     }
                 }
                 if (sequence.playCountA > 1) {
                     for (let i=1; i<sequence.playCountA; i++) {
                         for (let j=0; j<sequence.sourcesA.length; j++) {
-                            audioObjects.push(new AudioObject(sequence.sourcesA[j], sequence.betweenA, this.getNextIndex()));
+                            audioObjects.push(new AudioObject(sequence.sourcesA[j], sequence.betweenA, this.getNextIndex(), true));
                         }
                     }
                 }
@@ -161,6 +169,11 @@ export class AudioPlayerService {
         this.sendStatusUpdate({message: 'waiting for setTimeout to end'})
         this.latestTimeout = setTimeout(() => {
             this.sendStatusUpdate({message: 'playing audio object: ' + playObject.index, isPlaying: true});
+            if (playObject.isSideA) {
+                this.sendStatusUpdate({showA: true});
+            } else {
+                this.sendStatusUpdate({showB: true});
+            }
             this.audioObject.play();
         }, playObject.delay);
         this.audioObject.addEventListener('ended', () => {

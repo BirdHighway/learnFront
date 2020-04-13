@@ -1,1 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
+
+@font-face {
+    font-family: 'Markazi Text';
+    src: url(/assets/MarkaziText-Regular.ttf) format("truetype");
+    font-weight:300;
+}
+
+@font-face {
+    font-family: 'Tajawal-Regular';
+    src: url(/assets/Tajawal-Regular.ttf) format("truetype");
+    font-weight:300;
+}
+
+@font-face {
+    font-family: 'Tajawal-Light';
+    src: url(/assets/Tajawal-Light.ttf) format("truetype");
+    font-weight:300;
+}
+
+@font-face {
+    font-family: 'Scheherazade-Regular';
+    src: url(/assets/Scheherazade-Regular.ttf) format("truetype");
+    font-weight:300;
+}
+
+
+.arabic-text {
+    font-family: 'Tajawal-Light', serif;
+    font-size: 150%;
+    text-align: right;
+}
+
+input.arabic-text {
+    font-size: 300%;
+}

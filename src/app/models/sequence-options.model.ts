@@ -8,4 +8,5 @@ export interface SequenceOptions {
     sourcesB: string[];
     directionAB: boolean;
     autoAdvanceOnComplete: boolean;
+    isInitialSequence: boolean;
 }

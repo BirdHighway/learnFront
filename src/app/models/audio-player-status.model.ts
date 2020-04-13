@@ -7,4 +7,7 @@ export interface AudioPlayerStatus {
     progress?: number;
     data?: any;
     autoAdvance?: boolean;
+    isNewSequence?: boolean;
+    showA?: boolean;
+    showB?: boolean;
 }

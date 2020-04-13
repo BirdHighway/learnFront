@@ -114,9 +114,9 @@
                         {{word.eng_audio}}
                     </td>
                     <td (click)="playAudio(defaultAudio(word))"
-                        class="border-rm middle-col"
+                        class="border-rm middle-col arabic-text"
                         [class.hasAudio]="defaultAudio(word)">
-                        {{defaultAudio(word)}}
+                        {{defaultText(word)}}
                     </td>
                     <td class="col-type border-rl narrow-col">{{word.type}}</td>
                     <td class="border-rl narrow-col">{{word.dialect}}</td>
@@ -125,7 +125,13 @@
                     <td (click)="addToBulk(word)"
                         [class.bulk-selected]="word.bulkSelected"
                         class="playlist-col">
-                        <span *ngIf="!bulkPlaylistMode">{{word.memberships.length}}</span>
+                        <div *ngIf="!bulkPlaylistMode">
+                            <span *ngFor="let pList of word.memberships"
+                                [routerLink]="'/vocab'" [queryParams]="{playlist: pList.playlist_name}"
+                            >
+                                {{pList.playlist_name}}
+                            </span>
+                        </div>
 
                     </td>
                 </tr>

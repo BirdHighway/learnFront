@@ -12,6 +12,8 @@ import { EditorEvent } from 'src/app/models/editor-event.interface';
 import { AudioPlayerService } from 'src/app/services/audioPlayer';
 import { PaginationObject } from 'src/app/models/pagination.model';
 import { Playlist } from 'src/app/models/playlist.model';
+import { ActivatedRoute } from '@angular/router';
+import { AdjectiveWord } from 'src/app/models/words/adjective-word.model';
 
 @Component({
     selector: 'app-vocab',
@@ -33,6 +35,8 @@ export class VocabComponent implements OnInit, OnDestroy {
     excludeTag: string;
     playlists: Playlist[];
     playlistSelected: string;
+    queryPlaylistName: string;
+    queryPage: number;
     bulkPlaylistMode: boolean;
     bulkPlaylistId: string;
     bulkPlaylistName: string;
@@ -44,7 +48,8 @@ export class VocabComponent implements OnInit, OnDestroy {
     constructor(
         private dataSource: RestDataSource,
         private componentFactoryResolver: ComponentFactoryResolver,
-        private audioPlayer: AudioPlayerService
+        private audioPlayer: AudioPlayerService,
+        private route: ActivatedRoute
     ) {
         this.words = [];
         this.page = 1;
@@ -59,6 +64,8 @@ export class VocabComponent implements OnInit, OnDestroy {
         this.excludeTag = 'none';
         this.playlists = [];
         this.playlistSelected = 'none';
+        this.queryPlaylistName = '';
+        this.queryPage = 1;
         this.bulkPlaylistMode = false;
         this.bulkPlaylistId = '';
         this.bulkPlaylistName = '';
@@ -67,10 +74,35 @@ export class VocabComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.route.queryParams
+            .subscribe(q => {
+                if (q.playlist) {
+                    console.log(q.playlist);
+                    this.queryPlaylistName = q.playlist;
+                    let index = this.playlists.findIndex(p => p.name == this.queryPlaylistName);
+                    if (index !== -1) {
+                        this.playlistSelected = this.playlists[index]._id;
+                    } else {
+                        console.log('error, playlist not identified');
+                    }
+                } else {
+                    this.queryPlaylistName = '';
+                    this.playlistSelected = 'none';
+                }
+                this.loadEntries();
+            })
         this.dataSource.getPlaylists()
             .subscribe(response => {
                 this.playlists = response.data;
+                if (this.queryPlaylistName) {
+                    let index = this.playlists.findIndex(p => p.name === this.queryPlaylistName);
+                    if (index !== -1) {
+                        this.playlistSelected = this.playlists[index]._id;
+                        this.loadEntries();
+                    }
+                }
             })
+
     }
 
     ngOnDestroy() {
@@ -142,6 +174,10 @@ export class VocabComponent implements OnInit, OnDestroy {
 
     loadEntries() {
         this.loadPage(this.page);
+    }
+
+    encodePlaylistName(playlist) {
+        return encodeURIComponent(playlist.playlist_name);
     }
 
     makeQueryString(pageNumber: number): string {
@@ -225,6 +261,21 @@ export class VocabComponent implements OnInit, OnDestroy {
                 return word.data_adj.a_masc_audio;
             case 'other':
                 return word.data_other.a_word_audio;
+            default:
+                return '';
+        }
+    }
+
+    defaultText(word: Word): string {
+        switch(word.type) {
+            case 'noun':
+                return word.data_noun.a_sing_text;
+            case 'verb':
+                return word.data_verb.a_past_3sm_text;
+            case 'adjective':
+                return word.data_adj.a_masc_text;
+            case 'other':
+                return word.data_other.a_word_text;
             default:
                 return '';
         }
