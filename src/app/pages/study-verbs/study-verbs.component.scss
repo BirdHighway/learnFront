@@ -11,3 +11,65 @@
 .controls-row {
     margin-top: 1rem;
 }
+
+.main-row {
+    button {
+        width: 100%;
+    }
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+table.progress-table {
+    table-layout: fixed;
+    width: 100%;
+    border-top: 2px solid #888;
+    tbody {
+        width: 100%;
+        tr {
+            width: 100%;
+            td {
+                width: auto;
+                // border: 1px solid #343a40;
+                border: 2px solid #888;
+                // height: 20px;
+            }
+        }
+    }
+}
+
+.arabic-pronoun {
+    text-align: center;
+    font-size: 150%;
+    font-weight: 300;
+}
+
+.time-cell {
+    vertical-align: bottom;
+    font-size: 125%;
+    background-color: #343a40;
+    color: #ddd;
+    text-align: center;
+    font-weight: 300;
+}
+
+.completed-0 {
+    background-color: #fff;
+}
+
+.completed-1 {
+    background-color: #ffe05f;
+}
+
+.completed-2 {
+    background-color: #eeb400;
+}
+
+.completed-3 {
+    background-color: #e77500;
+}
+
+.completed-x {
+    background-color: #c70000;
+}
+

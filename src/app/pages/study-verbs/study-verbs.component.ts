@@ -42,6 +42,11 @@ export class StudyVerbsComponent implements OnInit {
     verbId: string;
     disabledWhileLoading = true;
 
+    completedPresent = [];
+    completedPast = [];
+
+    arabicPronouns: string[];
+
     constructor(
         private dataSource: RestDataSource,
         private audioPlayer: AudioPlayerService
@@ -58,6 +63,7 @@ export class StudyVerbsComponent implements OnInit {
         this.tenseFocus = '';
         this.selectMaterial = 'status';
         this.verbId = '';
+        this.arabicPronouns = LanguageUtils.pronouns;
     }
 
     ngOnInit() {
@@ -94,6 +100,15 @@ export class StudyVerbsComponent implements OnInit {
 
     ngOnDestroy() {
         this.audioPlayer.doKillSequence();
+    }
+
+    resetCompleted() {
+        this.completedPast = [];
+        this.completedPresent = [];
+        for (let i=0; i<8; i++){ 
+            this.completedPast.push(0);
+            this.completedPresent.push(0);
+        }
     }
     
     shuffleVerbs() {
@@ -158,6 +173,7 @@ export class StudyVerbsComponent implements OnInit {
             this.showMain = false;
             this.continueLoop = false;
         } else {
+            this.resetCompleted();
             this.focusVerb = this.verbs[this.focusIndex];
             this.focusCardCount = 0;
             if (this.advanceMethod != 'manual') {
@@ -269,6 +285,7 @@ export class StudyVerbsComponent implements OnInit {
                 this.formIndex = 0;
             }
         }
+
         let timeIndex = this.randomIndex(5);
         let options = {
             engAudio: '',
@@ -295,6 +312,7 @@ export class StudyVerbsComponent implements OnInit {
         let pronoun = LanguageUtils.engKeys[index % 8];
         if (index < 8) {
             // present tense
+            this.completedPresent[index]++;
             if (this.advanceMethod != 'meth-tense') {
                 options.tenseAudio = `verbs/english/${LanguageUtils.arabicTimePresent[timeIndex]}`
             } else if (includeInfo) {
@@ -303,6 +321,7 @@ export class StudyVerbsComponent implements OnInit {
             options.arabicAudio = `verbs/arabic/_${this.focusVerb.a_audio_base}_${pronoun}-pres.mp3`;
         } else {
             // past tense
+            this.completedPast[index - 8]++;
             if (this.advanceMethod != 'meth-tense') {
                 options.tenseAudio = `verbs/english/${LanguageUtils.arabicTimePast[timeIndex]}`;
             } else if (includeInfo) {
@@ -317,5 +336,20 @@ export class StudyVerbsComponent implements OnInit {
         let options = this.generateOptions();
         this.audioPlayer.startConjugationSequence(options);
         this.focusCardCount++;
+    }
+
+    getCellClass(count: number): string {
+        switch(count) {
+            case 0:
+                return 'arabic-pronoun completed-0';
+            case 1:
+                return 'arabic-pronoun completed-1';
+            case 2:
+                return 'arabic-pronoun completed-2';
+            case 3:
+                return 'arabic-pronoun completed-3';
+            default:
+                return 'arabic-pronoun completed-x'
+        }
     }
 }

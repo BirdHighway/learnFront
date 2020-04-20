@@ -62,9 +62,11 @@
 
 <div *ngIf="showMain"
     class="container">
-    <div class="row">
+    <div class="row main-row">
         <div class="col">
-            <button class="btn btn-success btn-standard" (click)="nextVerb()">Next Verb</button>            
+            <button class="btn btn-success btn-standard" (click)="nextVerb()">
+                Next Verb
+            </button>            
         </div>
         <div class="col">
             <button *ngIf="!continueLoop" 
@@ -87,6 +89,28 @@
             </button>
         </div>
     </div>
+
+    <div class="row progress-row">
+        <div class="col">
+            <table class="table progress-table">
+                <tbody>
+                    <tr>
+                        <td class="time-cell">Past</td>
+                        <td *ngFor="let form of completedPast; let i = index;"
+                            [ngClass]="getCellClass(form)"
+                        >{{arabicPronouns[i]}}</td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">Present</td>
+                        <td *ngFor="let form of completedPresent; let i = index;"
+                            [ngClass]="getCellClass(form)"
+                        >{{arabicPronouns[i]}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div *ngIf="doShowTable"
         class="row">
         <div class="col">
