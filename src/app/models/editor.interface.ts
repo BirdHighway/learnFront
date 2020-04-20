@@ -12,5 +12,7 @@ export interface EditorInterface {
     playlists: Playlist[],
     isWordMastered: boolean,
     savePending: boolean,
-    saveDivText: string
+    saveDivText: string,
+    lastEnglish?: string,
+    lastArabic?: string
 }

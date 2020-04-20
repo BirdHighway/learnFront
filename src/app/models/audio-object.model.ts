@@ -17,7 +17,11 @@ export class AudioObject {
     ) {
         this.filePath = filePath;
         this.delay = delay * 1000;
-        this.fullSrc = `${Environment.PROTOCOL}://${Environment.HOST}:${Environment.PORT}/vocab_audio/${filePath}`;
+        if (filePath.charAt(0) == 'v') {
+            this.fullSrc = `${Environment.PROTOCOL}://${Environment.HOST}:${Environment.PORT}/${filePath}`;
+        } else {
+            this.fullSrc = `${Environment.PROTOCOL}://${Environment.HOST}:${Environment.PORT}/vocab_audio/${filePath}`;
+        }
         this.totalLength = 1;
         this.index = index;
         this.isSideA = isSideA;

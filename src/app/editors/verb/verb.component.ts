@@ -16,6 +16,8 @@ export class VerbComponent implements OnInit, EditorInterface, OnDestroy {
 
     @Input() data: Word;
     @Input() playlists: Playlist[];
+    @Input() lastEnglish: string;
+    @Input() lastArabic: string;
     @Output() editorEvent: EventEmitter<EditorEvent> = new EventEmitter();
     isWordMastered: boolean = false;
     tagString: string = '';
@@ -34,6 +36,9 @@ export class VerbComponent implements OnInit, EditorInterface, OnDestroy {
             this.data.data_verb = new VerbWord();
             this.data.dialect = 'Lebanese';
             this.data.source = 'Lebanese Vocab Book';
+            this.data.eng_audio = this.lastEnglish;
+            this.data.data_verb.a_past_3sm_audio = this.lastArabic;
+            this.data.memberships = [];
         }
         this.isWordMastered = this.data.mastered;
     }
@@ -55,6 +60,9 @@ export class VerbComponent implements OnInit, EditorInterface, OnDestroy {
         } else if (audioName === 'a_pres_3sm_audio') {
             src = this.data.data_verb.a_pres_3sm_audio;
             this.editorEvent.emit({action: 'audio-preview', data: src});
+        } else if (audioName === 'english') {
+            src = this.data.eng_audio;
+            this.editorEvent.emit({action: 'audio-preview', data: src});
         }
     }
 
@@ -62,11 +70,21 @@ export class VerbComponent implements OnInit, EditorInterface, OnDestroy {
         this.savePending = true;
         this.data.tags = this.tagString.replace(' ', '').split(',');
         this.saveDivText = 'Saving edit...';
+        let lastEnglish = this.data.eng_audio;
+        let lastArabic = '';
+        if (this.data.data_verb.a_pres_3sm_audio) {
+            lastArabic = this.data.data_verb.a_pres_3sm_audio;
+        } else if (this.data.data_verb.a_past_3sm_audio) {
+            lastArabic = this.data.data_verb.a_past_3sm_audio;
+        }        
         this.dataSource.updateVocab(this.data)
             .subscribe( data => {
                 console.log(data);
                 if (data.status === 'success') {
-                    this.editorEvent.emit({action: 'save', data: {}});
+                    this.editorEvent.emit({action: 'save', data: {
+                        lastEnglish: lastEnglish,
+                        lastArabic: lastArabic
+                    }});
                 } else {
                     this.saveDivText = 'Error: ' + data.data;
                 }

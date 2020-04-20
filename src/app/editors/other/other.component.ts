@@ -16,6 +16,8 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
 
     @Input() data: Word;
     @Input() playlists: Playlist[];
+    @Input() lastEnglish: string;
+    @Input() lastArabic: string;
     @Output() editorEvent: EventEmitter<EditorEvent> = new EventEmitter();
     isWordMastered: boolean = false;
     tagString: string = '';
@@ -28,12 +30,17 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
         this.isWordMastered = this.data.mastered;
         if (this.data.tags) {
             this.tagString = this.data.tags.join(', ');
+        } else {
+            this.tagString = 'adverbs';
         }
         this.savePending = false;
         if (!this.data.data_other) {
             this.data.data_other = new OtherWord();
             this.data.dialect = 'Lebanese';
             this.data.source = 'Lebanese Vocab Book';
+            this.data.eng_audio = this.lastEnglish;
+            this.data.data_other.a_word_audio = this.lastArabic;
+            this.data.memberships = [];
         }
         this.isWordMastered = this.data.mastered;
     }
@@ -55,6 +62,8 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
             src = this.data.data_other.a_word_audio_2;
         } else if (audioName === 'a_word_audio_3') {
             src = this.data.data_other.a_word_audio_3;
+        } else if (audioName === 'english') {
+            src = this.data.eng_audio;
         } else {
             return;
         }
@@ -65,11 +74,23 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
         this.savePending = true;
         this.data.tags = this.tagString.replace(' ', '').split(',');
         this.saveDivText = 'Saving edit...';
+        let lastEnglish = this.data.eng_audio;
+        let lastArabic = '';
+        if (this.data.data_other.a_word_audio_3) {
+            lastArabic = this.data.data_other.a_word_audio_3;
+        } else if (this.data.data_other.a_word_audio_2) {
+            lastArabic = this.data.data_other.a_word_audio_2;
+        } else if (this.data.data_other.a_word_audio) {
+            lastArabic = this.data.data_other.a_word_audio;
+        }
         this.dataSource.updateVocab(this.data)
             .subscribe( data => {
                 console.log(data);
                 if (data.status === 'success') {
-                    this.editorEvent.emit({action: 'save', data: {}});
+                    this.editorEvent.emit({action: 'save', data: {
+                        lastEnglish: lastEnglish,
+                        lastArabic: lastArabic
+                    }});
                 } else {
                     this.saveDivText = 'Error: ' + data.data;
                 }

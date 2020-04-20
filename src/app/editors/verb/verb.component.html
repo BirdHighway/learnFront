@@ -10,6 +10,7 @@
             <div class="form-group">
                 <label>English Audio</label>
                 <input [(ngModel)]="data.eng_audio"
+                    (keyup.enter)="previewAudio('english')"
                     [disabled]="savePending"
                     class="form-control">
             </div>
@@ -79,12 +80,14 @@
                 <label>Past, 3rd Person Sing Text</label>
                 <input [(ngModel)]="data.data_verb.a_past_3sm_text"
                     [disabled]="savePending"
+                    (keyup.enter)="previewAudio('a_pres_3sm_audio')"
                     class="form-control arabic-text">
             </div>
             <div class="form-group">
                 <label>Past, 3rd Person Sing Audio</label>
                 <input [(ngModel)]="data.data_verb.a_past_3sm_audio"
                     [disabled]="savePending"
+                    (keyup.enter)="previewAudio('a_past_3sm_audio')"
                     class="form-control">
             </div>
             <button (click)="previewAudio('a_past_3sm_audio')"
@@ -97,12 +100,14 @@
                 <label>Present, 3rd Person Sing Text</label>
                 <input [(ngModel)]="data.data_verb.a_pres_3sm_text"
                     [disabled]="savePending"
+                    (keyup.enter)="previewAudio('a_pres_3sm_audio')"
                     class="form-control arabic-text">
             </div>
             <div class="form-group">
                 <label>Present, 3rd Person Sing Audio</label>
                 <input [(ngModel)]="data.data_verb.a_pres_3sm_audio"
                     [disabled]="savePending"
+                    (keyup.enter)="previewAudio('a_pres_3sm_audio')"
                     class="form-control">
             </div>
             <button (click)="previewAudio('a_pres_3sm_audio')"

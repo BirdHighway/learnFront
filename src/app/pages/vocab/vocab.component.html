@@ -58,6 +58,7 @@
                 <option value="none">View Playlist</option>
                 <option *ngFor="let list of playlists"
                     value="{{list._id}}">{{list.name}}</option>
+                <option value="no-memberships">No Memberships</option>
             </select>
         </div>
         <div class="col">
@@ -90,12 +91,14 @@
             <thead>
                 <tr>
                     <th class="col-eng-text border-rl middle-col">Eng Text</th>
-                    <th class="border-rl middle-col">English Audio</th>
+                    <th class="border-rl narrow-col">English Audio</th>
                     <th class="border-rm middle-col">Arabic Audio</th>
                     <th class="col-type border-rl narrow-col">Entry Type</th>
-                    <th class="border-rl narrow-col">Dialect</th>
-                    <th class="border-rm middle-col">Source</th>
+                    <th class="border-rm narrow-col">Dialect</th>
+                    <!-- <th class="border-rm middle-col">Source</th> -->
                     <th class="border-rm">Tags</th>
+                    <th *ngIf="bulkPlaylistMode"
+                        class="border-rm all-playlists"></th>
                     <th class="">Playlists</th>
                 </tr>
             </thead>
@@ -108,7 +111,7 @@
                         {{englishText(word.eng_text)}}
                     </td>
                     <td (click)="playAudio(word.eng_audio)"
-                        class="border-rl middle-col"
+                        class="border-rl narrow-col"
                         [class.hasAudio]="word.eng_audio"
                         >
                         {{word.eng_audio}}
@@ -119,16 +122,22 @@
                         {{defaultText(word)}}
                     </td>
                     <td class="col-type border-rl narrow-col">{{word.type}}</td>
-                    <td class="border-rl narrow-col">{{word.dialect}}</td>
-                    <td class="border-rm middle-col">{{word.source}}</td>
+                    <td class="border-rm narrow-col">{{word.dialect}}</td>
+                    <!-- <td class="border-rm middle-col">{{word.source}}</td> -->
                     <td class="border-rm">{{word.tags.join(', ')}}</td>
+                    <td *ngIf="bulkPlaylistMode"
+                        class="border-rm all-playlists">
+                        <span *ngFor="let pList of word.memberships"
+                            class="playlist-span">
+                            {{pList.playlist_name}}
+                        </span>
+                    </td>
                     <td (click)="addToBulk(word)"
                         [class.bulk-selected]="word.bulkSelected"
                         class="playlist-col">
                         <div *ngIf="!bulkPlaylistMode">
                             <span *ngFor="let pList of word.memberships"
-                                [routerLink]="'/vocab'" [queryParams]="{playlist: pList.playlist_name}"
-                            >
+                                class="playlist-span">
                                 {{pList.playlist_name}}
                             </span>
                         </div>

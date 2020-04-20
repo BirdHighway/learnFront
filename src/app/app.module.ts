@@ -34,6 +34,10 @@ import { AdjectiveComponent } from './editors/adjective/adjective.component';
 import { DefaultComponent } from './editors/default/default.component';
 import { PlaylistsComponent } from './pages/playlists/playlists.component';
 import { StudyVocabComponent } from './pages/study-vocab/study-vocab.component';
+import { VerbSetsComponent } from './pages/verb-sets/verb-sets.component';
+import { VerbSetsSingleComponent } from './pages/verb-sets-single/verb-sets-single.component';
+import { VerbTableComponent } from './verb-table/verb-table.component';
+import { StudyVerbsComponent } from './pages/study-verbs/study-verbs.component';
 
 
 @NgModule({
@@ -63,7 +67,11 @@ import { StudyVocabComponent } from './pages/study-vocab/study-vocab.component';
     AdjectiveComponent,
     DefaultComponent,
     PlaylistsComponent,
-    StudyVocabComponent
+    StudyVocabComponent,
+    VerbSetsComponent,
+    VerbSetsSingleComponent,
+    VerbTableComponent,
+    StudyVerbsComponent
   ],
   imports: [
     BrowserModule,

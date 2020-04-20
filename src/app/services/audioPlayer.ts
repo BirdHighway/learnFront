@@ -5,6 +5,7 @@ import { AudioPlayerStatus } from '../models/audio-player-status.model';
 import { Word } from '../models/words/word.model';
 import { SequenceOptions } from '../models/sequence-options.model';
 import { AudioObject } from '../models/audio-object.model';
+import { ConjugationOptions } from '../models/conjugation-options';
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,7 @@ import { AudioObject } from '../models/audio-object.model';
 export class AudioPlayerService {
 
     private baseUrl = `${Environment.PROTOCOL}://${Environment.HOST}:${Environment.PORT}/`;
+    // private baseUrl = `${Environment.PROTOCOL}://localhost:${Environment.PORT}/`;
     private statusSubject = new BehaviorSubject<AudioPlayerStatus>({message: 'initial', isPlaying: false, log: []});
     private playerStatus: AudioPlayerStatus;
     private audioObject: HTMLAudioElement;
@@ -60,6 +62,40 @@ export class AudioPlayerService {
 
     public subscribeToStatus( observer ) {
         this.statusSubject.subscribe( observer );
+    }
+
+    public startConjugationSequence(options: ConjugationOptions) {
+        let audioObjects = [];
+        this.resetIndex();
+        if (options.engAudio !== '') {
+            audioObjects.push(new AudioObject(options.engAudio, 0, this.getNextIndex(), true));
+            audioObjects.push(new AudioObject(options.pronounAudio, options.betweenA, this.getNextIndex(), true));
+        } else {
+            audioObjects.push(new AudioObject(options.pronounAudio, 0, this.getNextIndex(), true));
+        }
+        if (options.tenseAudio) {
+            audioObjects.push(new AudioObject(options.tenseAudio, options.betweenA, this.getNextIndex(), true));
+        }
+        // first B loop
+        if (options.pronounWithB) {
+            audioObjects.push(new AudioObject(options.pronounAudio, options.beforeB, this.getNextIndex(), false));
+            audioObjects.push(new AudioObject(options.arabicAudio, 0, this.getNextIndex(), false));
+        } else {
+            audioObjects.push(new AudioObject(options.arabicAudio, options.beforeB, this.getNextIndex(), false));
+        }
+        // additional B loops?
+        if (options.playCountB > 1) {
+            for (let i=1; i<options.playCountB; i++) {
+                if (options.pronounWithB) {
+                    audioObjects.push(new AudioObject(options.pronounAudio, options.betweenB, this.getNextIndex(), false));
+                    audioObjects.push(new AudioObject(options.arabicAudio, 0, this.getNextIndex(), false));
+                } else {
+                    audioObjects.push(new AudioObject(options.arabicAudio, options.betweenB, this.getNextIndex(), false));
+                }              
+            }
+        }
+        this.audioQueue = audioObjects;
+        this.doPlayAudioSequence();
     }
 
     public startAudioSequence(sequence: SequenceOptions) {

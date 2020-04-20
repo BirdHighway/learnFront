@@ -1,0 +1,161 @@
+
+<div *ngIf="showDisplay"
+    id="display-container"
+    class="container">
+    <div class="row">
+        <div class="col">
+            <app-verb-table [verb]="verb"></app-verb-table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button (click)="enterEditMode()" 
+                class="btn btn-info btn-standard">
+                Edit
+            </button>
+        </div>
+    </div>
+    <div class="row debug-row">
+        <div class="col">
+            <pre>{{verb | json}}</pre>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showEdit"
+    id="edit-container"
+    class="container">
+    <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="col-pres">present</th>
+                        <th class="col-past">past</th>
+                        <th class="col-pronouns">person</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    <tr>
+                        <td class="col-pres">
+                            <input [(ngModel)]="newValues.a_pres_text.i" class="form-control arabic-text" (keyup.enter)="playSound(rows[6].present_audio)">
+                        </td>
+                        <td class="col-past">
+                            <input [(ngModel)]="newValues.a_past_text.i" class="form-control arabic-text" (keyup.enter)="playSound(rows[6].past_audio)">
+                        </td>
+                        <td class="col-pronouns arabic-text">
+                            {{pronouns[6]}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-pres">
+                            <input [(ngModel)]="newValues.a_pres_text.you_male" class="form-control arabic-text" (keyup.enter)="playSound(rows[3].present_audio)">
+                        </td>
+                        <td class="col-past">
+                            <input [(ngModel)]="newValues.a_past_text.you_male" class="form-control arabic-text" (keyup.enter)="playSound(rows[3].past_audio)">
+                        </td>
+                        <td class="col-pronouns arabic-text">
+                            {{pronouns[3]}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-pres">
+                            <input [(ngModel)]="newValues.a_pres_text.you_female" class="form-control arabic-text" (keyup.enter)="playSound(rows[4].present_audio)">
+                        </td>
+                        <td class="col-past">
+                            <input [(ngModel)]="newValues.a_past_text.you_female" class="form-control arabic-text" (keyup.enter)="playSound(rows[4].past_audio)">
+                        </td>
+                        <td class="col-pronouns arabic-text">
+                            {{pronouns[4]}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-pres">
+                            <input [(ngModel)]="newValues.a_pres_text.you_plural" class="form-control arabic-text" (keyup.enter)="playSound(rows[5].present_audio)">
+                        </td>
+                        <td class="col-past">
+                            <input [(ngModel)]="newValues.a_past_text.you_plural" class="form-control arabic-text" (keyup.enter)="playSound(rows[5].past_audio)">
+                        </td>
+                        <td class="col-pronouns arabic-text">
+                            {{pronouns[5]}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-pres">
+                            <input [(ngModel)]="newValues.a_pres_text.we" class="form-control arabic-text" (keyup.enter)="playSound(rows[7].present_audio)">
+                        </td>
+                        <td class="col-past">
+                            <input [(ngModel)]="newValues.a_past_text.we" class="form-control arabic-text" (keyup.enter)="playSound(rows[7].past_audio)">
+                        </td>
+                        <td class="col-pronouns arabic-text">
+                            {{pronouns[7]}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-pres">
+                            <input [(ngModel)]="newValues.a_pres_text.he" class="form-control arabic-text" (keyup.enter)="playSound(rows[0].present_audio)">
+                        </td>
+                        <td class="col-past">
+                            <input [(ngModel)]="newValues.a_past_text.he" class="form-control arabic-text" (keyup.enter)="playSound(rows[0].past_audio)">
+                        </td>              
+                        <td class="col-pronouns arabic-text">
+                            {{pronouns[0]}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-pres">
+                            <input [(ngModel)]="newValues.a_pres_text.she" class="form-control arabic-text" (keyup.enter)="playSound(rows[1].present_audio)">
+                        </td>
+                        <td class="col-past">
+                            <input [(ngModel)]="newValues.a_past_text.she" class="form-control arabic-text" (keyup.enter)="playSound(rows[1].past_audio)">
+                        </td>
+                        <td class="col-pronouns arabic-text">
+                            {{pronouns[1]}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-pres">
+                            <input [(ngModel)]="newValues.a_pres_text.they" class="form-control arabic-text" (keyup.enter)="playSound(rows[2].present_audio)">
+                        </td>
+                        <td class="col-past">
+                            <input [(ngModel)]="newValues.a_past_text.they" class="form-control arabic-text" (keyup.enter)="playSound(rows[2].past_audio)">
+                        </td>
+                        <td class="col-pronouns arabic-text">
+                            {{pronouns[2]}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label>Status</label>
+                <input class="form-control" [(ngModel)]="newValues.status">
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button (click)="saveEdit()"
+                [disabled]="savePending"
+                class="btn btn-success btn-standard">
+                Save
+            </button>
+            <button (click)="cancelEdit()"
+                [disabled]="savePending"
+                class="btn btn-warning btn-standard">
+                Cancel
+            </button>
+        </div>
+    </div>
+    <div class="row debug-row">
+        <div class="col">
+            <pre>{{verb | json}}</pre>
+        </div>
+    </div>
+</div>

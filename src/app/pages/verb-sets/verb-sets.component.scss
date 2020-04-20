@@ -1,0 +1,69 @@
+
+tr.status-ready {
+    background-color: #b8daff;
+    color: #212529;
+}
+tr.status-ready:hover {
+    background-color: #7abaff !important;
+    color: #212529 !important;
+}
+
+tr.status-known {
+    background-color: #c3e6cb;
+    color: #212529;
+}
+tr.status-known:hover {
+    background-color: #8fd19e !important;
+    color: #212529 !important;
+}
+
+tr.status-study {
+    background-color: #ffeeba;
+    color: #212529;
+}
+tr.status-study:hover {
+    background-color: #ffdf7e !important;
+    color: #212529 !important;
+}
+
+table td {
+    padding-top: .25rem;
+    padding-bottom: .25rem;
+    vertical-align: middle;
+}
+
+th {
+    text-align: center;
+}
+
+th.eng-col,
+th.eng-audio,
+th.arabic-header {
+    border-right: 1px solid #aaa;
+}
+
+td.eng-col,
+td.eng-audio,
+td.arabic-text {
+    border-right: 2px solid #aaa;
+}
+
+td.arabic-text {
+    font-size: 200%;
+}
+
+td.eng-col:hover,
+td.eng-audio:hover,
+td.arabic-text:hover {
+    cursor: pointer;
+}
+
+td.eng-col,
+td.eng-audio,
+td.status-col {
+    font-size: 125%;
+}
+
+td.status-col {
+    text-align: center;
+}

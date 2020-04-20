@@ -11,11 +11,12 @@ import { NounFormComponent } from './forms/noun-form/noun-form.component';
 import { AdjectiveFormComponent } from './forms/adjective-form/adjective-form.component';
 import { DefaultNewComponent } from './pages/new/default/default.component';
 import { GenericFormComponent } from './forms/generic-form/generic-form.component';
-import { GenericsViewComponent } from './pages/generics-view/generics-view.component';
-import { GenericsStudyComponent } from './pages/generics-study/generics-study.component';
 import { VocabComponent } from './pages/vocab/vocab.component';
 import { PlaylistsComponent } from './pages/playlists/playlists.component';
 import { StudyVocabComponent } from './pages/study-vocab/study-vocab.component';
+import { VerbSetsComponent } from './pages/verb-sets/verb-sets.component';
+import { VerbSetsSingleComponent } from './pages/verb-sets-single/verb-sets-single.component';
+import { StudyVerbsComponent } from './pages/study-verbs/study-verbs.component';
 
 
 const routes: Routes = [
@@ -32,12 +33,13 @@ const routes: Routes = [
     { path: 'edit', component: EditComponent },
     { path: 'edit/:id', component: EditComponent },
     { path: 'learn', component: LearnComponent },
-    { path: 'generics-view', component: GenericsViewComponent },
-    { path: 'generics-study', component: GenericsStudyComponent },
     { path: 'quiz', component: QuizComponent },
     { path: 'vocab', component: VocabComponent },
     { path: 'playlists', component: PlaylistsComponent },
     { path: 'study-vocab', component: StudyVocabComponent },
+    { path: 'verb-sets', component: VerbSetsComponent },
+    { path: 'verb-set/:id', component: VerbSetsSingleComponent },
+    { path: 'verb-study', component: StudyVerbsComponent },
     { path: 'not-found', component: NotFoundComponent }, 
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', component: NotFoundComponent } 

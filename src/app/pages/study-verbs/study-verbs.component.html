@@ -1,0 +1,106 @@
+<div class="row">
+    <div class="col">
+        <div class="jumbotron">
+            <h1>Practice Conjugating Verbs</h1>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isLoading"
+    class="container">
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label>Advance After</label>
+                <select [(ngModel)]="advanceMethod"
+                    class="form-control">
+                    <option value="meth-tense">Methodical - By Tense</option>
+                    <option value="meth-verb">Methodical - By Verb</option>
+                    <option value="manual">Clicking Next</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Select Material:</label>
+                <select [(ngModel)]="selectMaterial"
+                    [disabled]="disabledWhileLoading"
+                    class="form-control">
+                    <option value="status">Study Status</option>
+                    <option value="verb">Individual Verb</option>
+                    <option value="all">All Verbs</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div *ngIf="this.selectMaterial == 'verb'"
+                class="form-group">
+                <label>Select Verb</label>
+                <select [(ngModel)]="verbId"
+                    class="form-control">
+                    <option *ngFor="let verb of allVerbs"
+                        value="{{verb._id}}">
+                        {{verb.eng_text}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row controls-row">
+        <div class="col">
+            <button (click)="beginStudy()"
+                id="begin-btn"
+                [disabled]="disabledWhileLoading"
+                class="btn btn-success btn-standard">
+                Begin Studying
+            </button>
+        </div>
+        <div class="col"></div>
+        <div class="col"></div>
+    </div>
+</div>
+
+<div *ngIf="showMain"
+    class="container">
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-success btn-standard" (click)="nextVerb()">Next Verb</button>            
+        </div>
+        <div class="col">
+            <button *ngIf="!continueLoop" 
+                class="btn btn-primary btn-standard" (click)="play()">
+                Continue
+            </button>
+            <button *ngIf="continueLoop"
+                class="btn btn-warning btn-standard" (click)="stop()">
+                Stop
+            </button>
+        </div>
+        <div class="col">
+            <button *ngIf="!doShowTable"
+            class="btn btn-info btn-standard" (click)="showTable()">
+                Show Table
+            </button>
+            <button *ngIf="doShowTable"
+                class="btn btn-primary btn-standard" (click)="hideTable()">
+                Hide Table
+            </button>
+        </div>
+    </div>
+    <div *ngIf="doShowTable"
+        class="row">
+        <div class="col">
+            
+            <app-verb-table [verb]="focusVerb"></app-verb-table>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="studyDone"
+    class="container">
+    <div class="row">
+        <div class="col">
+            <h1>All Done</h1>
+        </div>
+    </div>
+</div>

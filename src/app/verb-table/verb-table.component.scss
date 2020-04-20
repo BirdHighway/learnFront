@@ -1,0 +1,32 @@
+table {
+    border-bottom: 2px solid #dee2e6;
+}
+
+th {
+    text-align: center;
+    font-weight: 300;
+    font-size: 200%;
+}
+
+.col-pres {
+    border-left: 2px solid #dee2e6;
+    border-right: 2px solid #dee2e6;
+}
+
+.col-past {
+    border-right: 2px solid #dee2e6;
+}
+
+.col-person {
+    border-right: 2px solid #dee2e6;
+    width: 200px;
+}
+
+.has-sound:hover {
+    cursor: pointer;
+    background-color: yellow;
+}
+
+.arabic-text {
+    font-size: 240%;
+}

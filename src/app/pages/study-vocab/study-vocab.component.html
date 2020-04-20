@@ -15,6 +15,19 @@
     </div>
 </div>
 
+<div *ngIf="displayInfo"
+    class="container"
+    id="display-info">
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-info">
+                <strong>{{infoBold}}</strong>
+                {{infoText}}
+            </div>
+        </div>
+    </div>
+</div>
+
 <div *ngIf="showSettings"
     class="container"
     id="settings">
@@ -95,6 +108,23 @@
                 </select>
             </div>
         </div>
+
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label>Show Known Vocab % of Time</label>
+                <select [(ngModel)]="masteredProbability"
+                    class="form-control">
+                    <option value="0">Never</option>
+                    <option value="25">25% Probability</option>
+                    <option value="50">50% Probability</option>
+                    <option value="75">75% Probability</option>
+                    <option value="100">Always</option>
+                </select>
+            </div>
+        </div>
+        <div class="col"></div>
     </div>
     <div class="row border-bottom-light">
         <div class="col">
@@ -221,6 +251,16 @@
             </button>
         </div>
         <div class="col">
+            <button *ngIf="!focusWord.mastered"
+                (click)="markMastered()"
+                class="btn btn-info">
+                Mark Mastered
+            </button>
+            <button *ngIf="focusWord.mastered"
+                (click)="markNotMastered()"
+                class="btn btn-warning">
+                Mark Not Mastered
+            </button>
         </div>
         <div class="col">
             <button (click)="skipToNext()"

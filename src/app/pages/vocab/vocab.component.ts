@@ -42,6 +42,9 @@ export class VocabComponent implements OnInit, OnDestroy {
     bulkPlaylistName: string;
     bulkPlaylistWords: string[];
     bulkPlaylistRemovals: string[];
+    lastEnglishAudioFile: string;
+    lastArabicAudioFile: string;
+    srcRegExp: RegExp;
 
     @ViewChild(EditorDirective, {static: true}) editorHost: EditorDirective;
 
@@ -71,6 +74,9 @@ export class VocabComponent implements OnInit, OnDestroy {
         this.bulkPlaylistName = '';
         this.bulkPlaylistWords = [];
         this.bulkPlaylistRemovals = [];
+        this.lastEnglishAudioFile = '';
+        this.lastArabicAudioFile = '';
+        this.srcRegExp = new RegExp('(.*[^[0-9]+)([0]*)([0-9]+)\.(.+)');
     }
 
     ngOnInit() {
@@ -141,6 +147,8 @@ export class VocabComponent implements OnInit, OnDestroy {
         editorInstance.data = word;
         console.log(this.playlists);
         editorInstance.playlists = this.playlists;
+        editorInstance.lastEnglish = this.lastEnglishAudioFile;
+        editorInstance.lastArabic = this.lastArabicAudioFile;
         const sub = editorInstance.editorEvent.subscribe( (event: EditorEvent) => {
             if (event.action === 'destruction') {
                 sub.unsubscribe();
@@ -155,6 +163,8 @@ export class VocabComponent implements OnInit, OnDestroy {
                 this.showEntriesFilter = true;
             }
             if (event.action === 'save') {
+                this.lastEnglishAudioFile = this.incrementAudioFile(event.data.lastEnglish);
+                this.lastArabicAudioFile = this.incrementAudioFile(event.data.lastArabic);
                 componentRef.destroy();
                 this.showEntriesTable = true;
                 this.showEntriesFilter = true;
@@ -166,6 +176,31 @@ export class VocabComponent implements OnInit, OnDestroy {
                 this.loadEntries();
             }
         });
+    }
+
+    incrementAudioFile(src: string) {
+        if (src.length == 0) {
+            return '';
+        }
+        let matches = src.match(this.srcRegExp);
+        if (!matches) {
+            return '';
+        }
+        let base = matches[1];
+        let z = matches[2];
+        let zero = '0';
+        let newZ = '';
+        let n = matches[3];
+        let ext = matches[4];
+        let newNum = parseInt(n) + 1;
+        if (z.length != 0) {
+            if (newNum % 10 == 0) {
+                newZ = zero.repeat(z.length - 1);
+            } else {
+                newZ = zero.repeat(z.length);
+            }
+        }
+        return `${base}${newZ}${newNum}.${ext}`;
     }
 
     forward(event: Word) {
@@ -217,7 +252,7 @@ export class VocabComponent implements OnInit, OnDestroy {
             navStart,
             navTotal,
             navMax;
-        totalPages = Math.ceil(total / 40);
+        totalPages = Math.ceil(total / 50);
         if (current > 10) {
             navStart = current - 3;
         } else {

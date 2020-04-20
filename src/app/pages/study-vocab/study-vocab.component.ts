@@ -20,8 +20,11 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     showDebug: boolean;
     isLoading: boolean;
     displayError: boolean;
+    displayInfo: boolean;
     errorBold: string;
     errorText: string;
+    infoBold: string;
+    infoText: string;
     audioPlayerStatus: AudioPlayerStatus;
     isPaused: boolean;
     isSequencePlaying: boolean;
@@ -40,6 +43,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         betweenB: 2
     }
 
+    cachedStype: string;
     words: Word[] = [];
     playlists: Playlist[] = [];
     focusIndex: number;
@@ -52,6 +56,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
 
     playlistSelectedId: string;
     tagSelected: string;
+    masteredProbability: string;
 
     constructor(
         private dataSource: RestDataSource,
@@ -60,6 +65,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.cachedStype = '';
         this.showSettings = true;
         this.showSelection = false;
         this.showStudy = false;
@@ -69,6 +75,9 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         this.displayError = false;
         this.errorBold = '';
         this.errorText = '';
+        this.displayInfo = false;
+        this.infoBold = '';
+        this.infoText = '';
         this.focusIndex = 0;
         this.focusWord = null;
         this.playlistSelectedId = 'none';
@@ -77,6 +86,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         this.isSequencePlaying = false;
         this.showTextA = false;
         this.showTextB = false;
+        this.masteredProbability = '100';
         this.audioPlayer.returnStatusSubject()
             .subscribe((val) => {
                 // console.log(val);
@@ -160,6 +170,30 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         this.playSequence(response);
     }
 
+    markMastered() {
+        this.focusWord.mastered = true;
+        this.dataSource.updateVocab(this.focusWord)
+            .subscribe(result => {
+                if (result.status === 'success') {
+                    this.showInfo('markMastered() succeded', result.data.mastered);
+                } else {
+                    this.showError('markMastered() failed', result.data);
+                }
+            })
+    }
+
+    markNotMastered() {
+        this.focusWord.mastered = false;
+        this.dataSource.updateVocab(this.focusWord)
+            .subscribe(result => {
+                if (result.status === 'success') {
+                    this.showInfo('markNotMastered() succeded', result.data.mastered);
+                } else {
+                    this.showError('markNotMastered() failed', result.data);
+                }
+            })
+    }
+
     toggleSwitch(switchName: string) {
         this.options[switchName] = !this.options[switchName];
     }
@@ -173,6 +207,15 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         this.errorBold = boldText
         this.errorText = text;
         this.displayError = true;
+    }
+
+    showInfo(boldText: string, text: string) {
+        this.infoBold = boldText;
+        this.infoText = text;
+        this.displayInfo = true;
+        setTimeout(() => {
+            this.displayInfo = false;
+        }, 4000);
     }
 
     hideError() {
@@ -195,6 +238,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     }
 
     selectMaterial(sType: string) {
+        this.cachedStype = sType;
         this.isLoading = true;
         let queryString = `limit=0`;
         if (sType === 'playlist') {
@@ -205,7 +249,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         this.dataSource.getVocab(queryString)
             .subscribe(response => {
                 if (response.status === 'success') {
-                    this.words = response.data;
+                    this.words = this.applyProbabilityFilter(response.data);
                     this.isLoading = false;
                     this.showSelection = false;
                     if (this.words.length === 0) {
@@ -221,6 +265,36 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
             })
     }
 
+    applyProbabilityFilter(words: Word[]): Word[] {
+        let selectedProbability = parseInt(this.masteredProbability);
+        if (selectedProbability == 100) {
+            console.log('100%, returning all words');
+            return words;
+        }
+        let finalList = [];
+        finalList = words.filter( (w) => {
+            return w.mastered == false;
+        })
+        let countNotMastered = finalList.length;
+        let countMastered = words.length - countNotMastered;
+        if (selectedProbability != 0) {
+            let mastered = words.filter( (w) => {
+                return w.mastered == true;
+            })
+            for (let i=0; i<mastered.length; i++) {
+                let r = Math.random() * 100;
+                if (r < selectedProbability) {
+                    finalList.push(mastered[i]);
+                }
+            }
+            let includedMastered = finalList.length - countNotMastered;
+            console.log(`mastered included / total mastered: ${includedMastered} / ${countMastered}`);
+            let percent = Math.floor((includedMastered / countMastered) * 100);
+            console.log(`( ${percent}% )`);
+        }
+        return finalList;
+    }
+
     beginLearning() {
         this.focusIndex = 0;
         this.shuffleWords();
@@ -232,7 +306,9 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         if (this.focusIndex > this.words.length - 1) {
             if (this.options.loopOnFinish) {
                 // restart from beginning after shuffle
-                this.beginLearning();
+                this.showStudy = false;
+                this.isLoading = true;
+                this.selectMaterial(this.cachedStype);
             } else {
                 // process completed - show stats or exit screen
                 this.showStudy = false;

@@ -1,0 +1,26 @@
+
+<table class="table">
+    <thead>
+        <tr>
+            <th class="col-pres">present</th>
+            <th class="col-past">past</th>
+            <th class="col-person">person</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of rows">
+            <td (click)="playSound(row.present_audio)"
+                class="arabic-text has-sound col-pres">
+                {{row.present_text}}
+            </td>
+            <td (click)="playSound(row.past_audio)"
+                class="arabic-text has-sound col-past">
+                {{row.past_text}}
+            </td>
+            <td class="arabic-text col-person">
+                {{row.person}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!-- <pre>{{verb | json}}</pre> -->

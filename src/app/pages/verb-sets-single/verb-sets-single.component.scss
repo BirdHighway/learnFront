@@ -1,0 +1,68 @@
+#display-container,
+#edit-container {
+    margin-top: 2rem;
+}
+
+.btn-standard {
+    width: 200px;
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.debug-row {
+    margin-top: 2rem;
+    border-top: 2px solid #ccc;
+    pre {
+        background-color: #333;
+        color: #fff;
+        padding: 1rem;
+    }
+}
+
+table {
+    border-bottom: 2px solid #dee2e6;
+}
+
+th {
+    text-align: center;
+    font-weight: 300;
+    font-size: 200%;
+}
+
+td.col-pres,
+td.col-past {
+    padding: 0;
+    padding-bottom: 0px;
+    margin: 0;
+    input {
+        border: none;
+    }
+    input:focus {
+        box-shadow: none;
+        background-color: yellow;
+    }
+}
+
+td.col-pronouns {
+    font-size: 250%;
+    width: 200px;
+    padding-bottom: 0px;
+}
+
+td input {
+    font-size: 250%;
+}
+
+.col-pres {
+    border-left: 2px solid #dee2e6;
+    border-right: 2px solid #dee2e6;
+}
+
+.col-past {
+    border-right: 2px solid #dee2e6;
+}
+
+.col-pronouns {
+    border-right: 2px solid #dee2e6;
+}

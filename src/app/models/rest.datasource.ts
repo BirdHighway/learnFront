@@ -9,6 +9,7 @@ import { ApiResponse } from './api-response.model';
 import { Playlist } from './playlist.model';
 import { MembershipUpdate } from './membership-update.model';
 import { MembershipUpdateBulk } from './membership-update-bulk.model';
+import { VerbSet } from './verb-sets/verb-set.model';
 
 @Injectable()
 export class RestDataSource {
@@ -18,7 +19,15 @@ export class RestDataSource {
         this.baseUrl = `${Environment.PROTOCOL}://${Environment.HOST}:${Environment.PORT}/`;
     }
 
-    getVocab(queryString: string,): Observable<ApiResponse> {
+    getVerbs(queryString: string): Observable<ApiResponse> {
+        return this.http.get<ApiResponse>(this.baseUrl + 'verbs/?' + queryString);
+    }
+
+    updateVerb(verb: VerbSet): Observable<ApiResponse> {
+        return this.http.patch<ApiResponse>(this.baseUrl + 'verbs/', verb);
+    }
+
+    getVocab(queryString: string): Observable<ApiResponse> {
         return this.http.get<ApiResponse>(this.baseUrl + 'vocab/?' + queryString);
     }
 

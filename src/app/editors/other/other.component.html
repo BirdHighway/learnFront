@@ -10,6 +10,7 @@
             <div class="form-group">
                 <label>English Audio</label>
                 <input [(ngModel)]="data.eng_audio"
+                    (keyup.enter)="previewAudio('english')"
                     [disabled]="savePending"
                     class="form-control">
             </div>
@@ -79,12 +80,14 @@
                 <label>Arabic Text 1</label>
                 <input [(ngModel)]="data.data_other.a_word_text"
                     [disabled]="savePending"
+                    (keyup.enter)="previewAudio('a_word_audio')"
                     class="form-control arabic-text">
             </div>
             <div class="form-group">
                 <label>Arabic Audio 1</label>
                 <input [(ngModel)]="data.data_other.a_word_audio"
                     [disabled]="savePending"
+                    (keyup.enter)="previewAudio('a_word_audio')"
                     class="form-control">
             </div>
             <button (click)="previewAudio('a_word_audio')"
@@ -92,17 +95,21 @@
                 Preview
             </button>
         </div>
+    </div>
+    <div class="row edit-type-specifics">
         <div class="col">
             <div class="form-group">
                 <label>Arabic Text 2</label>
                 <input [(ngModel)]="data.data_other.a_word_text_2"
                     [disabled]="savePending"
+                    (keyup.enter)="previewAudio('a_word_audio_2')"
                     class="form-control arabic-text">
             </div>
             <div class="form-group">
                 <label>Arabic Audio 2</label>
                 <input [(ngModel)]="data.data_other.a_word_audio_2"
                     [disabled]="savePending"
+                    (keyup.enter)="previewAudio('a_word_audio_2')"
                     class="form-control">
             </div>
             <button (click)="previewAudio('a_word_audio_2')"
@@ -110,17 +117,21 @@
                 Preview
             </button>
         </div>
+    </div>
+    <div class="row edit-type-specifics">
         <div class="col">
             <div class="form-group">
                 <label>Arabic Text 3</label>
                 <input [(ngModel)]="data.data_other.a_word_text_3"
                     [disabled]="savePending"
+                    (keyup.enter)="previewAudio('a_word_audio_3')"
                     class="form-control arabic-text">
             </div>
             <div class="form-group">
                 <label>Arabic Audio 3</label>
                 <input [(ngModel)]="data.data_other.a_word_audio_3"
                     [disabled]="savePending"
+                    (keyup.enter)="previewAudio('a_word_audio_3')"
                     class="form-control">
             </div>
             <button (click)="previewAudio('a_word_audio_3')"
