@@ -1,0 +1,62 @@
+<div class="row">
+    <div class="col">
+        <div class="jumbotron">
+            <h1>Images</h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <button (click)="showImages()"
+            class="btn btn-primary">
+            Show Images
+        </button>
+    </div>
+    <div class="col">
+        <button (click)="showNarrows()"
+            class="btn btn-primary">
+            Show Narrow Images
+        </button>
+    </div>
+    <div class="col">
+        <button (click)="showCharts()"
+            class="btn btn-primary">
+            Show Charts
+        </button>
+    </div>
+</div>
+
+<div *ngIf="displayType == 'images'">
+    <div *ngFor="let file of imageFiles"
+        class="row images-row">
+        <div class="col">
+            <a href="{{base + file}}" target="_blank">
+                <img src="{{base + file}}">
+            </a>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="displayType == 'narrows'"
+    class="container">
+    <div *ngFor="let file of narrowImageFiles"
+        class="row narrows-row">
+        <div class="col">
+            <a href="{{base + file}}" target="_blank">
+                <img src="{{base + file}}">
+            </a>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="displayType == 'charts'">
+    <div *ngFor="let file of chartFiles"
+        class="row charts-row">
+        <div class="col">
+            <a href="{{base + file}}" target="_blank">
+                <img src="{{base + file}}">
+            </a>
+        </div>
+    </div>
+</div>

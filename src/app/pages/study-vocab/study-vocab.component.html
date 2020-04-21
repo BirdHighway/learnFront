@@ -33,7 +33,7 @@
     id="settings">
     <div class="row header-row">
         <div class="col">
-            <h1>Choose Your Settings</h1>
+            <h1>Configure Options</h1>
         </div>
     </div>
     <div class="row">
@@ -110,7 +110,7 @@
         </div>
 
     </div>
-    <div class="row">
+    <div class="row configuration-row-2">
         <div class="col">
             <div class="form-group">
                 <label>Show Known Vocab % of Time</label>
@@ -124,25 +124,43 @@
                 </select>
             </div>
         </div>
-        <div class="col"></div>
-    </div>
-    <div class="row border-bottom-light">
         <div class="col">
-            <button (click)="saveSettings()"
-                class="btn btn-primary btn-full-width">
-                Next
-            </button>
+            <div class="form-group">
+                <label>Focus on Random Subset?</label>
+                <select [(ngModel)]="options.subset"
+                    class="form-control">
+                    <option value="normal">No</option>
+                    <option value="subset-ten">Subset of 10</option>
+                    <option value="subset-twenty">Subset of 20</option>
+                </select>
+            </div>
         </div>
-        <div class="col"></div>
-        <div class="col"></div>
-        <div class="col"></div>
+        <div class="col">
+            <div class="form-group">
+                <label>Rounds</label>
+                <select [(ngModel)]="options.repetition"
+                    class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Sorting</label>
+                <select [(ngModel)]="options.sorting"
+                    class="form-control">
+                    <option value="old">Favor Unpracticed</option>
+                    <option value="none">No Sorting</option>
+                </select>
+            </div>
+        </div>
     </div>
-</div>
 
-<div *ngIf="showSelection"
-    class="container"
-    id="selection">
-    <div class="row header-row">
+
+    <div class="row header-row" id="select-material-row">
         <div class="col">
             <h1>Select Material</h1>
         </div>
@@ -160,7 +178,7 @@
             </div>
             <button (click)="selectMaterial('playlist')"
                 class="btn btn-primary btn-full-width">
-                Select
+                Select and Start
             </button>
         </div>
         <div class="col">
@@ -171,7 +189,7 @@
             </div>
             <button (click)="selectMaterial('tag')"
                 class="btn btn-primary btn-full-width">
-                Select
+                Select and Start
             </button>
         </div>
         <div class="col">
@@ -277,6 +295,7 @@
                         <td *ngFor="let word of words; let i = index;"
                             [class.completed-word]="i < focusIndex"
                             [class.current-word]="i == focusIndex"
+                            [class.border-word]="((i + 1) % 10) == 0"
                         ></td>
                     </tr>
                 </tbody>
@@ -328,7 +347,8 @@
     </div>
     <div class="row">
         <div class="col">
-            <h1>Material Here</h1>
+            <h1>Study Program Complete</h1>
+            <p class="lead">Page will refresh in 5 seconds...</p>
 
         </div>
     </div>

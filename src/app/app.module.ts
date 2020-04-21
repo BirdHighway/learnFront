@@ -13,18 +13,13 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { NewComponent } from './pages/new/new.component';
 import { NounFormComponent } from './forms/noun-form/noun-form.component';
 import { AdjectiveFormComponent } from './forms/adjective-form/adjective-form.component';
-import { GenericFormComponent } from './forms/generic-form/generic-form.component';
 import { DefaultNewComponent } from './pages/new/default/default.component';
 import { HttpClientModule } from '@angular/common/http';
 import { VocabRepository } from './models/vocab.repository';
 import { RestDataSource } from './models/rest.datasource';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { GenericsViewComponent } from './pages/generics-view/generics-view.component';
-import { GenericsStudyComponent } from './pages/generics-study/generics-study.component';
-import { AudioABComponent } from './operations/audio-a-b/audio-a-b.component';
 import { OperationDirective } from './directives/operation.directive';
-import { AudioBAComponent } from './operations/audio-b-a/audio-b-a.component';
 import { VocabComponent } from './pages/vocab/vocab.component';
 import { EditorDirective } from './directives/editor.directive';
 import { NounComponent } from './editors/noun/noun.component';
@@ -38,6 +33,7 @@ import { VerbSetsComponent } from './pages/verb-sets/verb-sets.component';
 import { VerbSetsSingleComponent } from './pages/verb-sets-single/verb-sets-single.component';
 import { VerbTableComponent } from './verb-table/verb-table.component';
 import { StudyVerbsComponent } from './pages/study-verbs/study-verbs.component';
+import { ImagesComponent } from './pages/images/images.component';
 
 
 @NgModule({
@@ -51,15 +47,10 @@ import { StudyVerbsComponent } from './pages/study-verbs/study-verbs.component';
     NotFoundComponent,
     NewComponent,
     NounFormComponent,
-    GenericFormComponent,
     AdjectiveFormComponent,
     DefaultNewComponent,
-    GenericsViewComponent,
-    GenericsStudyComponent,
-    AudioABComponent,
     OperationDirective,
     EditorDirective,
-    AudioBAComponent,
     VocabComponent,
     NounComponent,
     VerbComponent,
@@ -71,7 +62,8 @@ import { StudyVerbsComponent } from './pages/study-verbs/study-verbs.component';
     VerbSetsComponent,
     VerbSetsSingleComponent,
     VerbTableComponent,
-    StudyVerbsComponent
+    StudyVerbsComponent,
+    ImagesComponent
   ],
   imports: [
     BrowserModule,
@@ -87,8 +79,6 @@ import { StudyVerbsComponent } from './pages/study-verbs/study-verbs.component';
   ],
   bootstrap: [AppComponent],
   entryComponents: [
-      AudioABComponent,
-      AudioBAComponent,
       NounComponent,
       AdjectiveComponent,
       VerbComponent,

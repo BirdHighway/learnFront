@@ -12,6 +12,7 @@ export class Word {
         public eng_text?: string,
         public eng_audio?: string,
         public lastPracticed?: string,
+        public everPracticed?: string,
         public mastered?: boolean,
         public dialect?: string,
         public source?: string,

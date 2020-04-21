@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Noun } from './noun.model';
 import { Environment } from '../environment';
-import { GenericPrompt } from '../models/generic.model';
 import { Word } from './words/word.model';
 import { ApiResponse } from './api-response.model';
 import { Playlist } from './playlist.model';
@@ -43,6 +42,10 @@ export class RestDataSource {
         return this.http.delete<ApiResponse>(this.baseUrl + `vocab/id/${word._id}`);
     }
 
+    touchVocab(word: Word): Observable<ApiResponse> {
+        return this.http.patch<ApiResponse>(this.baseUrl + `vocab/touch`, word);
+    }
+
     getPlaylists(): Observable<ApiResponse> {
         return this.http.get<ApiResponse>(this.baseUrl + 'playlist');
     }
@@ -68,9 +71,6 @@ export class RestDataSource {
         return this.http.post<ApiResponse>(this.baseUrl + 'vocab/playlists', bulkUpdate);
     }
 
-
-
-
     getNouns(): Observable<Noun[]> {
         return this.http.get<Noun[]>(this.baseUrl + 'nouns');
     }
@@ -89,15 +89,6 @@ export class RestDataSource {
             "tag": tag
         }
         return this.http.post(this.baseUrl + 'tags/add', data);
-    }
-
-    doSaveGenericEntries(entriesArray): Observable<any> {
-        console.log('doSaveGenericEntries()');
-        return this.http.post(this.baseUrl + 'generics', entriesArray);
-    }
-
-    getGenerics(): Observable<GenericPrompt[]> {
-        return this.http.get<GenericPrompt[]>(this.baseUrl + 'generics');
     }
 
     getNounObservable(id: string): Observable<Noun> {

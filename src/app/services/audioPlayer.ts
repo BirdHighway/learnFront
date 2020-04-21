@@ -67,21 +67,27 @@ export class AudioPlayerService {
     public startConjugationSequence(options: ConjugationOptions) {
         let audioObjects = [];
         this.resetIndex();
-        if (options.engAudio !== '') {
-            audioObjects.push(new AudioObject(options.engAudio, 0, this.getNextIndex(), true));
-            audioObjects.push(new AudioObject(options.pronounAudio, options.betweenA, this.getNextIndex(), true));
-        } else {
-            audioObjects.push(new AudioObject(options.pronounAudio, 0, this.getNextIndex(), true));
+        if (!options.isLearnMode) {
+            if (options.engAudio !== '') {
+                audioObjects.push(new AudioObject(options.engAudio, 0, this.getNextIndex(), true));
+                audioObjects.push(new AudioObject(options.pronounAudio, options.betweenA, this.getNextIndex(), true));
+            } else {
+                audioObjects.push(new AudioObject(options.pronounAudio, 0, this.getNextIndex(), true));
+            }
+            if (options.tenseAudio) {
+                audioObjects.push(new AudioObject(options.tenseAudio, options.betweenA, this.getNextIndex(), true));
+            }
         }
-        if (options.tenseAudio) {
-            audioObjects.push(new AudioObject(options.tenseAudio, options.betweenA, this.getNextIndex(), true));
+        let beforeFirstB = 0;
+        if (!options.isLearnMode) {
+            beforeFirstB = options.beforeB;
         }
         // first B loop
         if (options.pronounWithB) {
-            audioObjects.push(new AudioObject(options.pronounAudio, options.beforeB, this.getNextIndex(), false));
+            audioObjects.push(new AudioObject(options.pronounAudio, beforeFirstB, this.getNextIndex(), false));
             audioObjects.push(new AudioObject(options.arabicAudio, 0, this.getNextIndex(), false));
         } else {
-            audioObjects.push(new AudioObject(options.arabicAudio, options.beforeB, this.getNextIndex(), false));
+            audioObjects.push(new AudioObject(options.arabicAudio, beforeFirstB, this.getNextIndex(), false));
         }
         // additional B loops?
         if (options.playCountB > 1) {

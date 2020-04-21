@@ -8,4 +8,5 @@ export interface ConjugationOptions {
     betweenB: number;
     playCountB: number;
     arabicAudio: string;
+    isLearnMode: boolean;
 }

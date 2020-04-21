@@ -16,7 +16,19 @@
                     class="form-control">
                     <option value="meth-tense">Methodical - By Tense</option>
                     <option value="meth-verb">Methodical - By Verb</option>
+                    <option value="meth-form">Methodical - By From</option>
                     <option value="manual">Clicking Next</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Repeat Answer</label>
+                <select [(ngModel)]="repeatAnswer"
+                    class="form-control">
+                    <option value="1">1 Time</option>
+                    <option value="2">2 Times</option>
+                    <option value="3">3 Times</option>
                 </select>
             </div>
         </div>
@@ -57,6 +69,7 @@
         </div>
         <div class="col"></div>
         <div class="col"></div>
+        <div class="col"></div>
     </div>
 </div>
 
@@ -69,11 +82,11 @@
             </button>            
         </div>
         <div class="col">
-            <button *ngIf="!continueLoop" 
+            <button *ngIf="!isAdvancing" 
                 class="btn btn-primary btn-standard" (click)="play()">
-                Continue
+                Play
             </button>
-            <button *ngIf="continueLoop"
+            <button *ngIf="isAdvancing"
                 class="btn btn-warning btn-standard" (click)="stop()">
                 Stop
             </button>

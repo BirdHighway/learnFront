@@ -10,13 +10,13 @@ import { NewComponent } from './pages/new/new.component';
 import { NounFormComponent } from './forms/noun-form/noun-form.component';
 import { AdjectiveFormComponent } from './forms/adjective-form/adjective-form.component';
 import { DefaultNewComponent } from './pages/new/default/default.component';
-import { GenericFormComponent } from './forms/generic-form/generic-form.component';
 import { VocabComponent } from './pages/vocab/vocab.component';
 import { PlaylistsComponent } from './pages/playlists/playlists.component';
 import { StudyVocabComponent } from './pages/study-vocab/study-vocab.component';
 import { VerbSetsComponent } from './pages/verb-sets/verb-sets.component';
 import { VerbSetsSingleComponent } from './pages/verb-sets-single/verb-sets-single.component';
 import { StudyVerbsComponent } from './pages/study-verbs/study-verbs.component';
+import { ImagesComponent } from './pages/images/images.component';
 
 
 const routes: Routes = [
@@ -26,7 +26,6 @@ const routes: Routes = [
         children: [
             { path: '', component: DefaultNewComponent },
             { path: 'noun', component: NounFormComponent },
-            { path: 'generic', component: GenericFormComponent },
             { path: 'adjective', component: AdjectiveFormComponent }
         ]
     },
@@ -40,6 +39,7 @@ const routes: Routes = [
     { path: 'verb-sets', component: VerbSetsComponent },
     { path: 'verb-set/:id', component: VerbSetsSingleComponent },
     { path: 'verb-study', component: StudyVerbsComponent },
+    { path: 'images', component: ImagesComponent },
     { path: 'not-found', component: NotFoundComponent }, 
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', component: NotFoundComponent } 

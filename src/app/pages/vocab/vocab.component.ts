@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ComponentFactoryResolver, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ComponentFactoryResolver, OnDestroy, Inject, LOCALE_ID } from '@angular/core';
 import { RestDataSource } from 'src/app/models/rest.datasource';
 import { Word } from 'src/app/models/words/word.model';
 import { EditorDirective } from 'src/app/directives/editor.directive';
@@ -14,6 +14,7 @@ import { PaginationObject } from 'src/app/models/pagination.model';
 import { Playlist } from 'src/app/models/playlist.model';
 import { ActivatedRoute } from '@angular/router';
 import { AdjectiveWord } from 'src/app/models/words/adjective-word.model';
+import { DatePipe, formatDate } from '@angular/common';
 
 @Component({
     selector: 'app-vocab',
@@ -52,7 +53,8 @@ export class VocabComponent implements OnInit, OnDestroy {
         private dataSource: RestDataSource,
         private componentFactoryResolver: ComponentFactoryResolver,
         private audioPlayer: AudioPlayerService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        @Inject(LOCALE_ID) private locale: string
     ) {
         this.words = [];
         this.page = 1;
@@ -281,6 +283,14 @@ export class VocabComponent implements OnInit, OnDestroy {
     masteredText(isMastered: boolean): string {
         if (isMastered) {
             return 'Y';
+        } else {
+            return '-';
+        }
+    }
+
+    lastPracticedText(last: string, ever: boolean): string {
+        if (ever) {
+            return formatDate(new Date(last), 'MMM d, h:mm a', this.locale);
         } else {
             return '-';
         }

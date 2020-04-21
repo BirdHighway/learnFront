@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Noun } from './noun.model';
 import { RestDataSource } from './rest.datasource';
-import { GenericPrompt } from './generic.model';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -41,17 +40,6 @@ export class VocabRepository {
             .subscribe( (res) => {
                 console.log(res);
             })
-    }
-
-    saveGenericEntries(entriesArray: []) {
-        this.dataSource.doSaveGenericEntries(entriesArray)
-            .subscribe( (res) => {
-                console.log(res);
-            })
-    }
-
-    getGenerics(): Observable<GenericPrompt[]> {
-        return this.dataSource.getGenerics();
     }
 
     updateNoun(noun: Noun): Observable<Noun> {

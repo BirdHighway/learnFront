@@ -18,6 +18,7 @@ export class StudyVerbsComponent implements OnInit {
     showMain = false;
     studyDone = false;
     doShowTable = false;
+    isAdvancing = false;
 
     verbs: VerbSet[];
     allVerbs: VerbSet[];
@@ -41,11 +42,14 @@ export class StudyVerbsComponent implements OnInit {
     selectMaterial: string;
     verbId: string;
     disabledWhileLoading = true;
+    repeatAnswer: string;
 
     completedPresent = [];
     completedPast = [];
 
     arabicPronouns: string[];
+    waitNextVerb = 3000;
+    waitNextForm = 3000;
 
     constructor(
         private dataSource: RestDataSource,
@@ -62,6 +66,7 @@ export class StudyVerbsComponent implements OnInit {
         this.advanceMethod = 'meth-tense';
         this.tenseFocus = '';
         this.selectMaterial = 'status';
+        this.repeatAnswer = "1";
         this.verbId = '';
         this.arabicPronouns = LanguageUtils.pronouns;
     }
@@ -71,16 +76,17 @@ export class StudyVerbsComponent implements OnInit {
             .subscribe( (val) => {
                 this.audioPlayerStatus = val;
                 if (val.message === 'COMPLETE') {
-                    if (this.advanceMethod !== 'manual' && this.formIndex == 16) {
+                    if ((this.advanceMethod !== 'manual') && (this.formIndex == 16)) {
                         this.lastTimeout = setTimeout( () => {
                             this.nextVerb();
-                        }, 2000);
+                        }, this.waitNextVerb);
                     } else if (this.continueLoop) {
                         this.lastTimeout = setTimeout( () => {
                             this.playCard();
-                        }, 2000);
+                        }, this.waitNextForm);
                     }
                 } else if (val.message === 'KILL_SEQUENCE') {
+                    this.isAdvancing = false;
                     clearTimeout(this.lastTimeout);
                 }
             })
@@ -122,13 +128,37 @@ export class StudyVerbsComponent implements OnInit {
     }
 
     shuffleForms() {
-        for (let i=16; i>0; i--) {
-            let r = Math.floor(Math.random() * (i - 1));
-            let a = this.verbForms[i - 1];
-            let b = this.verbForms[r];
-            this.verbForms[i - 1] = b;
-            this.verbForms[r] = a;
+        if (this.advanceMethod == 'meth-tense') {
+            let pres = [0,1,2,3,4,5,6,7];
+            let past = [8,9,10,11,12,13,14,15];
+            for (let i=8; i>0; i--) {
+                let r = Math.floor(Math.random() * (i - 1));
+                let a = pres[i - 1];
+                let b = pres[r];
+                pres[i - 1] = b;
+                pres[r] = a;
+            }
+            for (let i=8; i>0; i--) {
+                let r = Math.floor(Math.random() * (i - 1));
+                let a = past[i - 1];
+                let b = past[r];
+                past[i - 1] = b;
+                past[r] = a;
+            }
+            this.verbForms = [];
+            this.verbForms = pres.concat(past);
+        } else if (this.advanceMethod = 'meth-form') {
+            this.verbForms = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+        } else {
+            for (let i=16; i>0; i--) {
+                let r = Math.floor(Math.random() * (i - 1));
+                let a = this.verbForms[i - 1];
+                let b = this.verbForms[r];
+                this.verbForms[i - 1] = b;
+                this.verbForms[r] = a;
+            }
         }
+
     }
 
     beginStudy() {
@@ -153,7 +183,9 @@ export class StudyVerbsComponent implements OnInit {
         } else {
             console.log('data not loaded');
         }
-
+        if ((this.advanceMethod == 'meth-form') && (this.repeatAnswer == "1")) {
+            this.waitNextForm += 1000;
+        }
     }
 
     resetVerbForms(tense: string) {
@@ -192,11 +224,16 @@ export class StudyVerbsComponent implements OnInit {
     }
 
     play() {
+        this.continueLoop = true;
+        this.loadVerb();
         this.playCard();
     }
 
     stop() {
+        this.resetCompleted();
         this.continueLoop = false;
+        this.isAdvancing = false;
+        clearTimeout(this.lastTimeout);
         this.audioPlayer.doKillSequence();
     }
 
@@ -279,10 +316,10 @@ export class StudyVerbsComponent implements OnInit {
                     index = (index % 8) + 8;
                 }
                 console.log(`Effective index: ${index}`);
-            }
-            if (this.tenseFocus === 'past' && this.formIndex == 16) {
-                this.tenseFocus = 'present';
-                this.formIndex = 0;
+                if (this.tenseFocus === 'past' && this.formIndex == 16) {
+                    this.tenseFocus = 'present';
+                    this.formIndex = 0;
+                }
             }
         }
 
@@ -291,12 +328,13 @@ export class StudyVerbsComponent implements OnInit {
             engAudio: '',
             tenseAudio: '',
             pronounAudio: '',
-            betweenA: 0.5,
+            betweenA: 0.25,
             beforeB: 3.2,
             pronounWithB: true,
             betweenB: 3,
-            playCountB: 2,
-            arabicAudio: ''
+            playCountB: parseInt(this.repeatAnswer),
+            arabicAudio: '',
+            isLearnMode: (this.advanceMethod == 'meth-form')
         }
         console.log('focusCardCount', this.focusCardCount);
         if (this.advanceMethod == 'manual') {
@@ -333,6 +371,7 @@ export class StudyVerbsComponent implements OnInit {
     }
 
     playCard() {
+        this.isAdvancing = true;
         let options = this.generateOptions();
         this.audioPlayer.startConjugationSequence(options);
         this.focusCardCount++;

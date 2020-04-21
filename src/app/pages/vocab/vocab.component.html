@@ -95,7 +95,7 @@
                     <th class="border-rm middle-col">Arabic Audio</th>
                     <th class="col-type border-rl narrow-col">Entry Type</th>
                     <th class="border-rm narrow-col">Dialect</th>
-                    <!-- <th class="border-rm middle-col">Source</th> -->
+                    <th class="border-rl">Last Practiced</th>
                     <th class="border-rm">Tags</th>
                     <th *ngIf="bulkPlaylistMode"
                         class="border-rm all-playlists"></th>
@@ -121,10 +121,18 @@
                         [class.hasAudio]="defaultAudio(word)">
                         {{defaultText(word)}}
                     </td>
-                    <td class="col-type border-rl narrow-col">{{word.type}}</td>
-                    <td class="border-rm narrow-col">{{word.dialect}}</td>
-                    <!-- <td class="border-rm middle-col">{{word.source}}</td> -->
-                    <td class="border-rm">{{word.tags.join(', ')}}</td>
+                    <td class="col-type border-rl narrow-col">
+                        {{word.type}}
+                    </td>
+                    <td class="border-rm narrow-col">
+                        {{word.dialect}}
+                    </td>
+                    <td class="border-rl">
+                        {{lastPracticedText(word.lastPracticed, word.everPracticed)}}
+                    </td>
+                    <td class="border-rm">
+                        {{word.tags.join(', ')}}
+                    </td>
                     <td *ngIf="bulkPlaylistMode"
                         class="border-rm all-playlists">
                         <span *ngFor="let pList of word.memberships"

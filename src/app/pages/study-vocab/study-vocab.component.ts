@@ -33,14 +33,17 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
 
     // options
     options = {
-        autoPlayCount: 3,
-        answerDelay: 3,
+        autoPlayCount: 2,
+        answerDelay: 2,
         direction: 'AB',
         autoLoadNext: true,
         autoPlayAnswer: true,
         loopOnFinish: false,
         betweenA: 1.5,
-        betweenB: 2
+        betweenB: 2,
+        subset: 'subset-ten',
+        repetition: '2',
+        sorting: 'old'
     }
 
     cachedStype: string;
@@ -53,7 +56,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     showTextA: boolean;
     showTextB: boolean;
 
-
+    setLength: number;
     playlistSelectedId: string;
     tagSelected: string;
     masteredProbability: string;
@@ -86,13 +89,15 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         this.isSequencePlaying = false;
         this.showTextA = false;
         this.showTextB = false;
-        this.masteredProbability = '100';
+        this.masteredProbability = '0';
+        this.setLength = 0;
         this.audioPlayer.returnStatusSubject()
             .subscribe((val) => {
                 // console.log(val);
                 this.audioPlayerStatus = val;
                 if (val.message === 'COMPLETE') {
-                    this.isSequencePlaying = false; 
+                    this.isSequencePlaying = false;
+                    this.touchCurrentCard();
                     if (val.autoAdvance) {
                         this.nextCardTimeout = setTimeout(() => {
                             this.toNext();
@@ -120,6 +125,13 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
                 } else {
                     console.log('error');
                 }
+            })
+    }
+
+    touchCurrentCard() {
+        this.dataSource.touchVocab(this.focusWord)
+            .subscribe(res => {
+                console.log(res);
             })
     }
 
@@ -170,8 +182,17 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         this.playSequence(response);
     }
 
+    updateMastery(id: string, mastery: boolean) {
+        for (let i=0; i<this.words.length; i++) {
+            if (this.words[i]._id === id) {
+                this.words[i].mastered = mastery;
+            }
+        }
+    }
+
     markMastered() {
         this.focusWord.mastered = true;
+        this.updateMastery(this.focusWord._id, true);
         this.dataSource.updateVocab(this.focusWord)
             .subscribe(result => {
                 if (result.status === 'success') {
@@ -184,6 +205,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
 
     markNotMastered() {
         this.focusWord.mastered = false;
+        this.updateMastery(this.focusWord._id, false);
         this.dataSource.updateVocab(this.focusWord)
             .subscribe(result => {
                 if (result.status === 'success') {
@@ -196,11 +218,6 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
 
     toggleSwitch(switchName: string) {
         this.options[switchName] = !this.options[switchName];
-    }
-
-    saveSettings() {
-        this.showSettings = false;
-        this.showSelection = true;
     }
 
     showError(boldText: string, text: string) {
@@ -233,6 +250,16 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         }
     }
 
+    shuffleArray(inputArray: any[]){
+        for (let i=inputArray.length; i>0; i--) {
+            let r = Math.floor(Math.random() * (i - 1));
+            let a = inputArray[i - 1];
+            let b = inputArray[r];
+            inputArray[i - 1] = b;
+            inputArray[r] = a;
+        }
+    }
+
     toggleDebug() {
         this.showDebug = !this.showDebug;
     }
@@ -246,12 +273,53 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         } else if (sType === 'tag') {
             queryString = queryString + `&searchText=${this.tagSelected}&searchTarget=tags`;
         }
+        if (this.options.sorting == 'old') {
+            queryString = queryString + `&sorting=old`;
+        }
         this.dataSource.getVocab(queryString)
             .subscribe(response => {
                 if (response.status === 'success') {
                     this.words = this.applyProbabilityFilter(response.data);
+                    this.shuffleWords();
+                    if (this.options.subset != 'normal') {
+                        if (this.options.subset == 'subset-ten') {
+                            if (this.words.length > 10) {
+                                this.words.splice(10);
+                            }
+                        } else if (this.options.subset == 'subset-twenty') {
+                            if (this.words.length > 20) {
+                                this.words.splice(20);
+                            }
+                        }
+                    }
+                    this.setLength = this.words.length;
+                    let reps = parseInt(this.options.repetition);
+                    console.log(`reps: ${reps}`);
+                    if (reps > 1) {
+                        let rounds = [];
+                        let originals = this.words.slice();
+                        let lastIndex = originals.length - 1;
+                        rounds.push(originals.slice());
+                        console.log(`before reps loop: this.words has: ${this.words.length}`);
+                        for(let i=1; i<reps; i++){
+                            this.shuffleArray(originals);
+                            rounds.push(originals.slice());
+                            if (rounds[i - 1][lastIndex]._id == rounds[i][0]._id) {
+                                let a = rounds[i][0];
+                                let b = rounds[i][lastIndex];
+                                rounds[i][0] = b;
+                                rounds[i][lastIndex] = a;
+                            }
+                            console.log('rounds:');
+                            console.log(rounds);
+                            this.words = this.words.concat(rounds[i]);
+                            console.log('this.words');
+                            console.log(this.words);
+                        }
+                    }
                     this.isLoading = false;
                     this.showSelection = false;
+                    this.showSettings = false;
                     if (this.words.length === 0) {
                         this.showError('Error!', 'Zero results');
                     } else {
@@ -263,6 +331,16 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
                     this.showError('Error!', response.data);
                 }
             })
+    }
+
+    selectSubset(words: Word[], count: number): Word[] {
+        let subset = [];
+        let oCount = words.length;
+        if (oCount <= count) {
+            return subset;
+        }
+
+        return subset;
     }
 
     applyProbabilityFilter(words: Word[]): Word[] {
@@ -297,7 +375,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
 
     beginLearning() {
         this.focusIndex = 0;
-        this.shuffleWords();
+        // this.shuffleWords();
         this.loadWord();
     }
 
@@ -313,6 +391,9 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
                 // process completed - show stats or exit screen
                 this.showStudy = false;
                 this.showCompleted = true;
+                setTimeout(() => {
+                    location.reload();
+                }, 5000);
             }
         } else {
             this.loadWord();
@@ -380,11 +461,6 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
             isInitialSequence: false
         };
         sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
-        // if (this.currentCardAB) {
-        //     sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
-        // } else {
-        //     sequence.sourcesA = this.getAudioSourcesB(this.focusWord);
-        // }
         return sequence;
     }
 
@@ -401,11 +477,6 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
             autoAdvanceOnComplete: false,
             isInitialSequence: false
         };
-        // if (this.currentCardAB) {
-        //     sequence.sourcesA = this.getAudioSourcesB(this.focusWord);
-        // } else {
-        //     sequence.sourcesA = this.getAudioSourcesA(this.focusWord);
-        // }
         sequence.sourcesB = this.getAudioSourcesB(this.focusWord);
         return sequence;
     }
