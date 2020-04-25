@@ -34,7 +34,9 @@ export class DefaultComponent implements OnInit, EditorInterface, OnDestroy {
 
     toggleMastered() { }
 
-    saveEdit() { }
+    saveEdit(multipleEdits: boolean) {
+        console.log(multipleEdits);
+    }
 
     cancelEdit() {
         this.editorEvent.emit({action: 'cancel', data: {}});

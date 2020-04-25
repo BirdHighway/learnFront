@@ -17,6 +17,7 @@
                         <th class="arabic-header">Arabic Past</th>
                         <th class="arabic-header">Arabic Pres</th>
                         <th class="status-col">Status</th>
+                        <th class="last-practiced">Last Practiced</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,6 +42,9 @@
                         </td>
                         <td class="status-col">
                             {{verb.status}}
+                        </td>
+                        <td class="last-practiced">
+                            {{lastPracticedText(verb.lastPracticed, verb.everPracticed)}}
                         </td>
                     </tr>
                 </tbody>

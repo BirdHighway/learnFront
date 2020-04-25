@@ -33,17 +33,19 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
 
     // options
     options = {
-        autoPlayCount: 2,
-        answerDelay: 2,
+        autoPlayCount: '2',
+        answerDelay: '2.5',
         direction: 'AB',
         autoLoadNext: true,
         autoPlayAnswer: true,
+        onlyMastered: false,
         loopOnFinish: false,
-        betweenA: 1.5,
-        betweenB: 2,
-        subset: 'subset-ten',
+        betweenA: '1.5',
+        betweenB: '2',
+        subset: 'subset-12',
         repetition: '2',
-        sorting: 'old'
+        sorting: 'old',
+        beforeNext: '2.5'
     }
 
     cachedStype: string;
@@ -101,7 +103,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
                     if (val.autoAdvance) {
                         this.nextCardTimeout = setTimeout(() => {
                             this.toNext();
-                        }, 2500);
+                        }, (parseInt(this.options.beforeNext) * 1000));
                     }
                 }
                 if (val.message === 'KILL_SEQUENCE') {
@@ -196,9 +198,9 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         this.dataSource.updateVocab(this.focusWord)
             .subscribe(result => {
                 if (result.status === 'success') {
-                    this.showInfo('markMastered() succeded', result.data.mastered);
+                    console.log(result);
                 } else {
-                    this.showError('markMastered() failed', result.data);
+                    console.error(result);
                 }
             })
     }
@@ -276,22 +278,21 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         if (this.options.sorting == 'old') {
             queryString = queryString + `&sorting=old`;
         }
+        if (this.options.onlyMastered) {
+            queryString = queryString + `&status=mastered`;
+        }
+        if (this.options.subset !== 'normal') {
+            if (this.options.subset === 'subset-12') {
+                queryString = queryString + `&subset=12`;
+            } else if (this.options.subset === 'subset-24') {
+                queryString = queryString + `&subset=24`;
+            }
+        }
         this.dataSource.getVocab(queryString)
             .subscribe(response => {
                 if (response.status === 'success') {
                     this.words = this.applyProbabilityFilter(response.data);
                     this.shuffleWords();
-                    if (this.options.subset != 'normal') {
-                        if (this.options.subset == 'subset-ten') {
-                            if (this.words.length > 10) {
-                                this.words.splice(10);
-                            }
-                        } else if (this.options.subset == 'subset-twenty') {
-                            if (this.words.length > 20) {
-                                this.words.splice(20);
-                            }
-                        }
-                    }
                     this.setLength = this.words.length;
                     let reps = parseInt(this.options.repetition);
                     console.log(`reps: ${reps}`);
@@ -344,6 +345,9 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     }
 
     applyProbabilityFilter(words: Word[]): Word[] {
+        if (this.options.onlyMastered) {
+            return words;
+        }
         let selectedProbability = parseInt(this.masteredProbability);
         if (selectedProbability == 100) {
             console.log('100%, returning all words');
@@ -375,8 +379,8 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
 
     beginLearning() {
         this.focusIndex = 0;
-        // this.shuffleWords();
         this.loadWord();
+        console.log(this.options);
     }
 
     toNext() {
@@ -412,16 +416,17 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
             this.currentCardAB = Math.random() < .5;
         }
         let initialSequence = this.generateInitialSequence();
+        console.log(initialSequence);
         this.playSequence(initialSequence);
     }
 
     generateInitialSequence(): SequenceOptions {
         let sequence = {
             playCountA: 1,
-            playCountB: this.options.autoPlayCount,
-            betweenA: this.options.betweenA,
-            beforeAnswer: this.options.answerDelay,
-            betweenB: this.options.betweenB,
+            playCountB: parseInt(this.options.autoPlayCount),
+            betweenA: parseInt(this.options.betweenA),
+            beforeAnswer: parseInt(this.options.answerDelay),
+            betweenB: parseInt(this.options.betweenB),
             sourcesA: [],
             sourcesB: [],
             directionAB: this.currentCardAB,
@@ -451,9 +456,9 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         let sequence = {
             playCountA: 1,
             playCountB: 0,
-            betweenA: this.options.betweenA,
+            betweenA: parseInt(this.options.betweenA),
             beforeAnswer: 0,
-            betweenB: this.options.betweenB,
+            betweenB: parseInt(this.options.betweenB),
             sourcesA: [],
             sourcesB: [],
             directionAB: this.currentCardAB,
@@ -468,9 +473,9 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         let sequence = {
             playCountA: 0,
             playCountB: 1,
-            betweenA: this.options.betweenA,
+            betweenA: parseInt(this.options.betweenA),
             beforeAnswer: 0,
-            betweenB: this.options.betweenB,
+            betweenB: parseInt(this.options.betweenB),
             sourcesA: [],
             sourcesB: [],
             directionAB: this.currentCardAB,

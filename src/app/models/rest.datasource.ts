@@ -26,6 +26,11 @@ export class RestDataSource {
         return this.http.patch<ApiResponse>(this.baseUrl + 'verbs/', verb);
     }
 
+    touchVerb(id: string): Observable<ApiResponse> {
+        console.log('touchVerb()');
+        return this.http.patch<ApiResponse>(this.baseUrl + 'verbs/touch', {_id: id});
+    }
+
     getVocab(queryString: string): Observable<ApiResponse> {
         return this.http.get<ApiResponse>(this.baseUrl + 'vocab/?' + queryString);
     }
@@ -44,6 +49,10 @@ export class RestDataSource {
 
     touchVocab(word: Word): Observable<ApiResponse> {
         return this.http.patch<ApiResponse>(this.baseUrl + `vocab/touch`, word);
+    }
+
+    touchVocabB(word: Word): Observable<ApiResponse> {
+        return this.http.patch<ApiResponse>(this.baseUrl + `vocab/touch-b`, word);
     }
 
     getPlaylists(): Observable<ApiResponse> {

@@ -5,7 +5,7 @@ import { Playlist } from './playlist.model';
 export interface EditorInterface {
     ngOnDestroy(),
     toggleMastered(),
-    saveEdit(),
+    saveEdit(multipleEdits: boolean),
     cancelEdit(),
     editorEvent: EventEmitter<EditorEvent>,
     data: any,

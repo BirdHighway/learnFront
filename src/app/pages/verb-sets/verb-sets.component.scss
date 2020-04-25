@@ -38,13 +38,15 @@ th {
 
 th.eng-col,
 th.eng-audio,
-th.arabic-header {
+th.arabic-header,
+th.status-col {
     border-right: 1px solid #aaa;
 }
 
 td.eng-col,
 td.eng-audio,
-td.arabic-text {
+td.arabic-text,
+td.status-col {
     border-right: 2px solid #aaa;
 }
 

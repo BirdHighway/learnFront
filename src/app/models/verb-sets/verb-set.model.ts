@@ -9,7 +9,9 @@ export class VerbSet {
         public a_audio_base?: string,
         public status?: string,
         public a_pres_text?: VerbTense,
-        public a_past_text?: VerbTense
+        public a_past_text?: VerbTense,
+        public everPracticed?: boolean,
+        public lastPracticed?: string
     ) { }
 
 }

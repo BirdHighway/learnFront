@@ -1,29 +1,29 @@
-.type-selection-row {
-    padding-top: 1rem;
-    padding-bottom: 2rem;
-    border-top: 1px solid #888;
-    border-bottom: 1px solid #888;
-}
-
 h2.select-header {
     margin-top: 1rem;
     margin-bottom: 2rem;
     font-weight: 300;
 }
 
-.choices-container {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+
+.type-selection-row {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #888;
 }
 
-.btn-standard {
-    margin-right: 1rem;
-    width: 200px;
+.buttons-row {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.buttons-row .btn-standard,
+.default-cancel-row .btn-standard {
+    width: 100%;
 }
 
 .default-cancel-row {
     margin-bottom: 2rem;
     padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding-bottom: 4rem;
     border-bottom: 1px solid #888;
 }

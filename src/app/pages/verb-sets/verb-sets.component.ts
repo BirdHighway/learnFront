@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { VerbSet } from 'src/app/models/verb-sets/verb-set.model';
 import { RestDataSource } from 'src/app/models/rest.datasource';
 import { AudioPlayerService } from 'src/app/services/audioPlayer';
+import { formatDate } from '@angular/common';
 
 @Component({
     selector: 'app-verb-sets',
@@ -14,7 +15,8 @@ export class VerbSetsComponent implements OnInit {
 
     constructor(
         private dataSource: RestDataSource,
-        private audioService: AudioPlayerService
+        private audioService: AudioPlayerService,
+        @Inject(LOCALE_ID) private locale: string
     ) { }
 
     ngOnInit() {
@@ -39,4 +41,13 @@ export class VerbSetsComponent implements OnInit {
         let src = `verbs/english/${engFile}`;
         this.audioService.playFromSource(src);
     }
+
+    lastPracticedText(last: string, ever: boolean): string {
+        if (ever) {
+            return formatDate(new Date(last), 'MMM d, h:mm a', this.locale);
+        } else {
+            return '-';
+        }
+    }
+
 }

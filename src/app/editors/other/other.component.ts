@@ -31,7 +31,7 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
         if (this.data.tags) {
             this.tagString = this.data.tags.join(', ');
         } else {
-            this.tagString = 'adverbs';
+            this.tagString = '';
         }
         this.savePending = false;
         if (!this.data.data_other) {
@@ -70,7 +70,7 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
         this.editorEvent.emit({action: 'audio-preview', data: src});
     }
 
-    saveEdit() {
+    saveEdit(multipleEdits: boolean) {
         this.savePending = true;
         this.data.tags = this.tagString.replace(' ', '').split(',');
         this.saveDivText = 'Saving edit...';
@@ -89,7 +89,8 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
                 if (data.status === 'success') {
                     this.editorEvent.emit({action: 'save', data: {
                         lastEnglish: lastEnglish,
-                        lastArabic: lastArabic
+                        lastArabic: lastArabic,
+                        multipleEdits: multipleEdits
                     }});
                 } else {
                     this.saveDivText = 'Error: ' + data.data;

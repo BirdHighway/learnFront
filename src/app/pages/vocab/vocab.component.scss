@@ -68,8 +68,7 @@ li.page-item:hover {
 }
 
 .load-create-row {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .bulk-mode-row button {
@@ -90,4 +89,13 @@ li.page-item:hover {
 
 .playlist-span {
     display: block;
+}
+
+td.arabic-text {
+    font-size: 100%;
+}
+
+table td {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
 }

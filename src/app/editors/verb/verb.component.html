@@ -80,7 +80,7 @@
                 <label>Past, 3rd Person Sing Text</label>
                 <input [(ngModel)]="data.data_verb.a_past_3sm_text"
                     [disabled]="savePending"
-                    (keyup.enter)="previewAudio('a_pres_3sm_audio')"
+                    (keyup.enter)="previewAudio('a_past_3sm_audio')"
                     class="form-control arabic-text">
             </div>
             <div class="form-group">
@@ -119,7 +119,14 @@
 
     <div class="row controls-row">
         <div class="col">
-            <button (click)="saveEdit()"
+            <button (click)="saveEdit(true)"
+                [disabled]="savePending"
+                class="btn btn-success control-btn">
+                Save and Create New
+            </button>
+        </div>
+        <div class="col">
+            <button (click)="saveEdit(false)"
                 [disabled]="savePending"
                 class="btn btn-primary control-btn">
                 Save

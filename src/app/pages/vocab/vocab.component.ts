@@ -13,8 +13,7 @@ import { AudioPlayerService } from 'src/app/services/audioPlayer';
 import { PaginationObject } from 'src/app/models/pagination.model';
 import { Playlist } from 'src/app/models/playlist.model';
 import { ActivatedRoute } from '@angular/router';
-import { AdjectiveWord } from 'src/app/models/words/adjective-word.model';
-import { DatePipe, formatDate } from '@angular/common';
+import { formatDate } from '@angular/common';
 
 @Component({
     selector: 'app-vocab',
@@ -34,6 +33,8 @@ export class VocabComponent implements OnInit, OnDestroy {
     searchText: string;
     searchTarget: string;
     excludeTag: string;
+    filterStatus: string;
+    sortBy: string;
     playlists: Playlist[];
     playlistSelected: string;
     queryPlaylistName: string;
@@ -67,6 +68,8 @@ export class VocabComponent implements OnInit, OnDestroy {
         this.searchText = '';
         this.searchTarget = 'tags';
         this.excludeTag = 'none';
+        this.filterStatus = 'all';
+        this.sortBy = 'default';
         this.playlists = [];
         this.playlistSelected = 'none';
         this.queryPlaylistName = '';
@@ -164,18 +167,24 @@ export class VocabComponent implements OnInit, OnDestroy {
                 this.showEntriesTable = true;
                 this.showEntriesFilter = true;
             }
+            if (event.action === 'audio-preview') {
+                this.playAudio(event.data);
+            }
+            if (event.action === 'delete') {
+                componentRef.destroy();
+                this.showEntriesTable = true;
+                this.showEntriesFilter = true;
+                this.loadEntries();
+            }
             if (event.action === 'save') {
                 this.lastEnglishAudioFile = this.incrementAudioFile(event.data.lastEnglish);
                 this.lastArabicAudioFile = this.incrementAudioFile(event.data.lastArabic);
                 componentRef.destroy();
                 this.showEntriesTable = true;
                 this.showEntriesFilter = true;
-            }
-            if (event.action === 'audio-preview') {
-                this.playAudio(event.data);
-            }
-            if (event.action === 'delete') {
-                this.loadEntries();
+                if (event.data.multipleEdits) {
+                    this.createNewVocab();
+                }
             }
         });
     }
@@ -218,7 +227,7 @@ export class VocabComponent implements OnInit, OnDestroy {
     }
 
     makeQueryString(pageNumber: number): string {
-        let queryString = `page=${pageNumber}&category=${this.categoryFilter}`;
+        let queryString = `page=${pageNumber}&category=${this.categoryFilter}&status=${this.filterStatus}`;
         if (this.searchText.length) {
             let encodedSearch = encodeURIComponent(this.searchText);
             queryString += `&searchText=${encodedSearch}&searchTarget=${this.searchTarget}`;
@@ -228,6 +237,9 @@ export class VocabComponent implements OnInit, OnDestroy {
         }
         if (this.playlistSelected !== 'none') {
             queryString += `&playlist=${this.playlistSelected}`;
+        }
+        if (this.sortBy !== 'default') {
+            queryString += `&sorting=${this.sortBy}`;
         }
         return queryString;
     }
@@ -273,8 +285,8 @@ export class VocabComponent implements OnInit, OnDestroy {
     }
 
     englishText(fullText: string): string {
-        if (fullText && fullText.length > 25) {
-            return fullText.substr(0,25) + '...';
+        if (fullText && fullText.length > 18) {
+            return fullText.substr(0,18) + '...';
         } else {
             return fullText;
         }
@@ -312,18 +324,27 @@ export class VocabComponent implements OnInit, OnDestroy {
     }
 
     defaultText(word: Word): string {
+        let text = '';
         switch(word.type) {
             case 'noun':
-                return word.data_noun.a_sing_text;
+                text = word.data_noun.a_sing_text;
+                break;
             case 'verb':
-                return word.data_verb.a_past_3sm_text;
+                text = word.data_verb.a_past_3sm_text;
+                break;
             case 'adjective':
-                return word.data_adj.a_masc_text;
+                text = word.data_adj.a_masc_text;
+                break;
             case 'other':
-                return word.data_other.a_word_text;
+                text = word.data_other.a_word_text;
+                break;
             default:
-                return '';
+                text = '';
         }
+        if (text.length > 30) {
+            return '...' + text.substr(0,30);
+        }
+        return text;
     }
 
     playAudio(audioString: string) {

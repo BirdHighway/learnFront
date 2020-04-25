@@ -30,6 +30,8 @@ export class NounComponent implements OnInit, EditorInterface, OnDestroy {
         this.isWordMastered = this.data.mastered;
         if (this.data.tags) {
             this.tagString = this.data.tags.join(', ');
+        } else {
+            this.tagString = '';
         }
         this.savePending = false;
         if (!this.data.data_noun) {
@@ -66,7 +68,7 @@ export class NounComponent implements OnInit, EditorInterface, OnDestroy {
         }
     }
 
-    saveEdit() {
+    saveEdit(multipleEdits: boolean) {
         this.savePending = true;
         this.data.tags = this.tagString.replace(' ', '').split(',');
         this.saveDivText = 'Saving edit...';
@@ -83,7 +85,8 @@ export class NounComponent implements OnInit, EditorInterface, OnDestroy {
                 if (data.status === 'success') {
                     this.editorEvent.emit({action: 'save', data: {
                         lastEnglish: lastEnglish,
-                        lastArabic: lastArabic
+                        lastArabic: lastArabic,
+                        multipleEdits: multipleEdits
                     }});
                 } else {
                     this.saveDivText = 'Error: ' + data.data;

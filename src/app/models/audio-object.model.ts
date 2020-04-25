@@ -26,4 +26,8 @@ export class AudioObject {
         this.index = index;
         this.isSideA = isSideA;
     }
+
+    setDelay(delay: number) {
+        this.delay = delay;
+    }
 }

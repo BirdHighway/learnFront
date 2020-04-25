@@ -48,6 +48,8 @@
                     Auto-Load Next
                 </label>
             </div>
+        </div>
+        <div class="col">
             <div class="custom-control custom-switch">
                 <input [checked]="options.autoPlayAnswer"
                     (click)="toggleSwitch('autoPlayAnswer')"
@@ -58,6 +60,20 @@
                     Auto-Play Answer
                 </label>
             </div>
+        </div>
+        <div class="col">
+            <div class="custom-control custom-switch">
+                <input [checked]="options.onlyMastered"
+                    (click)="toggleSwitch('onlyMastered')"
+                    id="onlyMastered"
+                    type="checkbox"
+                    class="custom-control-input">
+                <label class="custom-control-label" for="onlyMastered">
+                    Study Mastered Only
+                </label>
+            </div>
+        </div>
+        <div class="col">
             <div class="custom-control custom-switch">
                 <input [checked]="options.loopOnFinish"
                     (click)="toggleSwitch('loopOnFinish')"
@@ -69,34 +85,8 @@
                 </label>
             </div>
         </div>
-        <div class="col">
-            <div class="form-group">
-                <label>Auto-Play Count</label>
-                <select [(ngModel)]="options.autoPlayCount"
-                    class="form-control">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                </select>
-            </div>
-        </div>
-        <div class="col">
-            <div class="form-group">
-                <label>Answer Delayed</label>
-                <select [(ngModel)]="options.answerDelay"
-                    class="form-control">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                </select>
-            </div>
-        </div>
+    </div>
+    <div class="row">
         <div class="col">
             <div class="form-group">
                 <label>Direction</label>
@@ -108,30 +98,85 @@
                 </select>
             </div>
         </div>
-
-    </div>
-    <div class="row configuration-row-2">
         <div class="col">
             <div class="form-group">
-                <label>Show Known Vocab % of Time</label>
-                <select [(ngModel)]="masteredProbability"
+                <label>Play Answer __ Times</label>
+                <select [(ngModel)]="options.autoPlayCount"
                     class="form-control">
-                    <option value="0">Never</option>
-                    <option value="25">25% Probability</option>
-                    <option value="50">50% Probability</option>
-                    <option value="75">75% Probability</option>
-                    <option value="100">Always</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+        </div>
+        <div class="col"></div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label>Time Before Answer</label>
+                <select [(ngModel)]="options.answerDelay"
+                    class="form-control">
+                    <option value="0">0.0</option>
+                    <option value="0.5">0.5</option>
+                    <option value="1">1.0</option>
+                    <option value="1.5">1.5</option>
+                    <option value="2">2.0</option>
+                    <option value="2.5">2.5</option>
+                    <option value="3">3.0</option>
+                    <option value="3.5">3.5</option>
+                    <option value="4">4.0</option>
+                    <option value="10">10.0</option>
                 </select>
             </div>
         </div>
         <div class="col">
             <div class="form-group">
-                <label>Focus on Random Subset?</label>
+                <label>Time Between Answers</label>
+                <select [(ngModel)]="options.betweenB"
+                    class="form-control">
+                    <option value="0.5">0.5</option>
+                    <option value="1">1.0</option>
+                    <option value="1.5">1.5</option>
+                    <option value="2">2.0</option>
+                    <option value="2.5">2.5</option>
+                    <option value="3">3.0</option>
+                    <option value="3.5">3.5</option>
+                    <option value="10.0">10.0</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Time Before Next Card</label>
+                <select [(ngModel)]="options.beforeNext"
+                    class="form-control">
+                    <option value="0.5">0.5</option>
+                    <option value="1">1.0</option>
+                    <option value="1.5">1.5</option>
+                    <option value="2">2.0</option>
+                    <option value="2.5">2.5</option>
+                    <option value="3">3.0</option>
+                    <option value="3.5">3.5</option>
+                    <option value="10">10.0</option>
+                </select>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row configuration-row-2">
+        <div class="col">
+            <div class="form-group">
+                <label>Subset Size</label>
                 <select [(ngModel)]="options.subset"
                     class="form-control">
-                    <option value="normal">No</option>
-                    <option value="subset-ten">Subset of 10</option>
-                    <option value="subset-twenty">Subset of 20</option>
+                    <option value="normal">All</option>
+                    <option value="subset-12">Subset of 12</option>
+                    <option value="subset-24">Subset of 24</option>
                 </select>
             </div>
         </div>
@@ -154,6 +199,20 @@
                     class="form-control">
                     <option value="old">Favor Unpracticed</option>
                     <option value="none">No Sorting</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div *ngIf="!options.onlyMastered"
+                class="form-group">
+                <label>Show Known Vocab % of Time</label>
+                <select [(ngModel)]="masteredProbability"
+                    class="form-control">
+                    <option value="0">Never</option>
+                    <option value="25">25% Probability</option>
+                    <option value="50">50% Probability</option>
+                    <option value="75">75% Probability</option>
+                    <option value="100">Always</option>
                 </select>
             </div>
         </div>
@@ -295,7 +354,7 @@
                         <td *ngFor="let word of words; let i = index;"
                             [class.completed-word]="i < focusIndex"
                             [class.current-word]="i == focusIndex"
-                            [class.border-word]="((i + 1) % 10) == 0"
+                            [class.border-word]="((i + 1) % 12) == 0"
                         ></td>
                     </tr>
                 </tbody>
