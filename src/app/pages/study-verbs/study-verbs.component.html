@@ -33,6 +33,22 @@
             </div>
         </div>
         <div class="col">
+            <div *ngIf="advanceMethod != 'manual'"
+                class="form-group">
+                <label>Rounds</label>
+                <select [(ngModel)]="rounds"
+                    class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <div class="col">
             <div class="form-group">
                 <label>Select Material:</label>
                 <select [(ngModel)]="selectMaterial"
@@ -57,6 +73,8 @@
                 </select>
             </div>
         </div>
+        <div class="col"></div>
+        <div class="col"></div>
     </div>
     <div class="row controls-row">
         <div class="col">

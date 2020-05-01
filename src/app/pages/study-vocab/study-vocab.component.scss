@@ -54,6 +54,10 @@ div.custom-switch {
     margin-bottom: 1rem;
 }
 
+#study {
+    margin-top: 2rem;
+}
+
 table.progress-table {
     width: 100%;
     border: 1px solid black;
@@ -77,6 +81,27 @@ table.progress-table {
     }
 }
 
+table.repetition-progress {
+    width: 100%;
+    border: 1px solid black;
+    td {
+        height: 40px;
+        border: 1px solid black;
+    }
+    td.none {
+        background-color: #e2e3e5;
+    }
+    td.once {
+        background-color: yellow;
+    }
+    td.twice {
+        background-color: #d4edda;
+    }
+    td.error {
+        background-color: red;
+    }
+}
+
 
 td.completed-word {
     background-color: #c3e6cb;
@@ -87,7 +112,7 @@ td.current-word {
 }
 
 .toggle-debug-row {
-    margin-top: 1rem;
+    margin-top: 4rem;
 }
 
 .toggle-debug-row button {

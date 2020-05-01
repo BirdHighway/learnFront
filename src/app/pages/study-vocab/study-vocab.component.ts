@@ -60,6 +60,13 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
 
     setLength: number;
     playlistSelectedId: string;
+    playlistSelectedIdRepetition: string;
+    studyPath: string;
+    blockGroups;
+    blockProgress;
+    groupIndex: number;
+    subGroupIndex: number;
+    groupCounter: number;
     tagSelected: string;
     masteredProbability: string;
 
@@ -86,6 +93,8 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         this.focusIndex = 0;
         this.focusWord = null;
         this.playlistSelectedId = 'none';
+        this.playlistSelectedIdRepetition = 'none';
+        this.studyPath = '';
         this.tagSelected = '';
         this.isPaused = false;
         this.isSequencePlaying = false;
@@ -93,6 +102,11 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         this.showTextB = false;
         this.masteredProbability = '0';
         this.setLength = 0;
+        this.blockGroups = [];
+        this.blockProgress = [];
+        this.groupIndex = 0;
+        this.subGroupIndex = 0;
+        this.groupCounter = 0;
         this.audioPlayer.returnStatusSubject()
             .subscribe((val) => {
                 // console.log(val);
@@ -267,9 +281,14 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     }
 
     selectMaterial(sType: string) {
+        if (sType === 'playlist-repetition') {
+            this.studyPath = 'repetition';
+        } else {
+            this.studyPath = 'normal';
+        }
         this.cachedStype = sType;
         this.isLoading = true;
-        let queryString = `limit=0`;
+        let queryString = `limit=100`;
         if (sType === 'playlist') {
             queryString = queryString + `&playlist=${this.playlistSelectedId}`;
         } else if (sType === 'tag') {
@@ -281,43 +300,82 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         if (this.options.onlyMastered) {
             queryString = queryString + `&status=mastered`;
         }
+        if (sType === 'playlist' && (this.playlistSelectedId === 'all-members-last-practiced')) {
+            queryString = `group=all-last-p`;
+        }
         if (this.options.subset !== 'normal') {
             if (this.options.subset === 'subset-12') {
                 queryString = queryString + `&subset=12`;
             } else if (this.options.subset === 'subset-24') {
                 queryString = queryString + `&subset=24`;
+            } else if (this.options.subset === 'subset-36') {
+                queryString = queryString + `&subset=36`;
+            } else if (this.options.subset === 'subset-48') {
+                queryString = queryString + `&subset=48`;
             }
         }
-        this.dataSource.getVocab(queryString)
+        if (sType === 'playlist-repetition') {
+            if (this.playlistSelectedId == 'none') {
+                queryString = `limit=30&sorting=old&status=not-mastered`;
+            } else {
+                queryString = `limit=30&sorting=old&status=not-mastered&playlist=${this.playlistSelectedId}`;
+            }
+        }
+        let randomLimit;
+        if (sType === 'playlist' &&  (this.playlistSelectedId === 'random')) {
+            queryString = 'random';
+            switch(this.options.subset) {
+                case 'subset-12':
+                    randomLimit = 12;
+                    break;
+                case 'subset-24':
+                    randomLimit = 24;
+                    break;
+                case 'subset-36':
+                    randomLimit = 36;
+                    break;
+                case 'subset-48':
+                    randomLimit = 48;
+                    break;
+                default:
+                    randomLimit = 50;
+            }
+        }
+        this.dataSource.getVocab(queryString, randomLimit)
             .subscribe(response => {
                 if (response.status === 'success') {
                     this.words = this.applyProbabilityFilter(response.data);
                     this.shuffleWords();
-                    this.setLength = this.words.length;
-                    let reps = parseInt(this.options.repetition);
-                    console.log(`reps: ${reps}`);
-                    if (reps > 1) {
-                        let rounds = [];
-                        let originals = this.words.slice();
-                        let lastIndex = originals.length - 1;
-                        rounds.push(originals.slice());
-                        console.log(`before reps loop: this.words has: ${this.words.length}`);
-                        for(let i=1; i<reps; i++){
-                            this.shuffleArray(originals);
+                    if (this.studyPath === 'repetition') {
+                        this.repetitionPathSetUp();
+                    } else {
+                        this.setLength = this.words.length;
+                        let reps = parseInt(this.options.repetition);
+                        console.log(`reps: ${reps}`);
+                        if (reps > 1) {
+                            let rounds = [];
+                            let originals = this.words.slice();
+                            let lastIndex = originals.length - 1;
                             rounds.push(originals.slice());
-                            if (rounds[i - 1][lastIndex]._id == rounds[i][0]._id) {
-                                let a = rounds[i][0];
-                                let b = rounds[i][lastIndex];
-                                rounds[i][0] = b;
-                                rounds[i][lastIndex] = a;
+                            console.log(`before reps loop: this.words has: ${this.words.length}`);
+                            for(let i=1; i<reps; i++){
+                                this.shuffleArray(originals);
+                                rounds.push(originals.slice());
+                                if (rounds[i - 1][lastIndex]._id == rounds[i][0]._id) {
+                                    let a = rounds[i][0];
+                                    let b = rounds[i][lastIndex];
+                                    rounds[i][0] = b;
+                                    rounds[i][lastIndex] = a;
+                                }
+                                console.log('rounds:');
+                                console.log(rounds);
+                                this.words = this.words.concat(rounds[i]);
+                                console.log('this.words');
+                                console.log(this.words);
                             }
-                            console.log('rounds:');
-                            console.log(rounds);
-                            this.words = this.words.concat(rounds[i]);
-                            console.log('this.words');
-                            console.log(this.words);
                         }
                     }
+
                     this.isLoading = false;
                     this.showSelection = false;
                     this.showSettings = false;
@@ -334,14 +392,25 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
             })
     }
 
-    selectSubset(words: Word[], count: number): Word[] {
-        let subset = [];
-        let oCount = words.length;
-        if (oCount <= count) {
-            return subset;
+    repetitionPathSetUp() {
+        let l = this.words.length;
+        if (l < 30) {
+            this.showError('Error', 'Not enough words in returned set to continue set up');
+            throw new Error();
         }
-
-        return subset;
+        let blockCount = l / 3;
+        for (let i=0; i<blockCount; i++) {
+            this.blockGroups.push([]);
+            this.blockProgress.push([]);
+        }
+        console.log(this.blockGroups);
+        for (let i=0; i<l; i++) {
+            let w = this.words[i];
+            let index = i % blockCount;
+            this.blockGroups[index].push(w);
+            this.blockProgress[index].push(0);
+        }
+        console.log(this.blockGroups);
     }
 
     applyProbabilityFilter(words: Word[]): Word[] {
@@ -384,29 +453,76 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     }
 
     toNext() {
+        console.log('toNext()');
         this.focusIndex++;
-        if (this.focusIndex > this.words.length - 1) {
-            if (this.options.loopOnFinish) {
-                // restart from beginning after shuffle
-                this.showStudy = false;
-                this.isLoading = true;
-                this.selectMaterial(this.cachedStype);
-            } else {
-                // process completed - show stats or exit screen
-                this.showStudy = false;
-                this.showCompleted = true;
-                setTimeout(() => {
-                    location.reload();
-                }, 5000);
+        if (this.studyPath === 'repetition') {
+            console.log('repetition path');
+            this.subGroupIndex++
+            let doContinue = true;
+            if (this.subGroupIndex === 3) {
+                this.subGroupIndex = 0;
+                this.groupCounter++;
+                if (this.groupCounter < 2) {
+                    this.groupIndex++;
+                } else if (this.groupCounter == (this.blockGroups.length * 2)) {
+                    // finished
+                    this.showStudy = false;
+                    this.showCompleted = true;
+                    doContinue = false;
+                } else if (this.groupCounter > ((this.blockGroups.length * 2) - 3)) {
+                    // the last two groups
+                    this.groupIndex++;
+                    this.shuffleArray(this.blockGroups[this.groupIndex]);
+                } else if ((this.groupCounter % 2) === 0) {
+                    // even numbers
+                    this.groupIndex = (this.groupCounter / 2) + 1;
+                    this.shuffleArray(this.blockGroups[this.groupIndex]);
+                } else if ((this.groupCounter % 2) === 1) {
+                    // odd numbers
+                    this.groupIndex = (this.groupCounter - 3) / 2;
+                    this.shuffleArray(this.blockGroups[this.groupIndex]);
+                } else {
+                    console.error('This should never happen');
+                    doContinue = false;
+                }
+            }
+            if (doContinue) {
+                this.loadWord();
             }
         } else {
-            this.loadWord();
+            if (this.focusIndex > this.words.length - 1) {
+                if (this.options.loopOnFinish) {
+                    // restart from beginning after shuffle
+                    this.showStudy = false;
+                    this.isLoading = true;
+                    this.selectMaterial(this.cachedStype);
+                } else {
+                    // process completed - show stats or exit screen
+                    this.showStudy = false;
+                    this.showCompleted = true;
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                }
+            } else {
+                this.loadWord();
+            }
+        }
+    }
+
+    getNextWord(): Word {
+        if (this.studyPath === 'repetition') {
+            this.blockProgress[this.groupIndex][this.subGroupIndex]++;
+            return this.blockGroups[this.groupIndex][this.subGroupIndex];
+        } else {
+            return this.words[this.focusIndex];
         }
     }
 
     loadWord() {
         let word = new Word();
-        Object.assign(word, this.words[this.focusIndex]);
+        // Object.assign(word, this.words[this.focusIndex]);
+        Object.assign(word, this.getNextWord());
         this.focusWord = word;
         if (this.options.direction === 'AB') {
             this.currentCardAB = true;

@@ -123,54 +123,40 @@
                 id="entries-table">
                 <thead>
                     <tr>
-                        <th class="border-rl">Last Practiced</th>
-                        <th class="col-eng-text border-rl">Eng Text</th>
+                        <th class="border-rm">Last Practiced</th>
+                        <th class="col-eng-text border-rl">English</th>
+                        <th class="border-rm middle-col">Arabic</th>
+                        <th class="border-rl">Edit</th>
                         <th class="border-rl">Type</th>
-                        <th class="border-rl middle-col">Arabic Audio</th>
-                        <th class="">Playlists</th>
-                        <th *ngIf="bulkPlaylistMode"
-                            class="border-rm all-playlists"></th>
+                        <th class="">Playlist</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let word of words"
                         [class.table-success]="word.mastered"
                     >
-                        <td class="border-rl">
+                        <td class="border-rm">
                             {{lastPracticedText(word.lastPracticed, word.everPracticed)}}
                         </td>
-                        <td (click)="edit(word)"
-                            class="col-eng-text border-rl">
-                            {{englishText(word.eng_text)}}
-                        </td>
                         <td (click)="playAudio(word.eng_audio)"
-                            class="border-rl"
-                            [class.hasAudio]="word.eng_audio"
-                            >
-                            {{word.type}}
+                            class="col-eng-text border-rl"
+                            [class.hasAudio]="word.eng_audio">
+                            {{englishText(word.eng_text)}}
                         </td>
                         <td (click)="playAudio(defaultAudio(word))"
                             class="border-rm middle-col arabic-text"
                             [class.hasAudio]="defaultAudio(word)">
                             {{defaultText(word)}}
                         </td>
-                        <td *ngIf="bulkPlaylistMode"
-                            class="border-rl all-playlists">
-                            <span *ngFor="let pList of word.memberships"
-                                class="playlist-span">
-                                {{pList.playlist_name}}
-                            </span>
+                        <td (click)="edit(word)"
+                            class="border-rl edit-link-col">
+                            edit
                         </td>
-                        <td (click)="addToBulk(word)"
-                            [class.bulk-selected]="word.bulkSelected"
-                            class="playlist-col">
-                            <div *ngIf="!bulkPlaylistMode">
-                                <span *ngFor="let pList of word.memberships"
-                                    class="playlist-span">
-                                    {{pList.playlist_name}}
-                                </span>
-                            </div>
-
+                        <td class="border-rl">
+                            {{word.type}}
+                        </td>
+                        <td class="playlist-col">
+                            {{word.playlist.playlist_name}}
                         </td>
                     </tr>
                 </tbody>
@@ -199,46 +185,6 @@
 <div *ngIf="showEntriesFilter"
     class="container">
     <div class="row bulk-mode-row">
-        <div class="col">
-            <div *ngIf="!bulkPlaylistMode">
-                <select [(ngModel)]="bulkPlaylistId"
-                    class="form-control">
-                    <option *ngFor="let list of playlists"
-                        value="{{list._id}}">
-                        {{list.name}}
-                    </option>
-                </select>
-            </div>
-            <div *ngIf="bulkPlaylistMode">
-                <h3 class="playlist-selected-text">{{bulkPlaylistName}}</h3>
-            </div>
-        </div>
-        <div class="col">
-            <div *ngIf="!bulkPlaylistMode"
-                class="bulk-playlist-start">
-                <button (click)="bulkModeEnter()"
-                    class="btn btn-primary btn-standard">
-                    Enter Bulk Playlist Mode
-                </button>
-            </div>
-            <div *ngIf="bulkPlaylistMode"
-                class="bulk-playlist-end">
-                <button (click)="bulkModeExit()"
-                    class="btn btn-danger btn-standard">
-                    Exit Bulk Playlist Mode
-                </button>
-            </div>
-        </div>
-        <div class="col">
-            <div *ngIf="bulkPlaylistMode">
-                <button (click)="bulkModeSave()"
-                    class="btn btn-success btn-standard">
-                    Save Selected to Playlist
-                </button>
-            </div>
-        </div>
-        <div class="col">
-
-        </div>
+        
     </div>
 </div>

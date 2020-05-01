@@ -40,7 +40,7 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
             this.data.source = 'Lebanese Vocab Book';
             this.data.eng_audio = this.lastEnglish;
             this.data.data_other.a_word_audio = this.lastArabic;
-            this.data.memberships = [];
+            this.data.playlist = {}
         }
         this.isWordMastered = this.data.mastered;
     }
@@ -112,52 +112,6 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
         } else {
             return;
         }
-    }
-
-    playlistAdd(playlist: Playlist) {
-        let updateObject = {
-            action: 'add',
-            vocab_id: this.data._id,
-            playlist_id: playlist._id,
-            playlist_name: playlist.name
-        }
-        this.playlistDoUpdate(updateObject);
-    }
-
-    playlistRemove(playlist: Playlist) {
-        let updateObject = {
-            action: 'remove',
-            vocab_id: this.data._id,
-            playlist_id: playlist._id,
-            playlist_name: playlist.name
-        }
-        this.playlistDoUpdate(updateObject);
-    }
-
-    playlistDoUpdate(update: MembershipUpdate) {
-        this.dataSource.updateMembership(update)
-            .subscribe(data => {
-                if (data.status === 'success') {
-                    this.data.memberships = data.data.memberships;
-                } else {
-                    console.log('Error');
-                    console.log(data);
-                }
-            })
-    }
-
-    playlistMembershipClasses(playlist: Playlist): string {
-        let index = this.data.memberships.findIndex( m => m.playlist_id === playlist._id);
-        if (index !== -1) {
-            return 'list-group-item list-group-item-success';
-        } else {
-            return 'list-group-item';
-        }
-    }
-
-    playlistIsMember(playlistId: string): boolean {
-        let index = this.data.memberships.findIndex( m => m.playlist_id === playlistId);
-        return index !== -1;
     }
 
 }

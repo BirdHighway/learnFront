@@ -31,8 +31,14 @@ export class RestDataSource {
         return this.http.patch<ApiResponse>(this.baseUrl + 'verbs/touch', {_id: id});
     }
 
-    getVocab(queryString: string): Observable<ApiResponse> {
-        return this.http.get<ApiResponse>(this.baseUrl + 'vocab/?' + queryString);
+    getVocab(queryString: string, limit = 0): Observable<ApiResponse> {
+        let url = ``;
+        if (limit) {
+            url = `${this.baseUrl}vocab/random/?limit=${limit}`;
+        } else {
+            url = `${this.baseUrl}vocab/?${queryString}`;
+        }
+        return this.http.get<ApiResponse>(url);
     }
 
     updateVocab(word: Word): Observable<ApiResponse> {
@@ -59,9 +65,9 @@ export class RestDataSource {
         return this.http.get<ApiResponse>(this.baseUrl + 'playlist');
     }
 
-    updateMembership(update: MembershipUpdate){
-        return this.http.patch<ApiResponse>(this.baseUrl + 'vocab/playlists', update);
-    }
+    // updateMembership(update: MembershipUpdate){
+    //     return this.http.patch<ApiResponse>(this.baseUrl + 'vocab/playlists', update);
+    // }
 
     updatePlaylist(playlist: Playlist): Observable<ApiResponse> {
         if (playlist._id) {
@@ -76,9 +82,9 @@ export class RestDataSource {
     }
 
 
-    bulkUpdatePlaylist(bulkUpdate: MembershipUpdateBulk): Observable<ApiResponse> {
-        return this.http.post<ApiResponse>(this.baseUrl + 'vocab/playlists', bulkUpdate);
-    }
+    // bulkUpdatePlaylist(bulkUpdate: MembershipUpdateBulk): Observable<ApiResponse> {
+    //     return this.http.post<ApiResponse>(this.baseUrl + 'vocab/playlists', bulkUpdate);
+    // }
 
     getNouns(): Observable<Noun[]> {
         return this.http.get<Noun[]>(this.baseUrl + 'nouns');

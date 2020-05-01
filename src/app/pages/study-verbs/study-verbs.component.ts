@@ -37,11 +37,13 @@ export class StudyVerbsComponent implements OnInit {
     advanceMethod: string;
     verbForms: number[];
     formIndex: number;
+    advanceIndex: number;
 
     selectMaterial: string;
     verbId: string;
     disabledWhileLoading = true;
     repeatAnswer: string;
+    rounds: string;
 
     completedPresent = [];
     completedPast = [];
@@ -67,9 +69,11 @@ export class StudyVerbsComponent implements OnInit {
         this.lastRandom = 16;
         this.verbForms = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
         this.formIndex = 0;
+        this.advanceIndex = 16;
         this.advanceMethod = 'meth-tense';
         this.selectMaterial = 'status';
         this.repeatAnswer = "1";
+        this.rounds = "2";
         this.verbId = '';
         this.arabicPronouns = LanguageUtils.pronouns;
     }
@@ -79,7 +83,7 @@ export class StudyVerbsComponent implements OnInit {
             .subscribe( (val) => {
                 this.audioPlayerStatus = val;
                 if (val.message === 'COMPLETE') {
-                    if ((this.advanceMethod !== 'manual') && (this.formIndex == 16)) {
+                    if ((this.advanceMethod !== 'manual') && (this.formIndex == this.getAdvanceIndex())) {
                         if (this.advanceMethod !== 'meth-form') {
                             this.touchSub = this.dataSource.touchVerb(this.focusVerb._id)
                                 .subscribe(result => {
@@ -113,6 +117,10 @@ export class StudyVerbsComponent implements OnInit {
             })
     }
 
+    getAdvanceIndex(): number {
+        return this.advanceIndex;
+    }
+
     ngOnDestroy() {
         clearTimeout(this.lastTimeout);
         this.audioPlayer.doKillSequence();
@@ -126,14 +134,7 @@ export class StudyVerbsComponent implements OnInit {
         }
     }
 
-    resetCompleted() {
-        this.completedPast = [];
-        this.completedPresent = [];
-        for (let i=0; i<8; i++){ 
-            this.completedPast.push(0);
-            this.completedPresent.push(0);
-        }
-    }
+
     
     shuffleVerbs() {
         for (let i=this.verbs.length; i>0; i--) {
@@ -146,6 +147,9 @@ export class StudyVerbsComponent implements OnInit {
     }
 
     beginStudy() {
+        if (this.advanceMethod != 'manual') {
+            this.advanceIndex = parseInt(this.rounds) * 16;
+        }
         if (this.selectMaterial === 'status') {
             this.verbs = this.allVerbs.filter(v => {
                 return v.status === 'study';
@@ -172,11 +176,6 @@ export class StudyVerbsComponent implements OnInit {
         }
     }
 
-    resetVerbForms() {
-        this.shuffleForms();
-        this.formIndex = 0;
-    }
-
     loadVerb() {
         if (this.focusIndex > (this.verbs.length - 1)) {
             this.studyDone = true;
@@ -189,8 +188,68 @@ export class StudyVerbsComponent implements OnInit {
             if (this.advanceMethod != 'manual') {
                 this.resetVerbForms();
             }
-            this.resetVerbForms();
         }
+    }
+
+    resetCompleted() {
+        this.completedPast = [];
+        this.completedPresent = [];
+        for (let i=0; i<8; i++){ 
+            this.completedPast.push(0);
+            this.completedPresent.push(0);
+        }
+    }
+
+    resetVerbForms() {
+        this.shuffleForms();
+        this.formIndex = 0;
+    }
+
+    shuffleForms() {
+        if (this.advanceMethod === 'manual') {
+            // no work necessary
+        } else if (this.advanceMethod == 'meth-tense') {
+            let past = [];
+            let pres = [];
+            for (let i=0; i<parseInt(this.rounds); i++) {
+                let secondEight = this.randomIndices('second-eight');
+                let firstEight = this.randomIndices('first-eight');
+                for (let j=0; j<8; j++) {
+                    past.push(secondEight[j]);
+                    pres.push(firstEight[j]);
+                }
+            }
+            this.verbForms = [];
+            this.verbForms = past.concat(pres);
+            console.log('this.verbForms');
+            console.log(this.verbForms);
+        } else if (this.advanceMethod === 'meth-verb') {
+            this.verbForms = [];
+            for (let i=0; i<parseInt(this.rounds); i++) {
+                this.verbForms.concat(this.randomIndices('full'));
+            }
+        } else if (this.advanceMethod = 'meth-form') {
+            this.verbForms = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+        }
+    }
+
+    randomIndices(typeSought: string): number[] {
+        let arr;
+        if (typeSought === 'first-eight') {
+            arr = [0,1,2,3,4,5,6,7];
+        } else if (typeSought === 'second-eight') {
+            arr = [8,9,10,11,12,13,14,15];
+        } else if (typeSought === 'full') {
+            arr = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+        }
+        for (let i=arr.length; i>0; i--) {
+            let r = Math.floor(Math.random() * (i - 1));
+            let a = arr[i - 1];
+            let b = arr[r];
+            arr[i - 1] = b;
+            arr[r] = a;
+        }
+        return arr;
     }
 
     nextVerb() {
@@ -279,41 +338,7 @@ export class StudyVerbsComponent implements OnInit {
         this.audioPlayer.startAudioSequence(sequence);
     }
 
-    shuffleForms() {
-        if (this.advanceMethod === 'manual') {
-            // no work necessary
-        } else if (this.advanceMethod == 'meth-tense') {
-            let pres = [0,1,2,3,4,5,6,7];
-            let past = [8,9,10,11,12,13,14,15];
-            for (let i=8; i>0; i--) {
-                let r = Math.floor(Math.random() * (i - 1));
-                let a = pres[i - 1];
-                let b = pres[r];
-                pres[i - 1] = b;
-                pres[r] = a;
-            }
-            for (let i=8; i>0; i--) {
-                let r = Math.floor(Math.random() * (i - 1));
-                let a = past[i - 1];
-                let b = past[r];
-                past[i - 1] = b;
-                past[r] = a;
-            }
-            this.verbForms = [];
-            this.verbForms = past.concat(pres);
-        } else if (this.advanceMethod === 'meth-verb') {
-            this.verbForms = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-            for (let i=16; i>0; i--) {
-                let r = Math.floor(Math.random() * (i - 1));
-                let a = this.verbForms[i - 1];
-                let b = this.verbForms[r];
-                this.verbForms[i - 1] = b;
-                this.verbForms[r] = a;
-            }
-        } else if (this.advanceMethod = 'meth-form') {
-            this.verbForms = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-        }
-    }
+
 
     generateOptions(): ConjugationOptions {
         let index = 0;
@@ -371,6 +396,8 @@ export class StudyVerbsComponent implements OnInit {
         options.pronounAudio = `verbs/english/${LanguageUtils.arabicAudioPronouns[index % 8]}`;
         // get English name for pronoun (will be used to get Arabic audio file name)
         pronoun = LanguageUtils.engKeys[index % 8];
+        console.log(index);
+        console.log(pronoun);
         if (index < 8) {
             // PRESENT TENSE
             // Arabic audio file will eng in "-pres.mp3"
@@ -401,6 +428,7 @@ export class StudyVerbsComponent implements OnInit {
     playCard() {
         this.isAdvancing = true;
         let options = this.generateOptions();
+        console.log(options);
         this.audioPlayer.startConjugationSequence(options);
         this.focusCardCount++;
     }
@@ -415,6 +443,8 @@ export class StudyVerbsComponent implements OnInit {
                 return 'arabic-pronoun completed-2';
             case 3:
                 return 'arabic-pronoun completed-3';
+            case 4:
+                return 'arabic-pronoun completed-4';
             default:
                 return 'arabic-pronoun completed-x'
         }

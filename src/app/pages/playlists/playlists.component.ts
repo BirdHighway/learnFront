@@ -48,7 +48,7 @@ export class PlaylistsComponent implements OnInit {
         } else {
             this.tagString = '';
         }
-        this.newPlaylist = new Playlist(playlist._id, playlist.name, playlist.tags, playlist.created);
+        this.newPlaylist = new Playlist(playlist._id, playlist.name, playlist.tags, playlist.created, playlist.count, playlist.mastered, playlist.order);
     }
 
     cancelSave() {
@@ -101,6 +101,18 @@ export class PlaylistsComponent implements OnInit {
             this.savingPlaylist = false;
             return;
         }
+    }
+
+    getPercentMastered(playlist: Playlist): string {
+        let total = playlist.count;
+        let mast = playlist.mastered;
+        let share;
+        if (total > 0) {
+            share = Math.floor((mast / total) * 100);
+        } else {
+            share = 0;
+        }
+        return `${share}%`;
     }
 
 }

@@ -1,4 +1,5 @@
-<div class="jumbotron">
+<div *ngIf="!showStudy"
+    class="jumbotron">
     <h1>Study Vocab Page</h1>
 </div>
 
@@ -177,6 +178,8 @@
                     <option value="normal">All</option>
                     <option value="subset-12">Subset of 12</option>
                     <option value="subset-24">Subset of 24</option>
+                    <option value="subset-36">Subset of 36</option>
+                    <option value="subset-48">Subset of 48</option>
                 </select>
             </div>
         </div>
@@ -230,9 +233,12 @@
                 <label>By Playlist</label>
                 <select [(ngModel)]="playlistSelectedId"
                     class="form-control">
-                    <option value="none">None Selected</option>
+                    <option value="none">All Playlists</option>
                     <option *ngFor="let list of playlists"
                         value="{{list._id}}">{{list.name}}</option>
+                    <option value="no-memberships">Without A Playlist</option>
+                    <option value="all-members-last-practiced">Members (by last practiced)</option>
+                    <option value="random">Random Members</option>
                 </select>
             </div>
             <button (click)="selectMaterial('playlist')"
@@ -252,7 +258,19 @@
             </button>
         </div>
         <div class="col">
-
+            <div class="form-group">
+                <label>Repetition Series</label>
+                <select [(ngModel)]="playlistSelectedId"
+                    class="form-control">
+                    <option value="none">None Selected</option>
+                    <option *ngFor="let list of playlists"
+                        value="{{list._id}}">{{list.name}}</option>
+                </select>
+            </div>
+            <button (click)="selectMaterial('playlist-repetition')"
+                class="btn btn-primary btn-full-width">
+                Select and Start
+            </button>
         </div>
         <div class="col">
 
@@ -346,7 +364,8 @@
             </button>
         </div>
     </div>
-    <div class="row progress-row">
+    <div *ngIf="studyPath !== 'repetition'"
+        class="row progress-row">
         <div class="col">
             <table class="progress-table">
                 <tbody>
@@ -356,6 +375,39 @@
                             [class.current-word]="i == focusIndex"
                             [class.border-word]="((i + 1) % 12) == 0"
                         ></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div *ngIf="studyPath == 'repetition'"
+        class="row progress-row">
+        <div class="col">
+            <table class="repetition-progress">
+                <tbody>
+                    <tr>
+                        <td *ngFor="let group of blockProgress"
+                            [class.none]="group[0] == 0"
+                            [class.once]="group[0] == 1"
+                            [class.twice]="group[0] == 2"
+                            [class.error]="group[0] > 2">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngFor="let group of blockProgress"
+                            [class.none]="group[1] == 0"
+                            [class.once]="group[1] == 1"
+                            [class.twice]="group[1] == 2"
+                            [class.error]="group[1] > 2">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngFor="let group of blockProgress"
+                            [class.none]="group[2] == 0"
+                            [class.once]="group[2] == 1"
+                            [class.twice]="group[2] == 2"
+                            [class.error]="group[2] > 2">
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -407,7 +459,7 @@
     <div class="row">
         <div class="col">
             <h1>Study Program Complete</h1>
-            <p class="lead">Page will refresh in 5 seconds...</p>
+            <p class="lead">Page will refresh in 1 seconds</p>
 
         </div>
     </div>

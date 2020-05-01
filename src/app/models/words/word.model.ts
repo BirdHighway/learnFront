@@ -17,7 +17,7 @@ export class Word {
         public dialect?: string,
         public source?: string,
         public tags?: string[],
-        public memberships?: WordMembership[],
+        public playlist?: WordMembership,
         public data_noun?: NounWord,
         public data_verb?: VerbWord,
         public data_adj?: AdjectiveWord,

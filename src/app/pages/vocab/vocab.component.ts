@@ -241,6 +241,7 @@ export class VocabComponent implements OnInit, OnDestroy {
         if (this.sortBy !== 'default') {
             queryString += `&sorting=${this.sortBy}`;
         }
+        console.log(queryString);
         return queryString;
     }
 
@@ -251,7 +252,6 @@ export class VocabComponent implements OnInit, OnDestroy {
                 if (data.status == 'success') {
                     this.words = data.data;
                     this.setPagination(data.total, data.page);
-                    this.bulkModeExit();
                     this.showEntriesTable = true;
                     this.resultsCount = data.total;
                 } else {
@@ -355,85 +355,4 @@ export class VocabComponent implements OnInit, OnDestroy {
         this.audioPlayer.playFromSource(baseString + audioString);
     }
 
-    bulkModeEnter() {
-        let index = this.playlists.findIndex(p => p._id === this.bulkPlaylistId);
-        if (index === -1) {
-            return;
-        }
-        this.bulkPlaylistName = this.playlists[index].name;
-        this.bulkUpdateMarked();
-        this.bulkPlaylistWords = [];
-        this.bulkPlaylistRemovals = [];
-        this.bulkPlaylistMode = true;
-    }
-
-    bulkUpdateMarked() {
-        for (let i=0; i<this.words.length; i++) {
-            if (this.words[i].memberships.findIndex(m => m.playlist_id === this.bulkPlaylistId) !== -1) {
-                this.words[i].bulkSelected = true;
-                this.words[i].bulkWasSelected = true;
-            }
-        }
-    }
-
-    bulkModeExit() {
-        this.bulkPlaylistMode = false;
-        this.bulkPlaylistId = '';
-        for (let i=0; i<this.words.length; i++) {
-            this.words[i].bulkSelected = false;
-            this.words[i].bulkWasSelected = false;
-        }
-        this.bulkPlaylistWords = [];
-        this.bulkPlaylistRemovals = [];
-    }
-
-    bulkModeSave() {
-        console.log('Add:');
-        console.log(this.bulkPlaylistWords);
-        console.log('Remove:');
-        console.log(this.bulkPlaylistRemovals);
-        let bulkUpdate = {
-            playlist_id: this.bulkPlaylistId,
-            playlist_name: this.bulkPlaylistName,
-            additions: this.bulkPlaylistWords,
-            removals: this.bulkPlaylistRemovals
-        }
-        this.dataSource.bulkUpdatePlaylist(bulkUpdate)
-            .subscribe(data => {
-                if (data.status === 'success') {
-                    console.log('Success');
-                    this.loadEntries();
-                } else {
-                    console.log('Error');
-                    console.log(data);
-                }
-            })
-    }
-
-    addToBulk(word: Word) {
-        if (!this.bulkPlaylistMode) {
-            return;
-        }
-        if (word.bulkSelected) {
-            // already selected
-            // remove from selected
-            if (word.bulkWasSelected) {
-                this.bulkPlaylistRemovals.push(word._id);
-            }
-            word.bulkSelected = false;
-            let index = this.bulkPlaylistWords.findIndex(s => s === word._id);
-            if (index !== -1) {
-                this.bulkPlaylistWords.splice(index, 1);
-            }
-        } else {
-            // add to selected
-            word.bulkSelected = true;
-            if (word.bulkWasSelected) {
-                let index = this.bulkPlaylistRemovals.indexOf(word._id);
-                this.bulkPlaylistRemovals.splice(index, 1);
-            } else {
-                this.bulkPlaylistWords.push(word._id);
-            }
-        }
-    }
 }

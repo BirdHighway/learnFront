@@ -43,6 +43,11 @@ td.col-eng-text:hover {
     cursor: pointer;
 }
 
+td.col-eng-text,
+th.col-eng-text {
+    width: 195px;
+}
+
 .border-rl {
     border-right: 1px solid #454D55;
 }
@@ -56,7 +61,7 @@ td.col-eng-text:hover {
 }
 
 .middle-col {
-    width: 300px;
+    width: 250px;
 }
 
 td.hasAudio:hover {
@@ -64,6 +69,10 @@ td.hasAudio:hover {
 }
 
 li.page-item:hover {
+    cursor: pointer;
+}
+
+td.edit-link-col:hover {
     cursor: pointer;
 }
 

@@ -29,3 +29,9 @@
 .playlist-row:hover {
     cursor: pointer;
 }
+
+th.count-col,
+td.count-col {
+    width: 100px;
+    text-align: right;
+}
