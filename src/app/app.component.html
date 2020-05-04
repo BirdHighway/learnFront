@@ -1,34 +1,37 @@
-<div class="container-fluid">
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" [routerLink]="['home']">Home</a>
-    <div class="navbar-nav">
-        <a class="nav-item nav-link" [routerLink]="['view']" [routerLinkActive]="['active']">
-            View
-        </a>
-        <a class="nav-item nav-link" [routerLink]="['learn']" [routerLinkActive]="['active']">
-            Learn
-        </a>
-        <a class="nav-item nav-link" [routerLink]="['vocab']" [routerLinkActive]="['active']">
-            Vocab
-        </a>
-        <a class="nav-item nav-link" [routerLink]="['playlists']" [routerLinkActive]="['active']">
-            Playlists
-        </a>
-        <a class="nav-item nav-link" [routerLink]="['study-vocab']" [routerLinkActive]="['active']">
-            Study Vocab
-        </a>
-        <a class="nav-item nav-link" [routerLink]="['verb-sets']" [routerLinkActive]="['active']">
-            Verb Sets
-        </a>
-        <a class="nav-item nav-link" [routerLink]="['verb-study']" [routerLinkActive]="['active']">
-            Study Verbs
-        </a>
-        <a class="nav-item nav-link" [routerLink]="['images']" [routerLinkActive]="['active']">
-            Images
-        </a>
-    </div>
-  </nav>
+<div class="container-fluid page-container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" [routerLink]="['home']">Home</a>
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" [routerLink]="['view']" [routerLinkActive]="['active']">
+                View
+            </a>
+            <a class="nav-item nav-link" [routerLink]="['learn']" [routerLinkActive]="['active']">
+                Learn
+            </a>
+            <a class="nav-item nav-link" [routerLink]="['vocab']" [routerLinkActive]="['active']">
+                Vocab
+            </a>
+            <a class="nav-item nav-link" [routerLink]="['playlists']" [routerLinkActive]="['active']">
+                Playlists
+            </a>
+            <a class="nav-item nav-link" [routerLink]="['study-vocab']" [routerLinkActive]="['active']">
+                Study Vocab
+            </a>
+            <a class="nav-item nav-link" [routerLink]="['verb-sets']" [routerLinkActive]="['active']">
+                Verb Sets
+            </a>
+            <a class="nav-item nav-link" [routerLink]="['verb-study']" [routerLinkActive]="['active']">
+                Study Verbs
+            </a>
+            <a class="nav-item nav-link" [routerLink]="['verb-drills']" [routerLinkActive]="['active']">
+                Verb Drills
+            </a>
+            <a class="nav-item nav-link" [routerLink]="['images']" [routerLinkActive]="['active']">
+                Images
+            </a>
+        </div>
+    </nav>
 
-<router-outlet></router-outlet>
+    <router-outlet></router-outlet>
 
 </div>

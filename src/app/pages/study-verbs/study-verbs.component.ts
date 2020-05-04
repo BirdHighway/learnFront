@@ -33,6 +33,8 @@ export class StudyVerbsComponent implements OnInit {
     continueLoop: boolean;
     lastTimeout = null;
 
+    shuffleSetting: string;
+
     lastRandom: number;
     advanceMethod: string;
     verbForms: number[];
@@ -70,6 +72,7 @@ export class StudyVerbsComponent implements OnInit {
         this.verbForms = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
         this.formIndex = 0;
         this.advanceIndex = 16;
+        this.shuffleSetting = 'no-shuffle';
         this.advanceMethod = 'meth-tense';
         this.selectMaterial = 'status';
         this.repeatAnswer = "1";
@@ -103,7 +106,7 @@ export class StudyVerbsComponent implements OnInit {
                     clearTimeout(this.lastTimeout);
                 }
             })
-        this.getSub = this.dataSource.getVerbs('')
+        this.getSub = this.dataSource.getVerbs('sortPracticed=true')
             .subscribe(v => {
                 if (v.status == 'success') {
                     this.allVerbs = v.data;
@@ -154,14 +157,18 @@ export class StudyVerbsComponent implements OnInit {
             this.verbs = this.allVerbs.filter(v => {
                 return v.status === 'study';
             })
-            this.shuffleVerbs();
+            if (this.shuffleSetting === 'shuffle') {
+                this.shuffleVerbs();
+            }
         } else if (this.selectMaterial === 'verb') {
             this.verbs = this.allVerbs.filter(v => {
                 return v._id == this.verbId;
             })
         } else if (this.selectMaterial === 'all') {
             this.verbs = this.allVerbs.slice(0);
-            this.shuffleVerbs();
+            if (this.shuffleSetting === 'shuffle') {
+                this.shuffleVerbs();
+            }
         }
         if (this.verbs.length) {
             this.isLoading = false;

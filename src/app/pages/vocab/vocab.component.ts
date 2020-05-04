@@ -39,11 +39,9 @@ export class VocabComponent implements OnInit, OnDestroy {
     playlistSelected: string;
     queryPlaylistName: string;
     queryPage: number;
-    bulkPlaylistMode: boolean;
+    selectedPlaylists: string[];
+    bulkPlaylistPending: boolean;
     bulkPlaylistId: string;
-    bulkPlaylistName: string;
-    bulkPlaylistWords: string[];
-    bulkPlaylistRemovals: string[];
     lastEnglishAudioFile: string;
     lastArabicAudioFile: string;
     srcRegExp: RegExp;
@@ -74,11 +72,9 @@ export class VocabComponent implements OnInit, OnDestroy {
         this.playlistSelected = 'none';
         this.queryPlaylistName = '';
         this.queryPage = 1;
-        this.bulkPlaylistMode = false;
-        this.bulkPlaylistId = '';
-        this.bulkPlaylistName = '';
-        this.bulkPlaylistWords = [];
-        this.bulkPlaylistRemovals = [];
+        this.selectedPlaylists = [];
+        this.bulkPlaylistPending = false;
+        this.bulkPlaylistId = 'no-membership';
         this.lastEnglishAudioFile = '';
         this.lastArabicAudioFile = '';
         this.srcRegExp = new RegExp('(.*[^[0-9]+)([0]*)([0-9]+)\.(.+)');
@@ -114,6 +110,78 @@ export class VocabComponent implements OnInit, OnDestroy {
                 }
             })
 
+    }
+
+    clearSelections() {
+        this.bulkPlaylistId = 'no-membership';
+        this.selectedPlaylists = [];
+        this.words.forEach(w => {
+            w.bulkSelected = false;
+        })
+    }
+
+    bulkPlaylistUpdate() {
+        this.bulkPlaylistPending = true;
+        let updateId,
+            updateName,
+            updateOrder;
+        if (this.bulkPlaylistId === 'no-membership') {
+            updateId = 'no-membership';
+            updateName = 'No Membership';
+            updateOrder = 999;
+        } else {
+            let index = this.playlists.findIndex(p => p._id === this.bulkPlaylistId);
+            if (index == -1) {
+                console.error(`failed to find playlist with id of ${this.bulkPlaylistId}`);
+                return;
+            }
+            let playlist = this.playlists[index];
+            updateId = playlist._id;
+            updateName = playlist.name;
+            updateOrder = playlist.order;
+        }
+
+        let bulkMembershipUpdate = {
+            playlist_id: updateId,
+            playlist_name: updateName,
+            order: updateOrder,
+            additions: this.selectedPlaylists
+        }
+        this.dataSource.bulkUpdatePlaylist(bulkMembershipUpdate)
+            .subscribe(result => {
+                if (result.status == 'success') {
+                    this.words.forEach(w => {
+                        if (w.bulkSelected ) {
+                            if (this.bulkPlaylistId == 'no-membership') {
+                                w.playlist.playlist_id = '';
+                                w.playlist.playlist_name = '';
+                            } else {
+                                w.playlist.playlist_id = updateId;
+                                w.playlist.playlist_name = updateName;
+                            }
+                        }
+                    })
+                    this.bulkPlaylistPending = false;
+                    this.clearSelections();
+                } else {
+                    console.error('bulkupdate failed');
+                    console.log(result.data);
+                }
+            })
+    }
+
+    toggleSelection(word: Word) {
+        if (this.bulkPlaylistPending) { return; }
+        if (word.bulkSelected) {
+            word.bulkSelected = false;
+            let index = this.selectedPlaylists.indexOf(word._id);
+            if (index != -1) {
+                this.selectedPlaylists.splice(index, 1);
+            }
+        } else {
+            word.bulkSelected = true;
+            this.selectedPlaylists.push(word._id);
+        }
     }
 
     ngOnDestroy() {
@@ -246,6 +314,7 @@ export class VocabComponent implements OnInit, OnDestroy {
     }
 
     loadPage(pageNumber) {
+        this.clearSelections();
         let queryString = this.makeQueryString(pageNumber);
         this.dataSource.getVocab(queryString)
             .subscribe(data => {
@@ -262,20 +331,21 @@ export class VocabComponent implements OnInit, OnDestroy {
 
     setPagination(total: number, current: number) {
         this.pagination = [];
+        let defaultMaxPages = 20;
         let totalPages,
             navStart,
             navTotal,
             navMax;
         totalPages = Math.ceil(total / 50);
-        if (current > 10) {
+        if (current > defaultMaxPages) {
             navStart = current - 3;
         } else {
             navStart = 1;
         }
-        if (totalPages < 11) {
+        if (totalPages < (defaultMaxPages + 1)) {
             navTotal = totalPages;
         } else {
-            navTotal = 10;
+            navTotal = defaultMaxPages;
         }
         navMax = navStart + navTotal;
         for(let i=navStart; i<navMax; i++){

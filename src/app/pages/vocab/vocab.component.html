@@ -1,10 +1,13 @@
-<div class="row">
-    <div class="col">
-        <div class="jumbotron">
-            <h1>Vocab Page</h1>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="jumbotron">
+                <h1>Vocab Page</h1>
+            </div>
         </div>
     </div>
 </div>
+
 
 <div class="container search-container">
     <div *ngIf="showEntriesFilter"
@@ -129,6 +132,7 @@
                         <th class="border-rl">Edit</th>
                         <th class="border-rl">Type</th>
                         <th class="">Playlist</th>
+                        <th class="select-col">Select</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -158,6 +162,10 @@
                         <td class="playlist-col">
                             {{word.playlist.playlist_name}}
                         </td>
+                        <td (click)="toggleSelection(word)"
+                            class="select-col"
+                            [class.selected]="word.bulkSelected"
+                            ></td>
                     </tr>
                 </tbody>
             </table>
@@ -176,15 +184,34 @@
         </div>
     </div>
 </div>
-
-<div class="row">
-    <div class="col">
-        <ng-template editor-host></ng-template>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <ng-template editor-host></ng-template>
+        </div>
     </div>
 </div>
+
 <div *ngIf="showEntriesFilter"
     class="container">
     <div class="row bulk-mode-row">
-        
+        <div class="col">
+            <div class="form-group">
+                <label>Add Selection to Playlist:</label>
+                <select [(ngModel)]="bulkPlaylistId"
+                    class="form-control">
+                    <option value="no-membership">No Membership</option>
+                    <option *ngFor="let list of playlists"
+                        value="{{list._id}}">{{list.name}}</option>
+                </select>
+            </div>
+            <button (click)="bulkPlaylistUpdate()"
+                class="btn btn-success">
+                Save to Playlist
+            </button>
+        </div>
+        <div class="col"></div>
+        <div class="col"></div>
+        <div class="col"></div>
     </div>
 </div>

@@ -1,0 +1,65 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="jumbotron">
+                <h1>Verb Drills</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showOptions"
+    class="options-container">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label>Drill Type</label>
+                    <select [(ngModel)]="drillType"
+                        class="form-control">
+                        <option value="identification">Identify Arabic Form</option>
+                        <option value="conjugation">Conjugate Verb</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label>Material</label>
+                    <select [(ngModel)]="drillMaterial"
+                        class="form-control">
+                        <option value="study-verbs">Status of "Study"</option>
+                        <option value="ready-verbs">"Ready" Verbs</option>
+                        <option value="entire-set">All Verbs</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+
+            </div>
+            <div class="col">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button (click)="beginDrill()"
+                    class="btn btn-success">
+                    Begin Drill
+                </button>
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showMain">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Main</h1>
+            </div>
+        </div>
+    </div>
+</div>

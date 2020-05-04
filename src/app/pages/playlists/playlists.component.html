@@ -1,19 +1,24 @@
-<div class="row">
-    <div class="col">
-        <div class="jumbotron">
-            <h1>Playlists</h1>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="jumbotron">
+                <h1>Playlists</h1>
+            </div>
         </div>
     </div>
 </div>
+
 <div class="container">
     <div *ngIf="!showCreate"
         class="row creation-btns-row">
+        <div class="col"></div>
         <div class="col">
             <button (click)="createNewPlaylist()"
                 class="btn btn-success create-playlist-btn">
                 Create New Playlist
             </button>
         </div>
+        <div class="col"></div>
     </div>
 
     <div *ngIf="showCreate"
@@ -26,17 +31,18 @@
             </div>
         </div>
         <div class="col">
+            <div class="form-group">
+                <label>Order</label>
+                <input [(ngModel)]="newPlaylist.order"
+                    type="number"
+                    class="form-control">
+            </div>
         </div>
     </div>
 
     <div *ngIf="showCreate"
         class="row">
         <div class="col">
-            <div class="form-group">
-                <label>Tags</label>
-                <input [(ngModel)]="tagString"
-                    class="form-control">
-            </div>
         </div>
     </div>
 
@@ -68,7 +74,63 @@
         </div>
     </div>
 
-    <div class="row">
+
+    <div *ngIf="dataSetsReady">
+        <div *ngFor="let playlist of playlistDataSets; let i=index;"
+            class="row">
+            <div class="col">
+                <div class="card playlist-card">
+                    <h5 class="card-header">{{playlist.playlistName}}</h5>
+                    <div class="card-body">
+                        <table class="table data-table">
+                            <thead>
+                                <tr class="table-success">
+                                    <th class="reg-col">Mast</th>
+                                    <th class="reg-col">Unmast</th>
+                                    <th class="reg-col">Total</th>
+                                    <th class="reg-col">UnPrac</th>
+                                    <th class="date-col">Oldest</th>
+                                    <th class="date-col">Mid</th>
+                                    <th class="date-col">Newest</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="reg-col">{{playlist.mastered}}</td>
+                                    <td class="reg-col">{{playlist.total - playlist.mastered}}</td>
+                                    <td class="reg-col">{{playlist.total}}</td>
+                                    <td class="reg-col">{{ unmastPracticePer(playlist) }}</td>
+                                    <td>{{playlist.oldest |  date:'mediumDate'}}</td>
+                                    <td>{{playlist.midDate | date:'mediumDate'}}</td>
+                                    <td>{{playlist.newest | date:'mediumDate'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- <h5 class="card-subtitle mastery">Mastery <small>{{mastPercentage(playlist)}}</small></h5>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" role="progressbar" [style.width.%]="getProgressInteger(playlist, 'mastered')"></div>
+                            <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="getProgressInteger(playlist, 'unmastered')"></div>
+                        </div>
+                        <h5 class="card-subtitle size">Collection Size <small>{{playlist.total}} terms</small></h5>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" [style.width.%]="getSizeInteger(playlist)"></div>
+                        </div> -->
+                        <h5 class="card-subtitle all-in-one">Progress</h5>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" role="progressbar" [style.width.%]="absoluteProgress(playlist, 'mastered')"></div>
+                            <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="absoluteProgress(playlist, 'unmastered')"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+    <!-- <div class="row">
         <div class="col">
             <table class="table table-dark table-hover">
                 <thead>
@@ -90,16 +152,16 @@
                             {{i + 1}}
                         </td>
                         <td class="border-rl">
-                            {{playlist.name}}
+                            {{playlist.name}} <small>&#40;{{playlist.order}}&#41;</small>
                         </td>
                         <td class="border-rl count-col">
-                            {{playlist.count}}
+
                         </td>
                         <td class="border-rl count-col">
-                            {{playlist.count - playlist.mastered}}
+
                         </td>
                         <td class="border-rl count-col">
-                            {{getPercentMastered(playlist)}}
+
                         </td>
                         <td class="border-rl">
                             
@@ -111,5 +173,6 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </div> -->
+
 </div>

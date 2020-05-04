@@ -3,7 +3,7 @@
 }
 
 .create-playlist-btn {
-    width: 200px;
+    width: 100%;
 }
 
 .btn-standard {
@@ -35,3 +35,69 @@ td.count-col {
     width: 100px;
     text-align: right;
 }
+
+td small {
+    margin-left: 1rem;
+}
+
+h5 small {
+    margin-left: 1rem;
+}
+
+div.playlist-card {
+    margin-bottom: 0.75rem;
+}
+
+h5.card-subtitle {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+div.progress {
+    margin-bottom: 0.75rem;
+    height: 0.5rem;
+    background-color: #fff;
+}
+
+table.data-table td,
+table.data-table th {
+    border: 1px solid #454D55;
+    padding-top: .25rem;
+    padding-bottom: .25rem;
+    font-size: .9rem;
+}
+
+td.reg-col {
+    width: 100px;
+}
+
+div.card {
+    border: none;
+}
+
+h5.card-header {
+    background-color: #fff;
+    border: none;
+    padding-top: 0;
+    padding-bottom: .25rem;
+}
+
+div.card-body {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #454D55;
+}
+
+// div.card-body {
+//     padding-top: 0;
+//     padding-bottom: 0;
+//     padding-left: 0;
+//     padding-right: 0;
+// }
+
+// div.progress,
+// h5.card-subtitle {
+//     margin-left: 1rem;
+//     margin-right: 1rem;
+// }

@@ -1,77 +1,81 @@
-<div class="jumbotron">
-    <h1>View Vocab</h1>
-</div>
-
-
-<div class="div-edit-tags">
-    <div class="form-group">
-        <label>Tag Name</label>
-        <input [(ngModel)]="tagName"
-            class="form-control">
+<div class="container">
+    <div class="jumbotron">
+        <h1>View Vocab</h1>
     </div>
-    <button class="btn btn-success" (click)="addTag()">Add Tag</button>
 </div>
 
 
-<table class="table table-dark table-hover">
-    <thead>
-        <tr>
-            <th class="text-col">English</th>
-            <th class="play-col">Audio</th>
-            <th class="text-col">Arabic Singular</th>
-            <th class="play-col">Audio</th>
-            <th class="text-col">Arabic Plural</th>
-            <th class="play-col">Audio</th>
-            <th class="source-col">Source</th>
-            <th class="tags-col">Tags</th>
-            <th class="select-col">Select</th>
-        </tr>
-    </thead>
-    <tbody
-        *ngIf="nouns.length > 0">
-        <tr *ngFor="let noun of nouns">
-            <td class="text-col link-cell"
-                [routerLink]="['/','edit',noun._id]"
-            >
-                {{noun.eng_text}}
-            </td>
-            <td class="play-col">
-                <fa-icon [icon]="faPlay"
-                    class="playable"
-                    (click)="playFile('noun/' + noun.eng_audio)"
-                    *ngIf="noun.eng_audio"></fa-icon>
-            </td>
-            <td class="text-col">
-                {{noun.a_sing_text}}
-            </td>
-            <td class="play-col">
-                <fa-icon [icon]="faPlay"
-                    class="playable"
-                    (click)="playFile('noun/' + noun.a_sing_audio)"
-                    *ngIf="noun.a_sing_audio"
-                ></fa-icon>
-            </td>
+<div class="container">
+    <div class="div-edit-tags">
+        <div class="form-group">
+            <label>Tag Name</label>
+            <input [(ngModel)]="tagName"
+                class="form-control">
+        </div>
+        <button class="btn btn-success" (click)="addTag()">Add Tag</button>
+    </div>
 
 
-            <td class="text-col">
-                {{noun.a_pl_text}}
-            </td>
-            <td class="play-col">
-                <fa-icon [icon]="faPlay"
-                    *ngIf="noun.a_pl_audio"
-                    (click)="playFile('noun/' + noun.a_pl_audio)"
-                    class="playable"
-                ></fa-icon>
-            </td>
-            <td class="text-col">
-                {{noun.source}}
-            </td>
-            <td>
-                {{printTags(noun)}}
-            </td>
-            <td class="select-col">
-                <input type="checkbox" class="select-checkbox" (click)="toggleSelected(noun._id)">
-            </td>
-        </tr>
-    </tbody>
-</table>
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th class="text-col">English</th>
+                <th class="play-col">Audio</th>
+                <th class="text-col">Arabic Singular</th>
+                <th class="play-col">Audio</th>
+                <th class="text-col">Arabic Plural</th>
+                <th class="play-col">Audio</th>
+                <th class="source-col">Source</th>
+                <th class="tags-col">Tags</th>
+                <th class="select-col">Select</th>
+            </tr>
+        </thead>
+        <tbody
+            *ngIf="nouns.length > 0">
+            <tr *ngFor="let noun of nouns">
+                <td class="text-col link-cell"
+                    [routerLink]="['/','edit',noun._id]"
+                >
+                    {{noun.eng_text}}
+                </td>
+                <td class="play-col">
+                    <fa-icon [icon]="faPlay"
+                        class="playable"
+                        (click)="playFile('noun/' + noun.eng_audio)"
+                        *ngIf="noun.eng_audio"></fa-icon>
+                </td>
+                <td class="text-col">
+                    {{noun.a_sing_text}}
+                </td>
+                <td class="play-col">
+                    <fa-icon [icon]="faPlay"
+                        class="playable"
+                        (click)="playFile('noun/' + noun.a_sing_audio)"
+                        *ngIf="noun.a_sing_audio"
+                    ></fa-icon>
+                </td>
+
+
+                <td class="text-col">
+                    {{noun.a_pl_text}}
+                </td>
+                <td class="play-col">
+                    <fa-icon [icon]="faPlay"
+                        *ngIf="noun.a_pl_audio"
+                        (click)="playFile('noun/' + noun.a_pl_audio)"
+                        class="playable"
+                    ></fa-icon>
+                </td>
+                <td class="text-col">
+                    {{noun.source}}
+                </td>
+                <td>
+                    {{printTags(noun)}}
+                </td>
+                <td class="select-col">
+                    <input type="checkbox" class="select-checkbox" (click)="toggleSelected(noun._id)">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

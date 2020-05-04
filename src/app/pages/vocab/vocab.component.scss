@@ -56,6 +56,17 @@ th.col-eng-text {
     border-right: 2px solid #aaa;
 }
 
+.select-col {
+    border-left: 2px solid #aaa;
+}
+td.select-col:hover {
+    cursor: pointer;
+}
+
+td.select-col.selected {
+    background-color: yellow;
+}
+
 .narrow-col {
     width: 150px;
 }
@@ -84,8 +95,9 @@ td.edit-link-col:hover {
     width: 100%;
 }
 
-.bulk-mode-row select {
-    margin-top: 16px;
+.bulk-mode-row {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
 }
 
 .bulk-selected {

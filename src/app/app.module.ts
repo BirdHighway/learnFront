@@ -34,6 +34,7 @@ import { VerbSetsSingleComponent } from './pages/verb-sets-single/verb-sets-sing
 import { VerbTableComponent } from './verb-table/verb-table.component';
 import { StudyVerbsComponent } from './pages/study-verbs/study-verbs.component';
 import { ImagesComponent } from './pages/images/images.component';
+import { VerbDrillComponent } from './pages/verb-drill/verb-drill.component';
 
 
 @NgModule({
@@ -63,7 +64,8 @@ import { ImagesComponent } from './pages/images/images.component';
     VerbSetsSingleComponent,
     VerbTableComponent,
     StudyVerbsComponent,
-    ImagesComponent
+    ImagesComponent,
+    VerbDrillComponent
   ],
   imports: [
     BrowserModule,

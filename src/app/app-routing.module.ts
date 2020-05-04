@@ -17,6 +17,7 @@ import { VerbSetsComponent } from './pages/verb-sets/verb-sets.component';
 import { VerbSetsSingleComponent } from './pages/verb-sets-single/verb-sets-single.component';
 import { StudyVerbsComponent } from './pages/study-verbs/study-verbs.component';
 import { ImagesComponent } from './pages/images/images.component';
+import { VerbDrillComponent } from './pages/verb-drill/verb-drill.component';
 
 
 const routes: Routes = [
@@ -39,6 +40,7 @@ const routes: Routes = [
     { path: 'verb-sets', component: VerbSetsComponent },
     { path: 'verb-set/:id', component: VerbSetsSingleComponent },
     { path: 'verb-study', component: StudyVerbsComponent },
+    { path: 'verb-drills', component: VerbDrillComponent },
     { path: 'images', component: ImagesComponent },
     { path: 'not-found', component: NotFoundComponent }, 
     { path: '', redirectTo: 'home', pathMatch: 'full' },

@@ -34,3 +34,22 @@
 input.arabic-text {
     font-size: 300%;
 }
+
+div.jumbotron {
+    background-color: #e3f2fd;
+    border: 1px solid #004085;
+    color: #004085;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+div.jumbotron h1 {
+    font-weight: 300;
+    font-size: 2rem;
+}
+
+div.container-fluid {
+    padding-right: 0;
+    padding-left: 0;
+}

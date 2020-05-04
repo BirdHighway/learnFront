@@ -1,4 +1,5 @@
 import { VerbTense } from './verb-tense.model';
+import { VerbDrillRecord } from './verb-drill-record.model';
 
 export class VerbSet {
 
@@ -11,7 +12,8 @@ export class VerbSet {
         public a_pres_text?: VerbTense,
         public a_past_text?: VerbTense,
         public everPracticed?: boolean,
-        public lastPracticed?: string
+        public lastPracticed?: string,
+        public drillRecord?: VerbDrillRecord
     ) { }
 
 }

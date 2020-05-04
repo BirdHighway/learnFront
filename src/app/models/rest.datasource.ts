@@ -6,6 +6,7 @@ import { Environment } from '../environment';
 import { Word } from './words/word.model';
 import { ApiResponse } from './api-response.model';
 import { Playlist } from './playlist.model';
+import { PlaylistUpdate } from './playlist-update.interface';
 import { MembershipUpdate } from './membership-update.model';
 import { MembershipUpdateBulk } from './membership-update-bulk.model';
 import { VerbSet } from './verb-sets/verb-set.model';
@@ -20,6 +21,10 @@ export class RestDataSource {
 
     getVerbs(queryString: string): Observable<ApiResponse> {
         return this.http.get<ApiResponse>(this.baseUrl + 'verbs/?' + queryString);
+    }
+
+    getVerbCollection(queryString: string): Observable<ApiResponse> {
+        return this.http.get<ApiResponse>(this.baseUrl + `verbs/collections/?${queryString}`);
     }
 
     updateVerb(verb: VerbSet): Observable<ApiResponse> {
@@ -65,16 +70,16 @@ export class RestDataSource {
         return this.http.get<ApiResponse>(this.baseUrl + 'playlist');
     }
 
-    // updateMembership(update: MembershipUpdate){
-    //     return this.http.patch<ApiResponse>(this.baseUrl + 'vocab/playlists', update);
-    // }
+    getFullPlaylistData(): Observable<ApiResponse> {
+        return this.http.get<ApiResponse>(this.baseUrl + 'playlist/full');
+    }
 
-    updatePlaylist(playlist: Playlist): Observable<ApiResponse> {
-        if (playlist._id) {
-            return this.http.patch<ApiResponse>(this.baseUrl + 'playlist', playlist);
-        } else {
-            return this.http.post<ApiResponse>(this.baseUrl + 'playlist', playlist);
-        }
+    createPlaylist(playlist: Playlist): Observable<ApiResponse> {
+        return this.http.post<ApiResponse>(this.baseUrl + 'playlist', playlist); 
+    }
+
+    updatePlaylist(playlistUpdate: PlaylistUpdate): Observable<ApiResponse> {
+        return this.http.patch<ApiResponse>(this.baseUrl + 'playlist', playlistUpdate);
     }
 
     deletePlaylist(playlist: Playlist): Observable<ApiResponse> {
@@ -82,9 +87,20 @@ export class RestDataSource {
     }
 
 
-    // bulkUpdatePlaylist(bulkUpdate: MembershipUpdateBulk): Observable<ApiResponse> {
-    //     return this.http.post<ApiResponse>(this.baseUrl + 'vocab/playlists', bulkUpdate);
-    // }
+    bulkUpdatePlaylist(bulkUpdate: MembershipUpdateBulk): Observable<ApiResponse> {
+        return this.http.post<ApiResponse>(this.baseUrl + 'vocab/playlists', bulkUpdate);
+    }
+
+
+
+
+
+
+
+
+
+
+    
 
     getNouns(): Observable<Noun[]> {
         return this.http.get<Noun[]>(this.baseUrl + 'nouns');
