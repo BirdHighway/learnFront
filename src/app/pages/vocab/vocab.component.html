@@ -118,6 +118,7 @@
 
 
 <div *ngIf="showEntriesTable"
+    id="vocab-table"
     class="container">
     <div class="row">
         <div class="col">
@@ -126,7 +127,8 @@
                 id="entries-table">
                 <thead>
                     <tr>
-                        <th class="border-rm">Last Practiced</th>
+                        <th class="border-rl">Last Pract AB</th>
+                        <th class="border-rm">Last Pract BA</th>
                         <th class="col-eng-text border-rl">English</th>
                         <th class="border-rm middle-col">Arabic</th>
                         <th class="border-rl">Edit</th>
@@ -139,8 +141,11 @@
                     <tr *ngFor="let word of words"
                         [class.table-success]="word.mastered"
                     >
-                        <td class="border-rm">
+                        <td class="border-rl">
                             {{lastPracticedText(word.lastPracticed, word.everPracticed)}}
+                        </td>
+                        <td class="border-rm">
+                            {{lastPracticedText(word.lastPracticedB, word.everPracticedB)}}
                         </td>
                         <td (click)="playAudio(word.eng_audio)"
                             class="col-eng-text border-rl"

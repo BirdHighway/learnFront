@@ -6,6 +6,7 @@ import { Word } from '../models/words/word.model';
 import { SequenceOptions } from '../models/sequence-options.model';
 import { AudioObject } from '../models/audio-object.model';
 import { ConjugationOptions } from '../models/conjugation-options';
+import { IdDrillOptions } from '../models/verb-sets/id-drill-options.model';
 
 @Injectable({
     providedIn: 'root'
@@ -62,6 +63,35 @@ export class AudioPlayerService {
 
     public subscribeToStatus( observer ) {
         this.statusSubject.subscribe( observer );
+    }
+
+    public startIdDrill(options: IdDrillOptions) {
+        let audioObjects = [];
+        // begin with Arabic verb form
+        for (let i=0; i<options.playCountA; i++) {
+            let delay = 0;
+            if (i > 0) {
+                delay = options.betweenA;
+            }
+            audioObjects.push(new AudioObject(options.arabicAudio, delay, 0, true));
+        }
+        // begin answer with English verb name
+        audioObjects.push(new AudioObject(options.engAudio, options.beforeB, 0, false));
+        // tense
+        audioObjects.push(new AudioObject(options.tenseAudio, options.betweenB, 0, false));
+        // pronoun
+        audioObjects.push(new AudioObject(options.pronounAudio, options.betweenB, 0, false));
+        // if repeat A
+        for (let i=0; i<options.playCountRepeatA; i++) {
+            let delay = options.beforeRepeat;
+            if (i > 0) {
+                delay = options.betweenA;
+            }
+            audioObjects.push(new AudioObject(options.arabicAudio, delay, 0, false));
+        }
+        audioObjects.push(new AudioObject(options.spacerSound, 0.5, 0, false));
+        this.audioQueue = audioObjects;
+        this.doPlayAudioSequence();
     }
 
     public startConjugationSequence(options: ConjugationOptions) {

@@ -17,7 +17,8 @@
                     <label>Drill Type</label>
                     <select [(ngModel)]="drillType"
                         class="form-control">
-                        <option value="identification">Identify Arabic Form</option>
+                        <option value="id-click">ID Arabic with Clicks</option>
+                        <option value="identification">Identify Arabic Verbally</option>
                         <option value="conjugation">Conjugate Verb</option>
                     </select>
                 </div>
@@ -56,10 +57,62 @@
 
 <div *ngIf="showMain">
     <div class="container">
-        <div class="row">
+        <div class="row verb-choices-row">
             <div class="col">
-                <h1>Main</h1>
+                <div class="d-flex flex-wrap verb-choices-container">
+                    <div *ngFor="let v of verbs"
+                        [class.verbSelected]="v.isSelected"
+                        (click)="guessThisVerb(v)"
+                        class="verb-choice">
+                        {{v.eng_text}}
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="row form-choices-row">
+            <div class="col">
+                <table class="table id-form-table">
+                    <tr>
+                        <th class="tense-header">
+                            Past
+                        </th>
+                        <td *ngFor="let choice of pastTenseChoices"
+                            class="arabic-text">
+                            {{choice.arabicPronoun}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="tense-header">Pres</th>
+                        <td *ngFor="let choice of presTenseChoices"
+                            class="arabic-text">
+                            {{choice.arabicPronoun}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row"
+            id="debug-row">
+            <div class="col">
+                <button (click)="toggleDebug()"
+                    class="btn btn-primary btn-standard">
+                    Toggle Debug
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="stop()"
+                    class="btn btn-danger btn-standard">
+                    Stop
+                </button>
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div *ngIf="showDebug">
+        <pre>{{optionHistory | json}}</pre>
     </div>
 </div>

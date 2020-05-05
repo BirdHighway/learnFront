@@ -2,6 +2,17 @@
     <div class="row edit-universals-row">
         <div class="col">
             <div class="form-group">
+                <label>Vocab Type</label>
+                <select [(ngModel)]="data.type" 
+                    [disabled]="savePending"
+                    class="form-control">
+                    <option value="noun">Noun</option>
+                    <option value="verb">Verb</option>
+                    <option value="adjective">Adjective</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label>English Text</label>
                 <input [(ngModel)]="data.eng_text" 
                     [disabled]="savePending"
@@ -14,6 +25,30 @@
                     [disabled]="savePending"
                     class="form-control">
             </div>
+            <button (click)="previewAudio('english')"
+                class="btn btn-outline-dark preview-btn">
+                Preview Audio
+            </button>
+            <button (click)="decrement('english')"
+                class="btn btn-outline-dark decrement">
+                -
+            </button>
+            <button (click)="increment('english')"
+                class="btn btn-outline-dark increment">
+                +
+            </button>
+            <button (click)="clearInput('english')"
+                class="btn btn-outline-dark clear-input">
+                Clear
+            </button>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Dialect</label>
+                <input [(ngModel)]="data.dialect" 
+                    [disabled]="savePending"
+                    class="form-control">
+            </div>
             <div class="form-group">
                 <label>Source</label>
                 <input [(ngModel)]="data.source"
@@ -21,10 +56,15 @@
                     class="form-control">
             </div>
             <div class="form-group">
-                <label>Dialect</label>
-                <input [(ngModel)]="data.dialect" 
-                    [disabled]="savePending"
+                <label>Playlist</label>
+                <select [(ngModel)]="selectedPlaylistId"
                     class="form-control">
+                    <option value="none">No Playlist</option>
+                    <option *ngFor="let p of playlists"
+                        value="{{p._id}}">
+                        {{p.name}}
+                    </option>
+                </select>
             </div>
             <div class="form-group form-check">
                 <input [checked]="isWordMastered"
@@ -32,29 +72,6 @@
                     (click)="toggleMastered()"
                     type="checkbox" class="form-check-input" id="masteryStatus">
                 <label class="form-check-label" for="masteryStatus">Mastered</label>
-            </div>
-        </div>
-        <div class="col">
-            <div class="form-group">
-                <label>Vocab Type</label>
-                <select [(ngModel)]="data.type" 
-                    [disabled]="savePending"
-                    class="form-control">
-                    <option value="noun">Noun</option>
-                    <option value="verb">Verb</option>
-                    <option value="adjective">Adjective</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Tags</label>
-                <input [(ngModel)]="tagString"
-                    [disabled]="savePending"
-                    class="form-control">
-            </div>
-            <div class="memberships-div">
-                <h3 class="playlist-memberships">Playlists</h3>
-
             </div>
         </div>
     </div>
@@ -65,6 +82,8 @@
                 <label>Arabic Text 1</label>
                 <input [(ngModel)]="data.data_other.a_word_text"
                     [disabled]="savePending"
+                    #tab1
+                    (keyup.control.enter)="tabTo(2)"
                     (keyup.enter)="previewAudio('a_word_audio')"
                     class="form-control arabic-text">
             </div>
@@ -79,6 +98,18 @@
                 class="btn btn-outline-dark preview-btn">
                 Preview
             </button>
+            <button (click)="decrement('a_word_audio')"
+                class="btn btn-outline-dark decrement">
+                -
+            </button>
+            <button (click)="increment('a_word_audio')"
+                class="btn btn-outline-dark increment">
+                +
+            </button>
+            <button (click)="clearInput('a_word_audio')"
+                class="btn btn-outline-dark clear-input">
+                Clear
+            </button>
         </div>
     </div>
     <div class="row edit-type-specifics">
@@ -87,6 +118,8 @@
                 <label>Arabic Text 2</label>
                 <input [(ngModel)]="data.data_other.a_word_text_2"
                     [disabled]="savePending"
+                    #tab2
+                    (keyup.control.enter)="tabTo(3)"
                     (keyup.enter)="previewAudio('a_word_audio_2')"
                     class="form-control arabic-text">
             </div>
@@ -101,6 +134,18 @@
                 class="btn btn-outline-dark preview-btn">
                 Preview
             </button>
+            <button (click)="decrement('a_word_audio_2')"
+                class="btn btn-outline-dark decrement">
+                -
+            </button>
+            <button (click)="increment('a_word_audio_2')"
+                class="btn btn-outline-dark increment">
+                +
+            </button>
+            <button (click)="clearInput('a_word_audio_2')"
+                class="btn btn-outline-dark clear-input">
+                Clear
+            </button>
         </div>
     </div>
     <div class="row edit-type-specifics">
@@ -109,6 +154,8 @@
                 <label>Arabic Text 3</label>
                 <input [(ngModel)]="data.data_other.a_word_text_3"
                     [disabled]="savePending"
+                    #tab3
+                    (keyup.control.enter)="tabTo(1)"
                     (keyup.enter)="previewAudio('a_word_audio_3')"
                     class="form-control arabic-text">
             </div>
@@ -122,6 +169,18 @@
             <button (click)="previewAudio('a_word_audio_3')"
                 class="btn btn-outline-dark preview-btn">
                 Preview
+            </button>
+            <button (click)="decrement('a_word_audio_3')"
+                class="btn btn-outline-dark decrement">
+                -
+            </button>
+            <button (click)="increment('a_word_audio_3')"
+                class="btn btn-outline-dark increment">
+                +
+            </button>
+            <button (click)="clearInput('a_word_audio_3')"
+                class="btn btn-outline-dark clear-input">
+                Clear
             </button>
         </div>
     </div>

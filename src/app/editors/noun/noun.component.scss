@@ -47,3 +47,10 @@ button.add-membership {
     display: inline-block;
     padding-top: .25rem;
 }
+
+button.increment,
+button.decrement,
+button.clear-input {
+    margin-left: 1.5rem;
+    width: 60px;
+}

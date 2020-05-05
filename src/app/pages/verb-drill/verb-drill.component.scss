@@ -3,3 +3,70 @@ div.options-container {
         width: 100%;
     }
 }
+
+button.btn-standard {
+    width: 100%;
+}
+
+#debug-row {
+    margin-top: 6rem;
+}
+
+div.verb-choices-container {
+    margin-left: -2rem;
+    margin-right: -2rem;
+}
+
+div.verb-choice {
+    width: 130px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border: 1px solid #444;
+    border-radius: 6px;
+    text-align: center;
+    margin-left: 2rem;
+    margin-top: 2rem;
+    font-size: 1.25rem;
+}
+
+div.verb-choice:hover {
+    background-color: yellow;
+    cursor: pointer;
+}
+
+table.id-form-table {
+    table-layout: fixed;
+}
+
+table.id-form-table td,
+table.id-form-table th {
+    vertical-align: middle;
+    border: 1px solid #444;
+    text-align: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+table.id-form-table th {
+    font-size: 150%;
+    font-weight: 300;
+}
+
+table.id-form-table td {
+    font-size: 180%;
+}
+table.id-form-table td:hover {
+    cursor: pointer;
+    background-color: yellow;
+}
+
+div.form-choices-row {
+    margin-top: 4rem;
+}
+
+div.verbSelected {
+    background-color: #cce5ff;
+    border: 1px solid #004085;
+    color: #004085;
+    font-weight: bold;
+}

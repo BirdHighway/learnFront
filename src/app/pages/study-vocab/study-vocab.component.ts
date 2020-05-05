@@ -145,10 +145,18 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     }
 
     touchCurrentCard() {
-        this.dataSource.touchVocab(this.focusWord)
-            .subscribe(res => {
-                console.log(res);
-            })
+        if (this.currentCardAB) {
+            this.dataSource.touchVocab(this.focusWord)
+                .subscribe(res => {
+                    console.log(res);
+                })
+        } else {
+            this.dataSource.touchVocabB(this.focusWord)
+                .subscribe(res => {
+                    console.log(res);
+                })
+        }
+
     }
 
     ngOnDestroy() {

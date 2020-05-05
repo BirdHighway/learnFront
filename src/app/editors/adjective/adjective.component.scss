@@ -28,7 +28,7 @@
 }
 
 .preview-btn {
-    width: 200px;
+    width: 150px;
 }
 
 .playlist-memberships {
@@ -46,4 +46,11 @@ button.add-membership {
 .playlist-membership-list span {
     display: inline-block;
     padding-top: .25rem;
+}
+
+button.increment,
+button.decrement,
+button.clear-input {
+    margin-left: 1rem;
+    width: 40px;
 }
