@@ -73,6 +73,13 @@
                     type="checkbox" class="form-check-input" id="masteryStatus">
                 <label class="form-check-label" for="masteryStatus">Mastered</label>
             </div>
+            <div class="form-group form-check">
+                <input [checked]="isActive"
+                    [disabled]="savePending"
+                    (click)="toggleActive()"
+                    type="checkbox" class="form-check-input" id="activeStatus">
+                <label class="form-check-label" for="activeStatus">Active</label>
+            </div>
         </div>
     </div>
 
@@ -166,6 +173,12 @@
                 Cancel
             </button>
         </div>
+        <div class="col">
+            <button (click)="deleteWord()"
+                class="btn btn-danger control-btn">
+                Delete
+            </button>
+        </div>
     </div>
     <div *ngIf="savePending"
         class="row">
@@ -175,14 +188,6 @@
                 class="alert alert-info">
                 <strong>{{saveDivText}}</strong>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <p>selectedPlaylistId</p>
-            <pre>{{selectedPlaylistId | json}}</pre>
-            <h2>Word JSON</h2>
-            <pre>{{data | json}}</pre>
         </div>
     </div>
 </div>

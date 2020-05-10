@@ -67,6 +67,8 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     groupIndex: number;
     subGroupIndex: number;
     groupCounter: number;
+    repetitionLength: number;
+    repetitionRound: number;
     tagSelected: string;
     masteredProbability: string;
 
@@ -107,6 +109,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         this.groupIndex = 0;
         this.subGroupIndex = 0;
         this.groupCounter = 0;
+        this.repetitionRound = 0;
         this.audioPlayer.returnStatusSubject()
             .subscribe((val) => {
                 // console.log(val);
@@ -349,7 +352,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
                     randomLimit = 50;
             }
         }
-        this.dataSource.getVocab(queryString, randomLimit)
+        this.dataSource.getStudyVocab(queryString, randomLimit)
             .subscribe(response => {
                 if (response.status === 'success') {
                     this.words = this.applyProbabilityFilter(response.data);
@@ -401,18 +404,18 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     }
 
     repetitionPathSetUp() {
-        let l = this.words.length;
-        if (l < 30) {
+        this.repetitionLength = this.words.length;
+        if (this.repetitionLength < 30) {
             this.showError('Error', 'Not enough words in returned set to continue set up');
             throw new Error();
         }
-        let blockCount = l / 3;
+        let blockCount = this.repetitionLength / 3;
         for (let i=0; i<blockCount; i++) {
             this.blockGroups.push([]);
             this.blockProgress.push([]);
         }
         console.log(this.blockGroups);
-        for (let i=0; i<l; i++) {
+        for (let i=0; i<this.repetitionLength; i++) {
             let w = this.words[i];
             let index = i % blockCount;
             this.blockGroups[index].push(w);
@@ -460,8 +463,22 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         console.log(this.options);
     }
 
+    debugRepAt(tag: string) {
+        console.log(`repetition data at tag: ${tag}`);
+        console.table(this.getRepData);
+    }
+
+    getRepData() {
+        return {
+            'groupCounter': this.groupCounter,
+            'groupIndex': this.groupIndex,
+            'subGroupIndex': this.subGroupIndex
+        };
+    }
+
     toNext() {
         console.log('toNext()');
+        this.debugRepAt('start of toNext() block');
         this.focusIndex++;
         if (this.studyPath === 'repetition') {
             console.log('repetition path');
@@ -473,10 +490,21 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
                 if (this.groupCounter < 2) {
                     this.groupIndex++;
                 } else if (this.groupCounter == (this.blockGroups.length * 2)) {
-                    // finished
-                    this.showStudy = false;
-                    this.showCompleted = true;
-                    doContinue = false;
+                    // check if rounds complete
+                    this.debugRepAt('end of round, before checking if more rounds');
+                    this.repetitionRound++;
+                    if (this.repetitionRound < parseInt(this.options.repetition)) {
+                        // reset indices and continue to next round
+                        this.groupIndex = 0;
+                        this.subGroupIndex = 0;
+                        this.groupCounter = 0;
+                    } else {
+                        // finished
+                        this.showStudy = false;
+                        this.showCompleted = true;
+                        doContinue = false;
+                    }
+                    this.debugRepAt('end of round, after checking if more rounds');
                 } else if (this.groupCounter > ((this.blockGroups.length * 2) - 3)) {
                     // the last two groups
                     this.groupIndex++;
@@ -495,6 +523,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
                 }
             }
             if (doContinue) {
+                this.debugRepAt('just before loadWord()');
                 this.loadWord();
             }
         } else {

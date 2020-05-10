@@ -20,7 +20,7 @@ export class VerbSetsComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.dataSource.getVerbs('')
+        this.dataSource.getVerbs('sortGroup=true')
             .subscribe(v => {
                 if (v.status == 'success') {
                     this.verbs = v.data;
@@ -28,6 +28,19 @@ export class VerbSetsComponent implements OnInit {
                 } else {
                     console.log('error');
                     console.log(v);
+                }
+            })
+    }
+
+    showUnreadyVerbs() {
+        this.verbs = [];
+        this.dataSource.getVerbCollection('collectionType=unready')
+            .subscribe(result => {
+                if (result.status === 'success') {
+                    this.verbs = result.data;
+                } else {
+                    console.error('error');
+                    console.error(result.data);
                 }
             })
     }

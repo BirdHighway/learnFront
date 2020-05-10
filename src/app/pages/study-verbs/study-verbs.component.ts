@@ -54,6 +54,8 @@ export class StudyVerbsComponent implements OnInit {
     waitNextVerb = 3000;
     waitNextForm = 3000;
 
+    answerDelay = '3';
+
     statusSub;
     getSub;
     touchSub;
@@ -160,6 +162,13 @@ export class StudyVerbsComponent implements OnInit {
             if (this.shuffleSetting === 'shuffle') {
                 this.shuffleVerbs();
             }
+        }else if (this.selectMaterial === 'study2') {
+            this.verbs = this.allVerbs.filter(v => {
+                return v.status === 'study2';
+            })
+            if (this.shuffleSetting === 'shuffle') {
+                this.shuffleVerbs();
+            }
         } else if (this.selectMaterial === 'verb') {
             this.verbs = this.allVerbs.filter(v => {
                 return v._id == this.verbId;
@@ -179,7 +188,7 @@ export class StudyVerbsComponent implements OnInit {
             console.log('data not loaded');
         }
         if ((this.advanceMethod == 'meth-form') && (this.repeatAnswer == "1")) {
-            this.waitNextForm += 1000;
+            this.waitNextForm -= 1000;
         }
     }
 
@@ -317,7 +326,7 @@ export class StudyVerbsComponent implements OnInit {
             playCountA: 1,
             playCountB: 2,
             betweenA: 0,
-            beforeAnswer: 3,
+            beforeAnswer: parseInt(this.answerDelay),
             betweenB: 2,
             sourcesA: [],
             sourcesB: [],
@@ -358,7 +367,7 @@ export class StudyVerbsComponent implements OnInit {
             tenseAudio: '',
             pronounAudio: '',
             betweenA: 0.25,
-            beforeB: 3.2,
+            beforeB: parseInt(this.answerDelay),
             pronounWithB: true,
             betweenB: 3,
             playCountB: parseInt(this.repeatAnswer),
@@ -394,6 +403,8 @@ export class StudyVerbsComponent implements OnInit {
             englishFrequency = 4;
             // play the tense when the tense changes
             tenseFrequency = 8;
+            // apply this.answerDelay to options.betweenB
+            options.betweenB = parseInt(this.answerDelay);
         }
         // play English translation every X forms
         if ((this.focusCardCount % englishFrequency) === 0) {

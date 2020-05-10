@@ -1,0 +1,45 @@
+.wide-btn {
+    width: 100%;
+}
+
+div.playlist-choices-container {
+    margin-left: -2rem;
+    margin-right: -2rem;
+}
+
+.playlist-option {
+    width: 160px;
+    height: 80px;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    border: 1px solid #444;
+    border-radius: 6px;
+    margin-left: 2rem;
+    margin-top: 2rem;
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.name-span {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.alert-success {
+    margin-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.alert-success,
+.alert-danger {
+    padding-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.edit-link {
+    margin-top: 1rem;
+    min-width: 300px;
+}

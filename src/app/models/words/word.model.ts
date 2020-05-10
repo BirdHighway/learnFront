@@ -14,6 +14,7 @@ export class Word {
         public lastPracticed?: string,
         public everPracticed?: string,
         public mastered?: boolean,
+        public isActive?: boolean,
         public dialect?: string,
         public source?: string,
         public tags?: string[],

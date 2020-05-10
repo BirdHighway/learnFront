@@ -89,13 +89,19 @@ table.repetition-progress {
         border: 1px solid black;
     }
     td.none {
-        background-color: #e2e3e5;
+        background-color: #808B96;
     }
-    td.once {
-        background-color: yellow;
+    td.one {
+        background-color: #F4D03F;
     }
-    td.twice {
+    td.two {
         background-color: #d4edda;
+    }
+    td.three {
+        background-color: #7DCEA0;
+    }
+    td.four {
+        background-color: #3498DB;
     }
     td.error {
         background-color: red;

@@ -9,7 +9,7 @@ button.btn-standard {
 }
 
 #debug-row {
-    margin-top: 6rem;
+    margin-top: 10rem;
 }
 
 div.verb-choices-container {
@@ -19,14 +19,14 @@ div.verb-choices-container {
 
 div.verb-choice {
     width: 130px;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
     border: 1px solid #444;
     border-radius: 6px;
     text-align: center;
-    margin-left: 2rem;
-    margin-top: 2rem;
-    font-size: 1.25rem;
+    margin-left: 1rem;
+    margin-top: 1rem;
+    font-size: 1rem;
 }
 
 div.verb-choice:hover {
@@ -43,30 +43,79 @@ table.id-form-table th {
     vertical-align: middle;
     border: 1px solid #444;
     text-align: center;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
 }
 
 table.id-form-table th {
-    font-size: 150%;
+    font-size: 110%;
     font-weight: 300;
 }
 
 table.id-form-table td {
-    font-size: 180%;
+    font-size: 130%;
 }
+
 table.id-form-table td:hover {
     cursor: pointer;
     background-color: yellow;
 }
 
 div.form-choices-row {
-    margin-top: 4rem;
+    margin-top: 1rem;
 }
 
-div.verbSelected {
+div.verbSelected,
+td.formSelected {
     background-color: #cce5ff;
     border: 1px solid #004085;
     color: #004085;
     font-weight: bold;
 }
+
+div.click-answer-row {
+    margin-top: 1rem;
+}
+div.click-answer-row h5 {
+    text-align: center;
+}
+div.click-answer-row .col-header {
+    font-weight: 400;
+    font-size: 120%;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #444;
+}
+h5.answer {
+    margin-top: .5rem;
+}
+h5.arabic-text {
+    font-size: 200%;
+}
+h5.tense,
+h5.english {
+    font-size: 1rem;
+}
+
+button.wide-btn {
+    width: 100%;
+}
+
+.verdict-col .alert {
+    text-align: center;
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
+    font-size: 1.2rem;
+}
+
+.verdict-col button {
+    width: 100%;
+    margin-top: .75rem;
+    margin-bottom: .75rem;
+}
+
+#hide-reference-btn {
+    width: 100%;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+}
+

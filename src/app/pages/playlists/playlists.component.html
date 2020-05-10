@@ -7,172 +7,128 @@
         </div>
     </div>
 </div>
-
 <div class="container">
-    <div *ngIf="!showCreate"
-        class="row creation-btns-row">
-        <div class="col"></div>
+    <div class="row">
         <div class="col">
-            <button (click)="createNewPlaylist()"
-                class="btn btn-success create-playlist-btn">
-                Create New Playlist
-            </button>
-        </div>
-        <div class="col"></div>
-    </div>
-
-    <div *ngIf="showCreate"
-        class="row">
-        <div class="col">
-            <div class="form-group">
-                <label>Playlist Name</label>
-                <input [(ngModel)]="newPlaylist.name"
-                    class="form-control">
+            <div class="card border-dark playlist-card shadow">
+                <h5 class="card-header">
+                    <a [routerLink]="['/playlist', 'create']"
+                        class="btn btn-outline-success playlist-link">
+                        Create New Playlist / Delete Existing Playlist
+                    </a>
+                </h5>
+                <div class="card-body">
+                    <h5 class="card-subtitle all-in-one">Progress</h5>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" [style.width.%]="globalProgress('mastered')"></div>
+                        <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="globalProgress('unmastered')"></div>
+                        <div class="progress-bar bg-danger" role="progressbar" [style.width.%]="globalProgress('inactive')"></div>
+                    </div>
+                    <table class="table data-table global-data">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="2" class="double-header">Mastered</th>
+                                <th colspan="2" class="double-header">Unmast</th>
+                                <th colspan="2" class="double-header">Inactive</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="number-col mastered">{{globalMast}}</td>
+                                <td class="percent-col mastered">({{globalMastP}}%)</td>
+                                <td class="number-col unmastered">{{globalUnmast}}</td>
+                                <td class="percent-col unmastered">({{globalUnmastP}}%)</td>
+                                <td class="number-col inactive">{{globalInactive}}</td>
+                                <td class="percent-col inactive">({{globalInactiveP}}%)</td>
+                                <td class="total">{{globalTotal}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="col">
-            <div class="form-group">
-                <label>Order</label>
-                <input [(ngModel)]="newPlaylist.order"
-                    type="number"
-                    class="form-control">
-            </div>
-        </div>
     </div>
-
-    <div *ngIf="showCreate"
-        class="row">
-        <div class="col">
-        </div>
-    </div>
-
-    <div *ngIf="showCreate"
-        class="row creation-btns-row">
-        <div class="col">
-            <button (click)="savePlaylist()"
-                [disabled]="savingPlaylist"
-                class="btn btn-success btn-standard">
-                Save Playlist
-            </button>
-        </div>
-        <div class="col">
-            <button (click)="cancelSave()"
-                [disabled]="savingPlaylist"
-                class="btn btn-secondary btn-standard">
-                Cancel
-            </button>
-        </div>
-        <div class="col">
-
-        </div>
-        <div class="col">
-            <button (click)="deletePlaylist()"
-                [disabled]="savingPlaylist"
-                class="btn btn-danger btn-standard">
-                Delete Playlist
-            </button>
-        </div>
-    </div>
-
-
     <div *ngIf="dataSetsReady">
         <div *ngFor="let playlist of playlistDataSets; let i=index;"
             class="row">
             <div class="col">
-                <div class="card playlist-card">
-                    <h5 class="card-header">{{playlist.playlistName}}</h5>
+                <div [ngClass]="playlistClasses(playlist)">
+                    <h5 class="card-header">
+                        <a [routerLink]="['/vocab']" [queryParams]="{'playlist': playlist._id}"
+                            class="btn btn-outline-primary playlist-link">
+                            {{playlist.playlistName}}
+                        </a>
+                        <span (click)="editOrder(playlist)"
+                            class="badge badge-info">
+                            Order: {{playlist.playlistOrder}}
+                        </span>
+                        <span *ngIf="!playlist.isPlaylistActive"
+                            class="badge badge-dark status-badge">
+                            INACTIVE
+                        </span>
+                    </h5>
+                    <button
+                        [routerLink]="['/playlist', playlist._id]"
+                        class="btn btn-outline-primary edit-btn">
+                        Edit
+                    </button>
                     <div class="card-body">
+                        <div *ngIf="playlist.editOrder">
+                            <div class="form-group">
+                                <label>Order</label>
+                                <input [(ngModel)]="focusPlaylistOrder"
+                                    [disabled]="isSaving"
+                                    class="form-control" type="number">
+                            </div>
+                            <button (click)="saveNewOrder(playlist)"
+                                [disabled]="isSaving"
+                                class="btn btn-primary save-order-btn">
+                                Save New Order
+                            </button>
+                            <button (click)="cancelNewOrder(playlist)"
+                                [disabled]="isSaving"
+                                class="btn btn-secondary cancel-order-btn">
+                                Cancel
+                            </button>
+                        </div>
+                        <h5 class="card-subtitle all-in-one">Progress</h5>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" role="progressbar" [style.width.%]="absoluteProgress(playlist, 'mastered')"></div>
+                            <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="absoluteProgress(playlist, 'unmastered')"></div>
+                            <div class="progress-bar bg-danger" role="progressbar" [style.width.%]="absoluteProgress(playlist, 'inactive')"></div>
+                        </div>
                         <table class="table data-table">
-                            <thead>
-                                <tr class="table-success">
+                            <thead class="thead-dark">
+                                <tr>
                                     <th class="reg-col">Mast</th>
                                     <th class="reg-col">Unmast</th>
+                                    <th class="reg-col">Inact</th>
                                     <th class="reg-col">Total</th>
-                                    <th class="reg-col">UnPrac</th>
+                                    <th class="reg-col">Unmst Prac</th>
                                     <th class="date-col">Oldest</th>
                                     <th class="date-col">Mid</th>
                                     <th class="date-col">Newest</th>
+                                    <th class="date-col">Oldest UnMast</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td class="reg-col">{{playlist.mastered}}</td>
                                     <td class="reg-col">{{playlist.total - playlist.mastered}}</td>
+                                    <td class="reg-col">{{playlist.inactive}}</td>
                                     <td class="reg-col">{{playlist.total}}</td>
                                     <td class="reg-col">{{ unmastPracticePer(playlist) }}</td>
                                     <td>{{playlist.oldest |  date:'mediumDate'}}</td>
                                     <td>{{playlist.midDate | date:'mediumDate'}}</td>
                                     <td>{{playlist.newest | date:'mediumDate'}}</td>
+                                    <td>{{playlist.oldestUnmast | date:'mediumDate'}}</td>
                                 </tr>
                             </tbody>
                         </table>
-                        <!-- <h5 class="card-subtitle mastery">Mastery <small>{{mastPercentage(playlist)}}</small></h5>
-                        <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" [style.width.%]="getProgressInteger(playlist, 'mastered')"></div>
-                            <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="getProgressInteger(playlist, 'unmastered')"></div>
-                        </div>
-                        <h5 class="card-subtitle size">Collection Size <small>{{playlist.total}} terms</small></h5>
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" [style.width.%]="getSizeInteger(playlist)"></div>
-                        </div> -->
-                        <h5 class="card-subtitle all-in-one">Progress</h5>
-                        <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" [style.width.%]="absoluteProgress(playlist, 'mastered')"></div>
-                            <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="absoluteProgress(playlist, 'unmastered')"></div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
-
-
-
-
-    <!-- <div class="row">
-        <div class="col">
-            <table class="table table-dark table-hover">
-                <thead>
-                    <tr>
-                        <th class="border-rl count-col">Rank</th>
-                        <th class="border-rl">Playlist Name</th>
-                        <th class="border-rl count-col">Total</th>
-                        <th class="border-rl count-col">Unmast</th>
-                        <th class="border-rl count-col">% Mast</th>
-                        <th class="border-rl">Tags</th>
-                        <th class="middle-col">Created</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let playlist of playlists; let i=index;"
-                        (click)="editPlaylist(playlist)"
-                        class="playlist-row">
-                        <td class="border-rl count-col">
-                            {{i + 1}}
-                        </td>
-                        <td class="border-rl">
-                            {{playlist.name}} <small>&#40;{{playlist.order}}&#41;</small>
-                        </td>
-                        <td class="border-rl count-col">
-
-                        </td>
-                        <td class="border-rl count-col">
-
-                        </td>
-                        <td class="border-rl count-col">
-
-                        </td>
-                        <td class="border-rl">
-                            
-                        </td>
-                        <td class="">
-                            {{playlist.created | date:'mediumDate'}}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div> -->
-
 </div>

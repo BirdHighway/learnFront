@@ -10,54 +10,31 @@
     width: 100%;
 }
 
-.border-rl {
-    border-right: 1px solid #454D55;
-}
-
-.border-rm {
-    border-right: 2px solid #aaa;
-}
-
-.narrow-col {
-    width: 150px;
-}
-
-.middle-col {
-    width: 300px;
-}
-
-.playlist-row:hover {
-    cursor: pointer;
-}
-
-th.count-col,
-td.count-col {
-    width: 100px;
-    text-align: right;
-}
-
-td small {
-    margin-left: 1rem;
-}
-
-h5 small {
-    margin-left: 1rem;
-}
-
 div.playlist-card {
-    margin-bottom: 0.75rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 h5.card-subtitle {
-    margin-top: 0;
+    margin-top: 0.25rem;
     margin-bottom: 0.5rem;
     font-size: 1rem;
 }
 
 div.progress {
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
     height: 0.5rem;
     background-color: #fff;
+}
+
+table.data-table {
+    margin-bottom: 0;
+}
+
+table.data-table th {
+    font-weight: normal;
 }
 
 table.data-table td,
@@ -72,32 +49,102 @@ td.reg-col {
     width: 100px;
 }
 
-div.card {
-    border: none;
+table.global-data {
+    th {
+        text-align: center;
+    }
+    td {
+        text-align: center;
+    }
+    th,
+    td {
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+        font-size: 1rem;
+        border: 2px solid #454D55;
+    }
+    td.number-col {
+        border-right: 1px solid #aaa;
+    }
+    td.percent-col {
+        border-left: 1px solid #aaa;
+    }
+    td.mastered {
+        background-color: #d4edda;
+    }
+    td.unmastered {
+        background-color: #fff3cd;
+    }
+    td.inactive {
+        background-color: #f8d7da;
+    }
+    td.total {
+        background-color: #cce5ff;
+    }
 }
 
 h5.card-header {
-    background-color: #fff;
+    background-color: initial;
     border: none;
-    padding-top: 0;
-    padding-bottom: .25rem;
+    padding-bottom: 0.5rem;
 }
 
 div.card-body {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid #454D55;
 }
 
-// div.card-body {
-//     padding-top: 0;
-//     padding-bottom: 0;
-//     padding-left: 0;
-//     padding-right: 0;
-// }
+div.playlist-card button.edit-btn {
+    width: 100px;
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+}
 
-// div.progress,
-// h5.card-subtitle {
-//     margin-left: 1rem;
-//     margin-right: 1rem;
-// }
+.card-header .badge {
+    font-weight: normal;
+    margin-left: 1rem;
+}
+
+.card-header .badge:hover {
+    cursor: pointer;
+}
+
+.save-order-btn,
+.cancel-order-btn {
+    margin-bottom: 1rem;
+    width: 200px;
+}
+
+.cancel-order-btn {
+    margin-left: 1rem;
+}
+
+.playlist-link {
+    min-width: 300px;
+}
+
+div.progress-low {
+    background-color: #f8d7da;
+}
+div.progress-fair {
+    background-color: #fff3cd;
+}
+div.progress-good {
+    background-color: #cce5ff;
+}
+div.progress-great {
+    background-color: #d4edda;
+}
+
+div.inactive-playlist {
+    background-color: #e2e3e5;
+}
+
+div.begins-playlist-group {
+    margin-top: 4rem;
+}
+
+div.hidden-playlist {
+    margin-top: 4rem;
+}

@@ -7,6 +7,8 @@ import { SequenceOptions } from '../models/sequence-options.model';
 import { AudioObject } from '../models/audio-object.model';
 import { ConjugationOptions } from '../models/conjugation-options';
 import { IdDrillOptions } from '../models/verb-sets/id-drill-options.model';
+import { SimpleAudioOptions } from '../models/verb-sets/simple-audio-options.model';
+import { SimpleAudioObject } from '../models/verb-sets/simple-audio-object.model';
 
 @Injectable({
     providedIn: 'root'
@@ -20,21 +22,34 @@ export class AudioPlayerService {
     private playerStatus: AudioPlayerStatus;
     private audioObject: HTMLAudioElement;
     private audioQueue: AudioObject[];
+    private simpleAudioQueue: SimpleAudioObject[];
     private latestTimeout;
     private playIndex: number;
     private currentAudioObj: AudioObject;
     private autoAdvanceOnComplete: boolean;
+
+    private simpleStatusSubject = new BehaviorSubject('initial');
+    private currentSequenceFlag: string;
 
     constructor() {
         this.statusSubject.subscribe((val) => {
             // console.log('ap:', val);
             this.playerStatus = val;
         })
+        this.simpleStatusSubject.subscribe((val) => {
+            console.log(`audioPlayer inner subscription: ${val}`);
+        })
         this.audioQueue = [];
+        this.simpleAudioQueue = [];
+        this.currentSequenceFlag = 'INITIAL';
     }
 
     public returnStatusSubject(): BehaviorSubject<AudioPlayerStatus> {
         return this.statusSubject;
+    }
+
+    public returnSimpleStatusSubject(): BehaviorSubject<string> {
+        return this.simpleStatusSubject;
     }
 
     resetIndex() {
@@ -62,7 +77,27 @@ export class AudioPlayerService {
     }
 
     public subscribeToStatus( observer ) {
+        // will need to be unsubscribed
         this.statusSubject.subscribe( observer );
+    }
+
+    sendSimpleStatusUpdate(message: string) {
+        this.simpleStatusSubject.next(message);
+    }
+
+    public subscribeToSimpleStatus(observer) {
+        // will need to be unsubscribed
+        this.simpleStatusSubject.subscribe(observer);
+    }
+
+    public startSimpleAudio(options: SimpleAudioOptions) {
+        let simpleAudioObjects = [];
+        let atoms = options.audioAtoms;
+        for (let i=0; i<atoms.length; i++) {
+            simpleAudioObjects.push(new SimpleAudioObject(atoms[i].audioFile, atoms[i].delay));
+        }
+        this.simpleAudioQueue = simpleAudioObjects;
+        this.doPlaySimpleSequence(options.flag);
     }
 
     public startIdDrill(options: IdDrillOptions) {
@@ -220,6 +255,35 @@ export class AudioPlayerService {
     doPlayAudioSequence() {
         this.sendStatusUpdate({message: 'sequence started'});
         this.doNextInQueue();
+    }
+
+    doPlaySimpleSequence(flag = '') {
+        this.currentSequenceFlag = flag;
+        this.sendSimpleStatusUpdate(`BEGIN:${flag}`);
+        this.doNextSimpleAudio();
+    }
+
+    doNextSimpleAudio() {
+        if (this.simpleAudioQueue && this.simpleAudioQueue.length) {
+            let nextObject = this.simpleAudioQueue.splice(0,1)[0];
+            this.playSimpleAudio(nextObject);
+        } else {
+            // sequence complete
+            // this.audioObject.removeEventListener('ended', this.doNextSimpleAudio);
+            this.sendSimpleStatusUpdate(`${this.currentSequenceFlag}:ENDED`);
+        }
+    }
+
+    playSimpleAudio(audioObject: SimpleAudioObject) {
+        this.audioObject = new Audio();
+        this.audioObject.src = audioObject.filePath;
+        this.audioObject.load();
+        this.latestTimeout = setTimeout(() => {
+            this.audioObject.play();
+        }, audioObject.delay);
+        this.audioObject.addEventListener('ended', () => {
+            this.doNextSimpleAudio();
+        });
     }
 
     doNextInQueue() {

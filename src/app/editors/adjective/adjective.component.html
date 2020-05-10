@@ -74,6 +74,13 @@
                     type="checkbox" class="form-check-input" id="masteryStatus">
                 <label class="form-check-label" for="masteryStatus">Mastered</label>
             </div>
+            <div class="form-group form-check">
+                <input [checked]="isActive"
+                    [disabled]="savePending"
+                    (click)="toggleActive()"
+                    type="checkbox" class="form-check-input" id="activeStatus">
+                <label class="form-check-label" for="activeStatus">Active</label>
+            </div>
         </div>
     </div>
 
@@ -200,6 +207,12 @@
                 [disabled]="savePending"
                 class="btn btn-secondary control-btn">
                 Cancel
+            </button>
+        </div>
+        <div class="col">
+            <button (click)="deleteWord()"
+                class="btn btn-danger control-btn">
+                Delete
             </button>
         </div>
     </div>

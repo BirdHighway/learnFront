@@ -3,6 +3,7 @@ export class Playlist {
         public _id?: string,
         public name?: string,
         public created?: string,
-        public order?: number
+        public order?: number,
+        public isActive?: boolean
     ) { }
 }

@@ -35,6 +35,8 @@ import { VerbTableComponent } from './verb-table/verb-table.component';
 import { StudyVerbsComponent } from './pages/study-verbs/study-verbs.component';
 import { ImagesComponent } from './pages/images/images.component';
 import { VerbDrillComponent } from './pages/verb-drill/verb-drill.component';
+import { PlaylistEditComponent } from './pages/playlist-edit/playlist-edit.component';
+import { PlaylistCreateComponent } from './pages/playlist-create/playlist-create.component';
 
 
 @NgModule({
@@ -65,7 +67,9 @@ import { VerbDrillComponent } from './pages/verb-drill/verb-drill.component';
     VerbTableComponent,
     StudyVerbsComponent,
     ImagesComponent,
-    VerbDrillComponent
+    VerbDrillComponent,
+    PlaylistEditComponent,
+    PlaylistCreateComponent
   ],
   imports: [
     BrowserModule,

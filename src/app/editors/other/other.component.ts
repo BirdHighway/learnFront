@@ -23,6 +23,7 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
     @ViewChild("tab2", {static: false}) tab2: ElementRef;
     @ViewChild("tab3", {static: false}) tab3: ElementRef;
     isWordMastered: boolean = false;
+    isActive: boolean = true;
     savePending: boolean;
     saveDivText: string = '';
     originalPlaylistId: string;
@@ -53,10 +54,16 @@ export class OtherComponent implements OnInit, EditorInterface, OnDestroy {
             this.data.playlist = {}
         }
         this.isWordMastered = this.data.mastered;
+        this.isActive = this.data.isActive;
     }
 
     ngOnDestroy() {
         this.editorEvent.emit({action: 'destruction', data: {}})
+    }
+
+    toggleActive() {
+        this.isActive = !this.isActive;
+        this.data.isActive = this.isActive;
     }
 
     toggleMastered() {

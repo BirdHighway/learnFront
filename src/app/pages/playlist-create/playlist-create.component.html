@@ -1,0 +1,99 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="jumbotron">
+                <h1>Create New Playlist</h1>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="dataReady"
+        class="row">
+        <div class="col">
+            <div class="form-group">
+                <label>Playlist Name</label>
+                <input [(ngModel)]="playlistName"
+                    class="form-control">
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label>Initial Order</label>
+                <input [(ngModel)]="newOrder"
+                    class="form-control"
+                    disabled>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="dataReady"
+        class="row">
+        <div class="col">
+            <button (click)="submitPlaylist()"
+                class="btn btn-success wide-btn">
+                Create Playlist
+            </button>
+        </div>
+        <div class="col"></div>
+        <div class="col"></div>
+        <div class="col"></div>
+    </div>
+
+    <div *ngIf="dataReady"
+        class="row existing-playlists">
+        <div class="col">
+            <div class="d-flex flex-wrap playlist-choices-container">
+                <div *ngFor="let p of existingPlaylists"
+                    (click)="startDelete(p)"
+                    class="playlist-option">
+                    <span class="name-span">
+                        {{p.name}}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="deleteConfirmation"
+        class="row edit-row-option">
+        <div class="col">
+            <div class="alert alert-success">
+                <h4 class="alert-heading">
+                    EDIT selected playlist?
+                </h4>
+                <a [routerLink]="['/playlist', deleteId]"
+                    class="btn btn-dark btn-lg edit-link">
+                    Edit: {{deleteName}}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="deleteConfirmation"
+        class="row delete-confirmation-row">
+        <div class="col">
+            <div class="alert alert-danger">
+                <h4 class="alert-heading">
+                    DELETE selected playlist?
+                </h4>
+                <p>
+                "{{deleteName}}", with id of "{{deleteId}}"
+                </p>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="deleteConfirmation"
+        class="row">
+        <div class="col">
+            <button (click)="cancelDelete()"
+                class="btn btn-secondary wide-btn">
+                Cancel Deletion
+            </button>
+        </div>
+        <div class="col">
+            <button (click)="confirmDelete()"
+                class="btn btn-secondary wide-btn">
+                Confirm Delete
+            </button>
+        </div>
+    </div>
+</div>

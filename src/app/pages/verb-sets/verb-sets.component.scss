@@ -8,6 +8,15 @@ tr.status-study:hover {
     color: #212529 !important;
 }
 
+tr.status-study2 {
+    background-color: #c3c6ff;
+    color: #212529;
+}
+tr.status-study2:hover {
+    background-color: #a9aeff !important;
+    color: #212529 !important;
+}
+
 tr.status-ready {
     background-color: #ffeeba;
     color: #212529;
@@ -70,4 +79,9 @@ td.status-col {
 
 td.status-col {
     text-align: center;
+}
+
+.wide-btn {
+    width: 100%;
+    margin-top: 2rem;
 }

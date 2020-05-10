@@ -140,6 +140,7 @@
                 <tbody>
                     <tr *ngFor="let word of words"
                         [class.table-success]="word.mastered"
+                        [class.table-danger]="!word.isActive"
                     >
                         <td class="border-rl">
                             {{lastPracticedText(word.lastPracticed, word.everPracticed)}}
@@ -197,7 +198,7 @@
     </div>
 </div>
 
-<div *ngIf="showEntriesFilter"
+<div *ngIf="showEntriesTable"
     class="container">
     <div class="row bulk-mode-row">
         <div class="col">
@@ -215,8 +216,19 @@
                 Save to Playlist
             </button>
         </div>
-        <div class="col"></div>
-        <div class="col"></div>
-        <div class="col"></div>
+        <div class="col">
+            <div class="form-group">
+                <label>Set Is-Active Status:</label>
+                <select [(ngModel)]="setIsActiveStatus"
+                    class="form-control">
+                    <option value="active">Active</option>
+                    <option value="not-active">Not Active</option>
+                </select>
+            </div>
+            <button (click)="bulkStatusUpdate()"
+                class="btn btn-info">
+                Set Status For All Selected
+            </button>
+        </div>
     </div>
 </div>

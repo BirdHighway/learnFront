@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="jumbotron">
+                <h1>Edit Playlist</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="dataLoaded"
+    class="container">
+    <div class="row">
+        <div class="col">
+            <h5>{{playlist.name}}</h5>
+            <div class="form-group">
+                <label>Change Name</label>
+                <input [(ngModel)]="playlist.name"
+                    class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Is Active</label>
+                <select [(ngModel)]="playlistIsActive"
+                    class="form-control">
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <h5> Created: {{playlist.created | date:'mediumDate'}}</h5>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col">
+            <button (click)="saveChanges()"
+                class="btn btn-outline-primary wide-btn">
+                Save
+            </button>
+        </div>
+        <div class="col">
+            <a [routerLink]="['/playlists']"
+                class="btn btn-outline-secondary wide-btn">
+                Cancel
+            </a>
+        </div>
+        <div class="col"></div>
+        <div class="col"></div>
+    </div>
+</div>

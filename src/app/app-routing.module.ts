@@ -18,6 +18,8 @@ import { VerbSetsSingleComponent } from './pages/verb-sets-single/verb-sets-sing
 import { StudyVerbsComponent } from './pages/study-verbs/study-verbs.component';
 import { ImagesComponent } from './pages/images/images.component';
 import { VerbDrillComponent } from './pages/verb-drill/verb-drill.component';
+import { PlaylistEditComponent } from './pages/playlist-edit/playlist-edit.component';
+import { PlaylistCreateComponent } from './pages/playlist-create/playlist-create.component';
 
 
 const routes: Routes = [
@@ -35,6 +37,8 @@ const routes: Routes = [
     { path: 'learn', component: LearnComponent },
     { path: 'quiz', component: QuizComponent },
     { path: 'vocab', component: VocabComponent },
+    { path: 'playlist/create', component: PlaylistCreateComponent},
+    { path: 'playlist/:id', component: PlaylistEditComponent},
     { path: 'playlists', component: PlaylistsComponent },
     { path: 'study-vocab', component: StudyVocabComponent },
     { path: 'verb-sets', component: VerbSetsComponent },

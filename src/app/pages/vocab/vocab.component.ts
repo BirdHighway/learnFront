@@ -37,9 +37,9 @@ export class VocabComponent implements OnInit, OnDestroy {
     sortBy: string;
     playlists: Playlist[];
     playlistSelected: string;
-    queryPlaylistName: string;
+    setIsActiveStatus: string;
     queryPage: number;
-    selectedPlaylists: string[];
+    selectedVocab: string[];
     bulkPlaylistPending: boolean;
     bulkPlaylistId: string;
     lastEnglishAudioFile: string;
@@ -70,9 +70,9 @@ export class VocabComponent implements OnInit, OnDestroy {
         this.sortBy = 'default';
         this.playlists = [];
         this.playlistSelected = 'none';
-        this.queryPlaylistName = '';
+        this.setIsActiveStatus = 'active';
         this.queryPage = 1;
-        this.selectedPlaylists = [];
+        this.selectedVocab = [];
         this.bulkPlaylistPending = false;
         this.bulkPlaylistId = 'no-membership';
         this.lastEnglishAudioFile = '';
@@ -84,40 +84,132 @@ export class VocabComponent implements OnInit, OnDestroy {
         this.route.queryParams
             .subscribe(q => {
                 if (q.playlist) {
-                    console.log(q.playlist);
-                    this.queryPlaylistName = q.playlist;
-                    let index = this.playlists.findIndex(p => p.name == this.queryPlaylistName);
-                    if (index !== -1) {
-                        this.playlistSelected = this.playlists[index]._id;
-                    } else {
-                        console.log('error, playlist not identified');
-                    }
+                    this.playlistSelected = q.playlist;
                 } else {
-                    this.queryPlaylistName = '';
                     this.playlistSelected = 'none';
                 }
-                this.loadEntries();
             })
         this.dataSource.getPlaylists()
             .subscribe(response => {
                 this.playlists = response.data;
-                if (this.queryPlaylistName) {
-                    let index = this.playlists.findIndex(p => p.name === this.queryPlaylistName);
-                    if (index !== -1) {
-                        this.playlistSelected = this.playlists[index]._id;
-                        this.loadEntries();
-                    }
+                if (this.playlistSelected != 'none') {
+                    this.loadEntries();
                 }
             })
-
     }
 
+    ngOnDestroy() {
+        console.log('ngOnDestroy()');
+        this.audioPlayer.doKillSequence();
+    }
+
+    loadEntries() {
+        this.loadPage(this.page);
+    }
+
+    makeQueryString(pageNumber: number): string {
+        let queryString = `page=${pageNumber}&category=${this.categoryFilter}&status=${this.filterStatus}`;
+        if (this.searchText.length) {
+            let encodedSearch = encodeURIComponent(this.searchText);
+            queryString += `&searchText=${encodedSearch}&searchTarget=${this.searchTarget}`;
+        }
+        if (this.excludeTag !== 'none') {
+            queryString += `&excludeTag=${this.excludeTag}`;
+        }
+        if (this.playlistSelected !== 'none') {
+            queryString += `&playlist=${this.playlistSelected}`;
+        }
+        if (this.sortBy !== 'default') {
+            queryString += `&sorting=${this.sortBy}`;
+        }
+        console.log(queryString);
+        return queryString;
+    }
+
+    loadPage(pageNumber) {
+        this.clearSelections();
+        let queryString = this.makeQueryString(pageNumber);
+        this.dataSource.getVocab(queryString)
+            .subscribe(data => {
+                if (data.status == 'success') {
+                    this.words = data.data;
+                    this.setPagination(data.total, data.page);
+                    this.showEntriesTable = true;
+                    this.resultsCount = data.total;
+                } else {
+                    console.log('Error');
+                }
+            })
+    }
+
+    setPagination(total: number, current: number) {
+        this.pagination = [];
+        let defaultMaxPages = 20;
+        let totalPages,
+            navStart,
+            navTotal,
+            navMax;
+        totalPages = Math.ceil(total / 50);
+        if (current > defaultMaxPages) {
+            navStart = current - 3;
+        } else {
+            navStart = 1;
+        }
+        if (totalPages < (defaultMaxPages + 1)) {
+            navTotal = totalPages;
+        } else {
+            navTotal = defaultMaxPages;
+        }
+        navMax = navStart + navTotal;
+        for(let i=navStart; i<navMax; i++){
+            this.pagination.push(new PaginationObject(i, i, (i == current)) );
+        }
+    }
+
+    getPaginationObjects(): PaginationObject[] {
+        return this.pagination;
+    }
+    
     clearSelections() {
         this.bulkPlaylistId = 'no-membership';
-        this.selectedPlaylists = [];
+        this.setIsActiveStatus = 'active';
+        this.selectedVocab = [];
         this.words.forEach(w => {
             w.bulkSelected = false;
         })
+    }
+
+    bulkStatusUpdate() {
+        this.bulkPlaylistPending = true;
+        let setActive = true;
+        if (this.setIsActiveStatus === 'active') {
+            setActive = true;
+        } else {
+            setActive = false;
+        }
+        let update = {
+            setActive: setActive,
+            vocabEntries: this.selectedVocab
+        }
+        this.dataSource.bulkUpdateStatus(update)
+            .subscribe(result => {
+                if (result.status == 'success') {
+                    this.words.forEach(w => {
+                        if (w.bulkSelected) {
+                            if (this.setIsActiveStatus == 'active') {
+                                w.isActive = true;
+                            } else {
+                                w.isActive = false;
+                            }
+                        }
+                    })
+                    this.bulkPlaylistPending = false;
+                    this.clearSelections();
+                } else {
+                    console.error('bulk update failed');
+                    console.error(result.data);
+                }
+            })
     }
 
     bulkPlaylistUpdate() {
@@ -145,7 +237,7 @@ export class VocabComponent implements OnInit, OnDestroy {
             playlist_id: updateId,
             playlist_name: updateName,
             order: updateOrder,
-            additions: this.selectedPlaylists
+            additions: this.selectedVocab
         }
         this.dataSource.bulkUpdatePlaylist(bulkMembershipUpdate)
             .subscribe(result => {
@@ -165,7 +257,7 @@ export class VocabComponent implements OnInit, OnDestroy {
                     this.clearSelections();
                 } else {
                     console.error('bulkupdate failed');
-                    console.log(result.data);
+                    console.error(result.data);
                 }
             })
     }
@@ -174,23 +266,14 @@ export class VocabComponent implements OnInit, OnDestroy {
         if (this.bulkPlaylistPending) { return; }
         if (word.bulkSelected) {
             word.bulkSelected = false;
-            let index = this.selectedPlaylists.indexOf(word._id);
+            let index = this.selectedVocab.indexOf(word._id);
             if (index != -1) {
-                this.selectedPlaylists.splice(index, 1);
+                this.selectedVocab.splice(index, 1);
             }
         } else {
             word.bulkSelected = true;
-            this.selectedPlaylists.push(word._id);
+            this.selectedVocab.push(word._id);
         }
-    }
-
-    ngOnDestroy() {
-        console.log('ngOnDestroy()');
-        this.audioPlayer.doKillSequence();
-    }
-
-    getPaginationObjects(): PaginationObject[] {
-        return this.pagination;
     }
 
     createNewVocab() {
@@ -284,74 +367,6 @@ export class VocabComponent implements OnInit, OnDestroy {
 
     forward(event: Word) {
         this.edit(event);
-    }
-
-    loadEntries() {
-        this.loadPage(this.page);
-    }
-
-    encodePlaylistName(playlist) {
-        return encodeURIComponent(playlist.playlist_name);
-    }
-
-    makeQueryString(pageNumber: number): string {
-        let queryString = `page=${pageNumber}&category=${this.categoryFilter}&status=${this.filterStatus}`;
-        if (this.searchText.length) {
-            let encodedSearch = encodeURIComponent(this.searchText);
-            queryString += `&searchText=${encodedSearch}&searchTarget=${this.searchTarget}`;
-        }
-        if (this.excludeTag !== 'none') {
-            queryString += `&excludeTag=${this.excludeTag}`;
-        }
-        if (this.playlistSelected !== 'none') {
-            queryString += `&playlist=${this.playlistSelected}`;
-        }
-        if (this.sortBy !== 'default') {
-            queryString += `&sorting=${this.sortBy}`;
-        }
-        console.log(queryString);
-        return queryString;
-    }
-
-    loadPage(pageNumber) {
-        this.clearSelections();
-        let queryString = this.makeQueryString(pageNumber);
-        this.dataSource.getVocab(queryString)
-            .subscribe(data => {
-                if (data.status == 'success') {
-                    this.words = data.data;
-                    this.setPagination(data.total, data.page);
-                    this.showEntriesTable = true;
-                    this.resultsCount = data.total;
-                } else {
-                    console.log('Error');
-                }
-            })
-    }
-
-    setPagination(total: number, current: number) {
-        this.pagination = [];
-        let defaultMaxPages = 20;
-        let totalPages,
-            navStart,
-            navTotal,
-            navMax;
-        totalPages = Math.ceil(total / 50);
-        if (current > defaultMaxPages) {
-            navStart = current - 3;
-        } else {
-            navStart = 1;
-        }
-        if (totalPages < (defaultMaxPages + 1)) {
-            navTotal = totalPages;
-        } else {
-            navTotal = defaultMaxPages;
-        }
-        navMax = navStart + navTotal;
-        for(let i=navStart; i<navMax; i++){
-            this.pagination.push(new PaginationObject(i, i, (i == current)) );
-        }
-
     }
 
     englishText(fullText: string): string {

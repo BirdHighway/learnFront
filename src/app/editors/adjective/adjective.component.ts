@@ -23,6 +23,7 @@ export class AdjectiveComponent implements OnInit, EditorInterface, OnDestroy {
     @ViewChild("tab2", {static: false}) tab2: ElementRef;
     @ViewChild("tab3", {static: false}) tab3: ElementRef;
     isWordMastered: boolean = false;
+    isActive: boolean = true;
     savePending: boolean;
     saveDivText: string = '';
     originalPlaylistId: string;
@@ -53,10 +54,16 @@ export class AdjectiveComponent implements OnInit, EditorInterface, OnDestroy {
             this.data.playlist = {};
         }
         this.isWordMastered = this.data.mastered;
+        this.isActive = this.data.isActive;
     }
 
     ngOnDestroy() {
         this.editorEvent.emit({action: 'destruction', data: {}})
+    }
+
+    toggleActive() {
+        this.isActive = !this.isActive;
+        this.data.isActive = this.isActive;
     }
 
     toggleMastered() {
@@ -112,6 +119,18 @@ export class AdjectiveComponent implements OnInit, EditorInterface, OnDestroy {
                     this.saveDivText = 'Error: ' + data.data;
                 }
             })
+    }
+
+    deleteWord() {
+        if (confirm("Are you sure you want to delete this entry?")) {
+            this.savePending = true;
+            this.dataSource.deleteVocab(this.data)
+                .subscribe(data => {
+                    this.editorEvent.emit({action: 'delete', data: {}});
+                })
+        } else {
+            return;
+        }
     }
 
     cancelEdit() {

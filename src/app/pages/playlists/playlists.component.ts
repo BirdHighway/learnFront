@@ -10,42 +10,88 @@ import { PlaylistData } from 'src/app/models/playlist-data.model';
 })
 export class PlaylistsComponent implements OnInit {
 
-    playlists: Playlist[] = [];
+    playlistsRaw = [];
+    playlistBasics = {};
     playlistDataSets: PlaylistData[] = [];
     dataReady: boolean = false;
     dataSetsReady: boolean = false;
     showCreate: boolean = false;
-    newPlaylist: Playlist;
     savingPlaylist: boolean = false;
+    focusPlaylistOrder: number;
+    isEditMode: boolean;
+    isSaving: boolean;
+
+    globalMast: number;
+    globalUnmast: number;
+    globalInactive: number;
+    globalTotal: number;
+    globalUnmastPracticed: number;
+    
+    globalMastP: number;
+    globalUnmastP: number;
+    globalInactiveP: number;
+    globalUnmastPracticedP: number;
 
     constructor(private dataSource: RestDataSource) { }
 
     ngOnInit() {
-        this.newPlaylist = new Playlist();
         this.loadPlaylists();
+        this.initialize();
+    }
+
+    initialize() {
+        this.focusPlaylistOrder = 0;
+        this.isEditMode = false;
+        this.isSaving = false;
+        this.playlistsRaw = [];
+        this.playlistDataSets = [];
+        this.globalMast = 0;
+        this.globalUnmast = 0;
+        this.globalInactive = 0;
+        this.globalTotal = 0;
+        this.globalUnmastPracticed = 0;
     }
 
     loadPlaylists() {
         this.dataReady = false;
-        this.playlists = [];
         this.dataSource.getFullPlaylistData()
             .subscribe(response => {
                 if (response.status === 'success') {
-                    this.playlistDataSets = response.data;
+                    let basicInfo = response.data[1];
+                    basicInfo.forEach(p => {
+                        this.playlistBasics[p._id] = p;
+                    })
+                    this.playlistsRaw = response.data[0];
+                    this.playlistsRaw.forEach(p => {
+                        let np = new PlaylistData();
+                        Object.assign(np, p);
+                        np.isPlaylistActive = this.playlistBasics[np._id].isActive;
+                        this.playlistDataSets.push(np);
+                    })
+                    this.generateGlobalStats();
+                    
+                    console.log(this.playlistDataSets);
                     this.dataSetsReady = true;
                 } else {
-                    console.error(response);
+                    console.error(response.data);
                 }
             })
-        this.dataSource.getPlaylists()
-            .subscribe(response => {
-                if (response.status === 'success') {
-                    this.playlists = response.data;
-                    this.dataReady = true;
-                } else {
-                    console.log(response);
-                }
-            })
+    }
+
+    generateGlobalStats() {
+        this.playlistDataSets.forEach(p => {
+            if (p._id != '5e90354e7a025702a3538319') {
+                this.globalTotal += p.total;
+                this.globalMast += p.mastered;
+                this.globalInactive += p.inactive;
+                this.globalUnmastPracticed += p.totalUnmastPract;
+            }
+        })
+        this.globalUnmast = this.globalTotal - this.globalInactive;
+        this.globalMastP = this.doPercent(this.globalMast, this.globalTotal);
+        this.globalInactiveP = this.doPercent(this.globalInactive, this.globalTotal);
+        this.globalUnmastPracticedP = this.doPercent(this.globalUnmastPracticed, this.globalTotal);
+        this.globalUnmastP = 100 - (this.globalMastP + this.globalInactiveP);
     }
 
     mastPercentage(playlistData: PlaylistData): string {
@@ -71,7 +117,7 @@ export class PlaylistsComponent implements OnInit {
         if (field === 'mastered') {
             return mastPercent;
         } else if (field === 'unmastered') {
-            return 100 - mastPercent;
+            return 500 - mastPercent;
         }
     }
 
@@ -82,95 +128,112 @@ export class PlaylistsComponent implements OnInit {
         return Math.floor((part / whole) * 100);
     }
 
-    absoluteProgress(playlistData: PlaylistData, field: string): number {
-        let maxPossible = 100;
-        let mastered = playlistData.mastered;
-        let unmastered = playlistData.total - playlistData.mastered;
+    globalProgress(field: string): number {
+        let maxPossible = this.globalTotal;
+        let mastered = this.globalMast;
+        let inactive = this.globalInactive;
+        let unmastered = this.globalUnmast;
         if (field === 'mastered') {
             return this.doPercent(mastered, maxPossible);
         } else if (field === 'unmastered') {
             return this.doPercent(unmastered, maxPossible);
+        } else if (field === 'inactive') {
+            return this.doPercent(inactive, maxPossible);
         }
         return 0;
+    }
+
+    absoluteProgress(playlistData: PlaylistData, field: string): number {
+        let maxPossible = 50;
+        let mastered = playlistData.mastered;
+        let inactive = playlistData.inactive;
+        let unmastered = playlistData.total - (playlistData.mastered + playlistData.inactive);
+        if (field === 'mastered') {
+            return this.doPercent(mastered, maxPossible);
+        } else if (field === 'unmastered') {
+            return this.doPercent(unmastered, maxPossible);
+        } else if (field === 'inactive') {
+            return this.doPercent(inactive, maxPossible);
+        }
+        return 0;
+    }
+
+    playlistClasses(playlistData: PlaylistData) {
+        let classes = {
+            'card': true,
+            'border-dark': true,
+            'playlist-card': true,
+            'shadow': true    
+        }
+        if ((playlistData.playlistOrder % 10) == 0) {
+            classes['begins-playlist-group'] = true;
+        }
+        if (!playlistData.isPlaylistActive) {
+            classes['inactive-playlist'] = true;
+            return classes;
+        }
+        if (playlistData._id == '5e90354e7a025702a3538319') {
+            classes['hidden-playlist'] = true;
+            return classes;
+        }
+
+        let mast = playlistData.mastered;
+        let inactive = playlistData.inactive;
+        let total = playlistData.total;
+        let unmast = total - (mast + inactive);
+        let unmastPracticed = playlistData.totalUnmastPract;
+        if (total < 1) {
+            return classes;
+        }
+        let shareMast = mast / total;
+        let sharePract = 0;
+        if (unmast > 0) {
+            sharePract = unmastPracticed / unmast;
+        }
+        if (shareMast > .8) {
+            classes['progress-great'] = true;
+        } else if ((shareMast > .5) && (sharePract > .9)) {
+            classes['progress-good'] = true;
+        } else if (sharePract > .9) {
+            classes['progress-fair'] = true;
+        } else {
+            classes['progress-low'] = true;
+        }
+        return classes;
     }
 
     getSizeInteger(playlistData: PlaylistData): number {
         if (playlistData.total == 0) {
             return 0;
         }
-        return Math.floor((playlistData.total / 120) * 100);
+        return Math.floor((playlistData.total / 50) * 100);
     }
 
-    createNewPlaylist() {
-        this.newPlaylist = new Playlist();
-        this.showCreate = true;
+    editOrder(playlist: PlaylistData) {
+        if (this.isEditMode) { return; }
+        this.isEditMode = true;
+        playlist.editOrder = true;
+        this.focusPlaylistOrder = playlist.playlistOrder;
     }
 
-    editPlaylist(playlist: Playlist) {
-        this.showCreate = true;
-        this.newPlaylist = new Playlist(playlist._id, playlist.name, playlist.created, playlist.order);
+    saveNewOrder(playlist: PlaylistData) {
+        this.isSaving = true;
+        this.dataSource.updatePlaylistOrder(playlist._id, this.focusPlaylistOrder)
+            .subscribe(result => {
+                if (result.status != 'success') {
+                    console.error(result.data);
+                } else {
+                    this.isSaving = false;
+                    this.initialize();
+                    this.loadPlaylists();
+                }
+            })
     }
 
-    cancelSave() {
-        this.newPlaylist = new Playlist();
-        this.savingPlaylist = false;
-        this.showCreate = false;
-    }
-
-    savePlaylist() {
-        this.savingPlaylist = true;
-        if (this.newPlaylist._id) {
-            // update existing playlist
-            let update = {
-                playlist_id: this.newPlaylist._id,
-                playlist_name: this.newPlaylist.name,
-                order: this.newPlaylist.order
-            }
-            this.dataSource.updatePlaylist(update)
-                .subscribe(response => {
-                    if (response.status === 'success') {
-                        this.loadPlaylists();
-                        this.savingPlaylist = false;
-                        this.showCreate = false;
-                    } else {
-                        console.error(response);
-                    }
-                })
-        } else {
-            // create new playlist
-            this.dataSource.createPlaylist(this.newPlaylist)
-                .subscribe(response => {
-                    if (response.status === 'success') {
-                        this.loadPlaylists();
-                        this.savingPlaylist = false;
-                        this.showCreate = false;
-                    } else {
-                        console.error(response);
-                    }
-                })
-        }
-    }
-
-    deletePlaylist() {
-        this.savingPlaylist = true;
-        if (confirm('Are you sure you want to delete this playlist?')) {
-            // delete playlist
-            this.dataSource.deletePlaylist(this.newPlaylist)
-                .subscribe(data => {
-                    if (data.status === 'success') {
-                        let index = this.playlists.findIndex((p) => p._id === this.newPlaylist._id);
-                        this.playlists.splice(index, 1);
-                        this.newPlaylist = new Playlist();
-                        this.showCreate = false;
-                        this.savingPlaylist = false;
-                    } else {
-                        console.log(data);
-                    }
-                })
-        } else {
-            this.savingPlaylist = false;
-            return;
-        }
+    cancelNewOrder(playlist: PlaylistData) {
+        this.isEditMode = false;
+        playlist.editOrder = false;
+        
     }
 
 }

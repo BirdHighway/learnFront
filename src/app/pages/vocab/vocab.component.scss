@@ -17,13 +17,16 @@ div.search-results-div {
     border-radius: .25rem;
 }
 
+tr.table-danger td,
 tr.table-success td {
     color: #212529;
 }
 
+tr.table-danger,
 tr.table-success {
     border-left: 1px solid #212529;
     border-right: 1px solid #212529;
+    border-bottom: 1px solid #212529;
 }
 
 

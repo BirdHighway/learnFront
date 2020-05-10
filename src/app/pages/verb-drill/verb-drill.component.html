@@ -1,4 +1,5 @@
-<div class="container">
+<div *ngIf="showOptions"
+    class="container">
     <div class="row">
         <div class="col">
             <div class="jumbotron">
@@ -18,7 +19,7 @@
                     <select [(ngModel)]="drillType"
                         class="form-control">
                         <option value="id-click">ID Arabic with Clicks</option>
-                        <option value="identification">Identify Arabic Verbally</option>
+                        <option value="id-audio">Identify Arabic Verbally</option>
                         <option value="conjugation">Conjugate Verb</option>
                     </select>
                 </div>
@@ -28,14 +29,24 @@
                     <label>Material</label>
                     <select [(ngModel)]="drillMaterial"
                         class="form-control">
-                        <option value="study-verbs">Status of "Study"</option>
+                        <option value="study-verbs">Status of "study"</option>
+                        <option value="study-verbs-2">Status of "study2"</option>
+                        <option value="study-verbs-both">Both Study Groups</option>
                         <option value="ready-verbs">"Ready" Verbs</option>
                         <option value="entire-set">All Verbs</option>
                     </select>
                 </div>
             </div>
             <div class="col">
-
+                <div class="form-group">
+                    <label>Auto Advance</label>
+                    <select [(ngModel)]="autoAdvance"
+                        class="form-control">
+                        <option value="on-correct">On Correct Answer</option>
+                        <option value="always">Always</option>
+                        <option value="never">Never</option>
+                    </select>
+                </div>
             </div>
             <div class="col">
 
@@ -77,6 +88,8 @@
                             Past
                         </th>
                         <td *ngFor="let choice of pastTenseChoices"
+                            (click)="guessThisForm(choice)"
+                            [class.formSelected]="choice.isSelected"
                             class="arabic-text">
                             {{choice.arabicPronoun}}
                         </td>
@@ -84,6 +97,8 @@
                     <tr>
                         <th class="tense-header">Pres</th>
                         <td *ngFor="let choice of presTenseChoices"
+                            (click)="guessThisForm(choice)"
+                            [class.formSelected]="choice.isSelected"
                             class="arabic-text">
                             {{choice.arabicPronoun}}
                         </td>
@@ -91,7 +106,79 @@
                 </table>
             </div>
         </div>
-        <div class="row"
+        <div *ngIf="!showAnswerRow"
+            class="row click-controls-row">
+            <div class="col">
+                <button (click)="replayPrompt()"
+                    class="btn btn-outline-primary wide-btn">
+                    Replay Prompt
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="checkAnswer()"
+                    class="btn btn-outline-success wide-btn">
+                    Done!
+                </button>
+            </div>
+        </div>
+        <div *ngIf="showAnswerRow"
+            class="row click-answer-row">
+            <div class="col answer-col">
+                <h5 class="col-header">Answer:</h5>
+                <h5 class="answer arabic-text">{{focusFormChoice.arabicPronoun}}</h5>
+                <h5 class="answer english">{{focusVerb.eng_text}} - {{focusFormChoice.tense}} tense</h5>
+            </div>
+            <div class="col guess-col">
+                <h5 class="col-header">Guess:</h5>
+                <h5 class="answer arabic-text">{{guessedForm.arabicPronoun}}</h5>
+                <h5 class="answer english">{{guessedVerb.eng_text}} - {{guessedForm.tense}} tense</h5>
+            </div>
+            <div class="col verdict-col">
+                <h5 class="col-header">Verdict:</h5>
+                <div *ngIf="verdict == 'correct'"
+                    class="alert alert-success">
+                    Correct!
+                </div>
+                <div *ngIf="verdict == 'incorrect'"
+                    class="alert alert-warning">
+                    Incorrect!
+                </div>
+            </div>
+        </div>
+        <div *ngIf="showAnswerRow"
+            class="row answer-controls-row">
+            <div class="col">
+                <button (click)="replayPrompt()"
+                    class="btn btn-outline-primary wide-btn replay-answer">
+                    Replay Prompt
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="unhideReference()"
+                    class="btn btn-outline-primary wide-btn">
+                    Show Reference
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="clickIdContinue()"
+                    class="btn btn-success wide-btn">
+                    Next Challenge
+                </button>
+            </div>
+        </div>
+        <div *ngIf="showReference"
+            class="row reference-row">
+            <div class="col">
+                <button (click)="hideReference()"
+                    id="hide-reference-btn"
+                    class="btn btn-outline-primary">
+                    Hide Reference Table
+                </button>
+                <app-verb-table [verb]="focusVerb"></app-verb-table>
+            </div>
+        </div>
+        <div *ngIf="drillType == 'id-audio'"
+            class="row"
             id="debug-row">
             <div class="col">
                 <button (click)="toggleDebug()"
