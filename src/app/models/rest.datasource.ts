@@ -64,6 +64,10 @@ export class RestDataSource {
         return this.http.get<ApiResponse>(url);        
     }
 
+    getFlashcardVocab(queryString: string): Observable<ApiResponse> {
+        return this.http.get<ApiResponse>(`${this.baseUrl}vocab/flashcards/?${queryString}`);
+    }
+
     updateVocab(word: Word): Observable<ApiResponse> {
         if (word._id) {
             return this.http.patch<ApiResponse>(this.baseUrl + 'vocab', word);

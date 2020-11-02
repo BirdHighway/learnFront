@@ -292,6 +292,7 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
     }
 
     selectMaterial(sType: string) {
+        let randomLimit;
         if (sType === 'playlist-repetition') {
             this.studyPath = 'repetition';
         } else {
@@ -328,11 +329,13 @@ export class StudyVocabComponent implements OnInit, OnDestroy {
         if (sType === 'playlist-repetition') {
             if (this.playlistSelectedId == 'none') {
                 queryString = `limit=30&sorting=old&status=not-mastered`;
+            } else if (this.playlistSelectedId === 'random') {
+                randomLimit = 30;
             } else {
                 queryString = `limit=30&sorting=old&status=not-mastered&playlist=${this.playlistSelectedId}`;
             }
         }
-        let randomLimit;
+
         if (sType === 'playlist' &&  (this.playlistSelectedId === 'random')) {
             queryString = 'random';
             switch(this.options.subset) {

@@ -65,7 +65,13 @@ export class PlaylistsComponent implements OnInit {
                     this.playlistsRaw.forEach(p => {
                         let np = new PlaylistData();
                         Object.assign(np, p);
-                        np.isPlaylistActive = this.playlistBasics[np._id].isActive;
+                        if (this.playlistBasics[np._id]) {
+                            np.isPlaylistActive = this.playlistBasics[np._id].isActive;
+                        } else {
+                            np.isPlaylistActive = false;
+                            np.playlistName = 'Unassigned';
+                            np.playlistOrder = 1000;
+                        }
                         this.playlistDataSets.push(np);
                     })
                     this.generateGlobalStats();
@@ -87,7 +93,7 @@ export class PlaylistsComponent implements OnInit {
                 this.globalUnmastPracticed += p.totalUnmastPract;
             }
         })
-        this.globalUnmast = this.globalTotal - this.globalInactive;
+        this.globalUnmast = this.globalTotal - (this.globalInactive + this.globalMast);
         this.globalMastP = this.doPercent(this.globalMast, this.globalTotal);
         this.globalInactiveP = this.doPercent(this.globalInactive, this.globalTotal);
         this.globalUnmastPracticedP = this.doPercent(this.globalUnmastPracticed, this.globalTotal);

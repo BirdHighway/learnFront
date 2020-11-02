@@ -20,6 +20,7 @@ import { ImagesComponent } from './pages/images/images.component';
 import { VerbDrillComponent } from './pages/verb-drill/verb-drill.component';
 import { PlaylistEditComponent } from './pages/playlist-edit/playlist-edit.component';
 import { PlaylistCreateComponent } from './pages/playlist-create/playlist-create.component';
+import { FlashcardsComponent } from './pages/flashcards/flashcards.component';
 
 
 const routes: Routes = [
@@ -46,7 +47,8 @@ const routes: Routes = [
     { path: 'verb-study', component: StudyVerbsComponent },
     { path: 'verb-drills', component: VerbDrillComponent },
     { path: 'images', component: ImagesComponent },
-    { path: 'not-found', component: NotFoundComponent }, 
+    { path: 'flashcards', component: FlashcardsComponent },
+    { path: 'not-found', component: NotFoundComponent },
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', component: NotFoundComponent } 
 ];

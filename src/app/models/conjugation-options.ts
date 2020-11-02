@@ -9,4 +9,5 @@ export interface ConjugationOptions {
     playCountB: number;
     arabicAudio: string;
     isLearnMode: boolean;
+    isLearnMode2?: boolean;
 }

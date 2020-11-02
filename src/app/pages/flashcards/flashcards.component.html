@@ -1,0 +1,211 @@
+<div class="container">
+    <div *ngIf="showOptions"
+        class="setup-options">
+        <div class="row">
+            <div class="col">
+                <div class="jumbotron">
+                    <h1>Flashcards Page</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label>Material Selection</label>
+                    <select [(ngModel)]="selectionType"
+                        class="form-control">
+                        <option value="playlist">By Playlist</option>
+                        <option value="last-practiced">By Latest Practice</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label>Playlist</label>
+                    <select [(ngModel)]="playlistSelectedId"
+                        [disabled]="selectionType === 'last-practiced'"
+                        class="form-control">
+                        <option value="none">
+                            Select Playlist
+                        </option>
+                        <option *ngFor="let playlist of playlists"
+                            value="{{playlist._id}}">
+                            {{playlist.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label>Word Limit</label>
+                    <input [(ngModel)]='limitInput'
+                        class="form-control" type="number">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label>Include Mastered</label>
+                    <select [(ngModel)]="includeMastered"
+                        class="form-control">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                        <option value="half">Half</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label>Control</label>
+                    <select [(ngModel)]="answerControl"
+                        class="form-control">
+                        <option value="auto">Automatically Play Answer</option>
+                        <option value="manual">Click to Play Answer</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <button (click)="beginStudy()"
+                    id="begin-study-btn"
+                    class="btn btn-primary wide-btn">
+                    Begin Study
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="showMain"
+        class="main-container">
+        <div class="row">
+            <div class="col main-col english-text-col">
+                <h3>Prompt</h3>
+                <span *ngIf="currentWord"
+                    class="english-text-display">
+                    {{currentWord.eng_text}}
+                </span>
+            </div>
+            <div class="col main-col arabic-text-col">
+                <h3 class="answer-header">Answer</h3>
+                <div *ngIf="showAnswer">
+                    <span *ngFor="let text_b of currentWord.displayTextB()"
+                        class="arabic-text arabic-text-display">
+                        {{text_b}}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="answerScored"
+            class="row">
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col">
+                <button (click)="replayAnswer()"
+                    [disabled]="!enableReplayNext"
+                    class="btn btn-info wide-btn">
+                    Replay Answer
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="advance()"
+                    [disabled]="!enableReplayNext"
+                    class="btn btn-success wide-btn">
+                    Next Card
+                </button>
+            </div>
+        </div>
+        <div *ngIf="!answerScored" 
+            class="row">
+            <div class="col"></div>
+            <div class="col">
+                <button (click)="markKnown()"
+                    class="btn btn-success wide-btn">
+                    Got It!
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="markUnknown()"
+                    class="btn btn-warning wide-btn">
+                    Try Again!
+                </button>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+    <div *ngIf="showIntermission">
+        <div class="row">
+            <div class="col">
+                <div class="jumbotron bg-info text-white display-screen d-table">
+                    <h1 class="align-middle d-table-cell">
+                        Next round loading...
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="showCompleted">
+        <div class="row">
+            <div class="col">
+                <div class="jumbotron bg-primary text-white display-screen d-table">
+                    <h1 class="align-middle d-table-cell">
+                        Flashcards Completed!
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="showProgress"
+        class="progress-container">
+        <div class="row">
+            <table class="progress-table">
+                <tr *ngFor="let progressRow of progress"
+                >
+                    <td *ngFor="let cardStatus of progressRow.flashcards">
+                        <span (click)="showReference(cardStatus.id)"
+                            class="card-status {{cardStatus.status}}">
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div *ngIf="showRef">
+        <div class="row reference-row-1">
+            <div class="col english-text-col">
+                <h3>Prompt</h3>
+                <span class="english-text-display">
+                    {{refWord.eng_text}}
+                </span>
+            </div>
+            <div class="col arabic-text-col">
+                <h3 class="answer-header">Answer</h3>
+                <div>
+                    <span *ngFor="let text_b of refWord.displayTextB()"
+                        class="arabic-text arabic-text-display">
+                        {{text_b}}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row reference-row-2">
+            <div class="col">
+                <button (click)="hideReference()"
+                    class="btn btn-secondary wide-btn">
+                    Hide Reference
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="playReference()"
+                    class="btn btn-primary wide-btn">
+                    Play Arabic Audio
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>

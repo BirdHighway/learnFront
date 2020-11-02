@@ -338,6 +338,9 @@ export class VerbDrillComponent implements OnInit {
         })
         choice.isSelected = true;
         this.guessedForm = choice;
+        if (this.guessedVerb) {
+            this.checkAnswer();
+        }
     }
 
     checkAnswer() {
@@ -377,12 +380,6 @@ export class VerbDrillComponent implements OnInit {
             verdicts[3].push(4);
             verdicts[4].push(1,3);
         }
-        console.log('verdicts:');
-        console.log(verdicts);
-        console.log('guessedForm:');
-        console.log(this.guessedForm);
-        console.log('focusForm:');
-        console.log(this.focusFormChoice);
         if (!verbVerdict) {
             this.verdict = 'incorrect';
             return;
@@ -423,6 +420,8 @@ export class VerbDrillComponent implements OnInit {
         })
         this.hideReference();
         this.showAnswerRow = false;
+        this.guessedVerb = null;
+        this.guessedForm = null;
         this.nextIdSequence();
     }
 

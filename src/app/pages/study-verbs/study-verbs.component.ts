@@ -19,6 +19,8 @@ export class StudyVerbsComponent implements OnInit {
     studyDone = false;
     doShowTable = false;
     isAdvancing = false;
+    includePrompt: string;
+    studyMode: string;
 
     verbs: VerbSet[];
     allVerbs: VerbSet[];
@@ -77,8 +79,10 @@ export class StudyVerbsComponent implements OnInit {
         this.shuffleSetting = 'no-shuffle';
         this.advanceMethod = 'meth-tense';
         this.selectMaterial = 'status';
+        this.studyMode = 'normal';
         this.repeatAnswer = "1";
-        this.rounds = "2";
+        this.rounds = "1";
+        this.includePrompt = 'yes';
         this.verbId = '';
         this.arabicPronouns = LanguageUtils.pronouns;
     }
@@ -88,7 +92,11 @@ export class StudyVerbsComponent implements OnInit {
             .subscribe( (val) => {
                 this.audioPlayerStatus = val;
                 if (val.message === 'COMPLETE') {
-                    if ((this.advanceMethod !== 'manual') && (this.formIndex == this.getAdvanceIndex())) {
+                    if (this.studyMode === 'fast-mode') {
+                        this.lastTimeout = setTimeout( () => {
+                            this.loadAndPlayNewForm();
+                        }, this.waitNextForm);
+                    } else if ((this.advanceMethod !== 'manual') && (this.formIndex == this.getAdvanceIndex())) {
                         if (this.advanceMethod !== 'meth-form') {
                             this.touchSub = this.dataSource.touchVerb(this.focusVerb._id)
                                 .subscribe(result => {
@@ -139,7 +147,22 @@ export class StudyVerbsComponent implements OnInit {
         }
     }
 
+    playCard() {
+        this.isAdvancing = true;
+        let options = this.generateOptions();
+        console.log(options);
+        this.audioPlayer.startConjugationSequence(options);
+        this.focusCardCount++;
+    }
 
+    loadAndPlayNewForm() {
+        this.resetVerbForms();
+        let randomIndex = Math.floor(Math.random() * this.verbs.length);
+        this.focusVerb = this.verbs[randomIndex];
+        let options = this.generateOptions();
+        console.log(options);
+        this.audioPlayer.startConjugationSequence(options);
+    }
     
     shuffleVerbs() {
         for (let i=this.verbs.length; i>0; i--) {
@@ -152,6 +175,12 @@ export class StudyVerbsComponent implements OnInit {
     }
 
     beginStudy() {
+        if (this.includePrompt === 'no') {
+            this.waitNextForm = 1500;
+        }
+        if (this.studyMode == 'fast-mode') {
+            this.waitNextForm = 2000;
+        }
         if (this.advanceMethod != 'manual') {
             this.advanceIndex = parseInt(this.rounds) * 16;
         }
@@ -178,8 +207,20 @@ export class StudyVerbsComponent implements OnInit {
             if (this.shuffleSetting === 'shuffle') {
                 this.shuffleVerbs();
             }
+        } else if (this.selectMaterial === 'both-study-groups') {
+            this.verbs = this.allVerbs.filter(v => {
+                if ((v.status === 'study') || (v.status === 'study2')) {
+                    return true;
+                }
+                return false;
+            })
         }
-        if (this.verbs.length) {
+        if (this.studyMode === 'fast-mode') {
+            this.isLoading = false;
+            this.showMain = true;
+            this.resetCompleted();
+            this.loadAndPlayNewForm();
+        } else if (this.verbs.length) {
             this.isLoading = false;
             this.showMain = true;
             this.loadVerb();
@@ -242,8 +283,11 @@ export class StudyVerbsComponent implements OnInit {
         } else if (this.advanceMethod === 'meth-verb') {
             this.verbForms = [];
             for (let i=0; i<parseInt(this.rounds); i++) {
-                this.verbForms.concat(this.randomIndices('full'));
+                // this.verbForms.concat(this.randomIndices('full'));
+                this.verbForms = this.randomIndices('full');
             }
+            console.log('this.verbForms:');
+            console.log(this.verbForms);
         } else if (this.advanceMethod = 'meth-form') {
             this.verbForms = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
         }
@@ -343,10 +387,11 @@ export class StudyVerbsComponent implements OnInit {
             sequence.sourcesA.push(engBase + LanguageUtils.engAudioTenses[0]);
             sequence.sourcesB.push(`${aBase}${pronoun}-pres.mp3`);
         } else {
-            sequence.sourcesA.push(engBase + LanguageUtils.engAudioTenses[1]);
             sequence.sourcesB.push(`${aBase}${pronoun}-past.mp3`);
         }
-        sequence.sourcesA.push(engBase + LanguageUtils.arabicAudioPronouns[index % 8]);
+        if (this.includePrompt === 'yes') {
+            sequence.sourcesA.push(engBase + LanguageUtils.arabicAudioPronouns[index % 8]);
+        }        
         return sequence;
     }
 
@@ -357,6 +402,8 @@ export class StudyVerbsComponent implements OnInit {
 
 
     generateOptions(): ConjugationOptions {
+        console.log('generateOptions()');
+        console.log(`this.formIndex = ${this.formIndex}`);
         let index = 0;
         let englishFrequency = 4;
         let tenseFrequency = 1;
@@ -372,7 +419,11 @@ export class StudyVerbsComponent implements OnInit {
             betweenB: 3,
             playCountB: parseInt(this.repeatAnswer),
             arabicAudio: '',
-            isLearnMode: (this.advanceMethod === 'meth-form')
+            isLearnMode: (this.advanceMethod === 'meth-form'),
+            isLearnMode2: false
+        }
+        if (this.includePrompt === 'no') {
+            options.isLearnMode2 = true;
         }
 
         if (this.advanceMethod === 'manual') {
@@ -441,14 +492,6 @@ export class StudyVerbsComponent implements OnInit {
         }
         this.formIndex++;
         return options;
-    }
-
-    playCard() {
-        this.isAdvancing = true;
-        let options = this.generateOptions();
-        console.log(options);
-        this.audioPlayer.startConjugationSequence(options);
-        this.focusCardCount++;
     }
 
     getCellClass(count: number): string {

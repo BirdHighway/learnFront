@@ -38,8 +38,8 @@ tr.status-known:hover {
 
 
 table td {
-    padding-top: .25rem;
-    padding-bottom: .25rem;
+    padding-top: .1rem;
+    padding-bottom: .1rem;
     vertical-align: middle;
 }
 
@@ -62,7 +62,7 @@ td.status-col {
 }
 
 td.arabic-text {
-    font-size: 200%;
+    font-size: 130%;
 }
 
 td.eng-col:hover,
@@ -71,11 +71,11 @@ td.arabic-text:hover {
     cursor: pointer;
 }
 
-td.eng-col,
-td.eng-audio,
-td.status-col {
-    font-size: 125%;
-}
+// td.eng-col,
+// td.eng-audio,
+// td.status-col {
+//     // font-size: 125%;
+// }
 
 td.status-col {
     text-align: center;

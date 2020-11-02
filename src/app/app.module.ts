@@ -37,6 +37,7 @@ import { ImagesComponent } from './pages/images/images.component';
 import { VerbDrillComponent } from './pages/verb-drill/verb-drill.component';
 import { PlaylistEditComponent } from './pages/playlist-edit/playlist-edit.component';
 import { PlaylistCreateComponent } from './pages/playlist-create/playlist-create.component';
+import { FlashcardsComponent } from './pages/flashcards/flashcards.component';
 
 
 @NgModule({
@@ -69,7 +70,8 @@ import { PlaylistCreateComponent } from './pages/playlist-create/playlist-create
     ImagesComponent,
     VerbDrillComponent,
     PlaylistEditComponent,
-    PlaylistCreateComponent
+    PlaylistCreateComponent,
+    FlashcardsComponent
   ],
   imports: [
     BrowserModule,

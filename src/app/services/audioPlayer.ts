@@ -132,7 +132,7 @@ export class AudioPlayerService {
     public startConjugationSequence(options: ConjugationOptions) {
         let audioObjects = [];
         this.resetIndex();
-        if (!options.isLearnMode) {
+        if (!options.isLearnMode && !(options.isLearnMode2)) {
             if (options.engAudio !== '') {
                 audioObjects.push(new AudioObject(options.engAudio, 0, this.getNextIndex(), true));
                 audioObjects.push(new AudioObject(options.pronounAudio, options.betweenA, this.getNextIndex(), true));
@@ -143,9 +143,24 @@ export class AudioPlayerService {
                 audioObjects.push(new AudioObject(options.tenseAudio, options.betweenA, this.getNextIndex(), true));
             }
         }
+
+        if (options.isLearnMode2) {
+            if (options.engAudio !== '') {
+                audioObjects.push(new AudioObject(options.engAudio, 0, this.getNextIndex(), true));
+            }
+        }
         let beforeFirstB = 0;
+        if (options.isLearnMode) {
+            if (options.engAudio !== '') {
+                audioObjects.push(new AudioObject(options.engAudio, 0, this.getNextIndex(), true));
+                beforeFirstB = 1.5;
+            }
+        }
         if (!options.isLearnMode) {
             beforeFirstB = options.beforeB;
+        }
+        if (options.isLearnMode2) {
+            beforeFirstB = 0;
         }
         // first B loop
         if (options.pronounWithB) {

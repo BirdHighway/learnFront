@@ -72,12 +72,23 @@
         </div>
         <div class="col">
             <div class="form-group">
+                <label>Include Prompt</label>
+                <select [(ngModel)]="includePrompt"
+                    class="form-control">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
                 <label>Select Material:</label>
                 <select [(ngModel)]="selectMaterial"
                     [disabled]="disabledWhileLoading"
                     class="form-control">
                     <option value="status">Study Status</option>
                     <option value="study2">Study Group 2</option>
+                    <option value="both-study-groups">Both Study Groups</option>
                     <option value="verb">Individual Verb</option>
                     <option value="all">All Verbs</option>
                 </select>
@@ -95,8 +106,16 @@
                     </option>
                 </select>
             </div>
+            <div *ngIf="this.selectMaterial != 'verb'"
+                class="form-group">
+                <label>Select Mode</label>
+                <select [(ngModel)]="studyMode"
+                    class="form-control">
+                    <option value="normal">Normal</option>
+                    <option value="fast-mode">Fast Mode</option>
+                </select>
+            </div>
         </div>
-        <div class="col"></div>
     </div>
     <div class="row controls-row">
         <div class="col">
